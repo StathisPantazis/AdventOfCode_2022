@@ -1,5 +1,6 @@
 ﻿using AdventOfCode_2022.Extensions;
 using AdventOfCode_2022.Utils;
+using System.Diagnostics;
 
 namespace AdventOfCode_2022;
 
@@ -35,17 +36,13 @@ internal static class Day_10 {
 
     public static string Part_2(List<(int cycle, int sum)> cycles) {
         Grid<string> crt = new(Enumerable.Range(0, 6).Select(i => new string('.', 40)), singleCharacters: true);
+        Coordinates pos = new(crt);
         string spriteTemplate = new('.', 40);
         string sprite = spriteTemplate;
 
-        for (int i = 0; i < cycles.Count; i++) {
-            int row = (int)Math.Floor((double)(i / 40));
-            int col = i % 40;
-            crt[row, col] = sprite[col].ToString();
-
-            if (i != cycles.Count - 1 && cycles[i].sum == cycles[i + 1].sum) {
-                sprite = string.Concat(string.Join("", spriteTemplate.Take(cycles[i].sum - 1)), "###", spriteTemplate[..Math.Max(0, 38 - cycles[i].sum)]);
-            }
+        while (pos.TraverseGrid()) {
+            crt[pos] = sprite[pos.Y].ToString();
+            sprite = !pos.IsAtEnd ? string.Concat(string.Join("", spriteTemplate.Take(cycles[pos.StepsTraversed].sum - 1)), "###", spriteTemplate[..Math.Max(0, 38 - cycles[pos.StepsTraversed].sum)]) : string.Empty;
         }
 
         return crt.ToString();

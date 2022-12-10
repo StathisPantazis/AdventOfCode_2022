@@ -27,6 +27,7 @@ internal class Coordinates {
     public int Y { get; set; }
     public int X_Border { get; }
     public int Y_Border { get; }
+    public int StepsTraversed { get; private set; }
     public bool IsOnBorder => FirstRow || FirstCol || LastRow || LastCol;
     public bool IsAtStart => FirstRow && FirstCol;
     public bool IsAtEnd => LastRow && LastCol;
@@ -122,6 +123,7 @@ internal class Coordinates {
 
         X += LastCol ? 1 : 0;
         Y += LastCol ? -Y_Border : 1;
+        StepsTraversed++;
         return true;
     }
 
@@ -132,6 +134,7 @@ internal class Coordinates {
 
         X += FirstCol ? -1 : 0;
         Y += FirstCol ? Y_Border : -1;
+        StepsTraversed++;
         return true;
     }
 
