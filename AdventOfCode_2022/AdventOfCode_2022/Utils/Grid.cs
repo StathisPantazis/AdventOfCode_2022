@@ -69,10 +69,6 @@ internal class Grid<T> : IGrid {
 
     public override string ToString() => ToString();
 
-    public (List<T> row, List<T>) GetCurrentRowColumn(Coordinates pos) {
-        return (Rows[pos.X], Columns[pos.Y]);
-    }
-
     public List<T> RowSliceLeft(Coordinates pos, bool reverse = true, bool includePosition = false) => RowSliceLeft(pos.X, pos.Y, reverse, includePosition);
 
     public List<T> RowSliceLeft(int row, int column, bool reverse = true, bool includePosition = false) {

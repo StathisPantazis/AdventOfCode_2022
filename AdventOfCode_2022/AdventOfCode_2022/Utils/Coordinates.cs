@@ -63,14 +63,8 @@ internal class Coordinates {
         return true;
     }
 
-    public bool Move(int xMove, int yMove) {
-        X += xMove;
-        Y += yMove;
-        return true;
-    }
-
     public bool MoveTowards(Coordinates pos, bool allowOverlap = false) {
-        if (pos.X == X && pos.Y == Y) {
+        if (pos.Equals(this)) {
             return false;
         }
 
@@ -87,14 +81,34 @@ internal class Coordinates {
             _ when pos.Y > Y => Direction.R,
         };
 
-        int xMove = GetXmove(direction);
-        int yMove = GetYmove(direction);
+        int xMove = GetXmove(direction), yMove = GetYmove(direction);
 
-        if (!allowOverlap && xMove + X == pos.X && yMove + Y == pos.Y) { // overlap will take place on move
+        // overlap will take place on move
+        if (!allowOverlap && xMove + X == pos.X && yMove + Y == pos.Y) {
+            return false;
+        }
+        return Move(direction);
+    }
+
+    public bool MoveOpposite(Coordinates pos) {
+        if (pos.Equals(this)) {
             return false;
         }
 
-        return Move(direction);
+        Direction? direction = pos switch {
+            _ when pos.X == X && pos.Y < Y => Direction.R,
+            _ when pos.X == X && pos.Y > Y => Direction.L,
+            _ when pos.Y == Y && pos.X < X => Direction.D,
+            _ when pos.Y == Y && pos.X > X => Direction.U,
+
+            _ when Math.Abs(pos.Y - Y) == Math.Abs(pos.X - X) && pos.X < X && pos.Y < Y => Direction.DR,
+            _ when Math.Abs(pos.Y - Y) == Math.Abs(pos.X - X) && pos.X < X && pos.Y > Y => Direction.DL,
+            _ when Math.Abs(pos.Y - Y) == Math.Abs(pos.X - X) && pos.X > X && pos.Y < Y => Direction.UR,
+            _ when Math.Abs(pos.Y - Y) == Math.Abs(pos.X - X) && pos.X > X && pos.Y > Y => Direction.UL,
+            _ => null
+        };
+
+        return direction is not null && Move((Direction)direction);
     }
 
     public bool TraverseGrid() {
@@ -125,11 +139,9 @@ internal class Coordinates {
 
     public bool Equals(Coordinates otherPos) => otherPos.X == X && Y == otherPos.Y;
 
-    public bool Equals(int x, int y) => x == X && Y == y;
+    public Coordinates Copy() => new(X_Border + 1, Y_Border + 1, X, Y);
 
-    public Coordinates Copy() => new Coordinates(X_Border + 1, Y_Border + 1, X, Y);
-
-    private int GetXmove(Direction direction) {
+    private static int GetXmove(Direction direction) {
         return direction switch {
             Direction.U or Direction.UR or Direction.UL => -1,
             Direction.D or Direction.DR or Direction.DL => 1,
@@ -137,7 +149,7 @@ internal class Coordinates {
         };
     }
 
-    private int GetYmove(Direction direction) {
+    private static int GetYmove(Direction direction) {
         return direction switch {
             Direction.R or Direction.UR or Direction.DR => 1,
             Direction.L or Direction.UL or Direction.DL => -1,
