@@ -4,11 +4,11 @@ namespace AdventOfCode_2022;
 
 internal static class Day_5 {
     public static void Solve() {
-        string text = Helpers.FileCleanReadText(5);
+        string text = Helpers.File_CleanReadText(5);
         text = text
             .Replace("    [", " ").Replace("]    ", " ").Replace("    ", " ").Replace("[", "").Replace("]", "")
             .Replace("move ", "").Replace(" from ", " ").Replace(" to ", " ");
-        string[] lines = Helpers.TextCleanReadLines(text);
+        string[] lines = Helpers.Text_CleanReadLines(text);
 
         int instructionIndex = lines.ToList().IndexOf(lines.First(y => y.StartsWith(" 1"))) + 2;
         int total = int.Parse(lines[instructionIndex - 2].Trim().Last().ToString());

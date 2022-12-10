@@ -4,7 +4,7 @@ namespace AdventOfCode_2022;
 
 internal static class Day_6 {
     public static void Solve() {
-        string text = Helpers.FileCleanReadText(6);
+        string text = Helpers.File_CleanReadText(6);
 
         for (int part_count = 4; part_count < 15; part_count += 10) {
             string marker = text[..part_count];

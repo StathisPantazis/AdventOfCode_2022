@@ -4,7 +4,7 @@ namespace AdventOfCode_2022;
 
 internal static class Day_3 {
     public static void Solve() {
-        string[] comps = Helpers.FileCleanReadLines(3);
+        string[] comps = Helpers.File_CleanReadLines(3);
         List<char> types = Enumerable.Range('a', 26).ToList().Union(Enumerable.Range('A', 26)).Select(x => (char)x).ToList();
         Console.WriteLine(Part_1(comps, types));
         Console.WriteLine(Part_2(comps, types));

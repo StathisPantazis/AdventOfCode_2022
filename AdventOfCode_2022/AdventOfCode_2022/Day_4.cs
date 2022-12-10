@@ -4,8 +4,8 @@ namespace AdventOfCode_2022;
 
 internal static class Day_4 {
     public static void Solve() {
-        string text = Helpers.FileCleanReadText(4).Replace(",", "-");
-        List<int[]> pairs = Helpers.TextCleanReadLines(text)
+        string text = Helpers.File_CleanReadText(4).Replace(",", "-");
+        List<int[]> pairs = Helpers.Text_CleanReadLines(text)
             .Select(x => x.Split('-').Select(y => int.Parse(y.ToString())).ToArray())
             .ToList();
 

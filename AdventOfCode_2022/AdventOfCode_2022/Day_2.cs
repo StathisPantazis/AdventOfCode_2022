@@ -23,7 +23,7 @@ internal static class Day_2 {
         };
 
     public static void Solve() {
-        string[] games = Helpers.FileCleanReadLines(2);
+        string[] games = Helpers.File_CleanReadLines(2);
         Console.WriteLine(Points_Part1(games));
         Console.WriteLine(Points_Part2(games));
     }
