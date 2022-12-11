@@ -1,6 +1,14 @@
 ﻿namespace AdventOfCode_2022.Extensions;
 
 internal static class ListExtensions {
+    public static int NMax<T>(this IEnumerable<T> collection, int nth, Func<T, int> selector) {
+        return collection.Select(selector).OrderByDescending(x => x).Skip(nth - 1).First();
+    }
+
+    public static int NMin<T>(this IEnumerable<T> collection, int nth, Func<T, int> selector) {
+        return collection.Select(selector).OrderBy(x => x).Skip(nth - 1).First();
+    }
+
     public static void ForEachDo<T>(this IEnumerable<T> collection, Action<T> action) {
         foreach (T item in collection) {
             action(item);
@@ -35,5 +43,24 @@ internal static class ListExtensions {
         List<T> list = new();
         ForNTimesDo(iterations, () => list.Add(func()));
         return list;
+    }
+
+    public static T Pop<T>(this List<T> list) {
+        if (list == null || list.Count == 0) {
+            throw new Exception("Cannot perform function.");
+        }
+
+        T currentFirst = list[0];
+        list.RemoveAt(0);
+        return currentFirst;
+    }
+
+    public static T PopChange<T>(this List<T> list, T change) {
+        if (list == null || list.Count == 0) {
+            throw new Exception("Cannot perform function.");
+        }
+
+        list.RemoveAt(0);
+        return change;
     }
 }

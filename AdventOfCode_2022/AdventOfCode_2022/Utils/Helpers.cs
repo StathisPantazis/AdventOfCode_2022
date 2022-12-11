@@ -1,8 +1,11 @@
 ﻿namespace AdventOfCode_2022.Utils;
 
 internal static class Helpers {
+    public static string GetPath(int day, string extraPath = "") => 
+        @$"C:\Source\AdventOfCode_2022\AdventOfCode_2022\AdventOfCode_2022\Resources\day_{day}{extraPath}.txt";
+
     public static string[] File_CleanReadLines(int day, string extraPath = "") {
-        IEnumerable<string> lines = File.ReadLines($@"C:\Source\AdventOfCode_2022\AdventOfCode_2022\AdventOfCode_2022\Resources\day_{day}{extraPath}.txt");
+        IEnumerable<string> lines = File.ReadLines(GetPath(day, extraPath));
         lines = lines.Select(x => x.Replace("\r", string.Empty));
         return lines.ToArray();
     }
@@ -12,7 +15,11 @@ internal static class Helpers {
     }
 
     public static string File_CleanReadText(int day, string extraPath = "") {
-        return File.ReadAllText($@"C:\Source\AdventOfCode_2022\AdventOfCode_2022\AdventOfCode_2022\Resources\day_{day}{extraPath}.txt").Replace("\r", string.Empty);
+        return File_ReadText(day, extraPath).Replace("\r", string.Empty);
+    }
+
+    public static string File_ReadText(int day, string extraPath = "") {
+        return File.ReadAllText(GetPath(day, extraPath));
     }
 
     public static Direction GetDirection(string str) {
