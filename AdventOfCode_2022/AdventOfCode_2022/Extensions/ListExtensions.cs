@@ -63,4 +63,14 @@ internal static class ListExtensions {
         list.RemoveAt(0);
         return change;
     }
+
+    public static bool None<T>(this List<T> source, Func<T, bool> predicate) {
+        foreach (T element in source) {
+            if (predicate(element)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

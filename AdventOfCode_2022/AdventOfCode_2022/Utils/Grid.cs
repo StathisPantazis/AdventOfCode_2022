@@ -3,14 +3,17 @@
 namespace AdventOfCode_2022.Utils;
 
 internal interface IGrid {
-    int MaxRows { get; }
-    int MaxColumns { get; }
+    int Height { get; }
+    int Width { get; }
 }
 
 internal class Grid<T> : IGrid {
     public T this[int row, int col] {
         get => Rows[row][col];
-        set => Rows[row][col] = value;
+        set {
+            Rows[row][col] = value;
+            Columns[col][row] = value;
+        }
     }
 
     public T this[Coordinates pos] {
@@ -37,37 +40,84 @@ internal class Grid<T> : IGrid {
         }
 
         if (makeSquare) {
-            for (int i = 0; i < MaxRows; i++) {
-                if (Rows[i].Count < MaxColumns) {
-                    for (int j = Rows[i].Count; j < MaxColumns; j++) {
+            for (int i = 0; i < Height; i++) {
+                if (Rows[i].Count < Width) {
+                    for (int j = Rows[i].Count; j < Width; j++) {
                         Rows[i].Add(GetEmpty(emptyOverrideForSquare));
                     }
                 }
             }
         }
 
-        Columns = makeSquare || MaxRows == MaxColumns
-            ? Enumerable.Range(0, MaxRows).Select(row => Enumerable.Range(0, MaxColumns).Select(col => makeSquare && col >= MaxRows ? GetEmpty(emptyOverrideForSquare) : Rows[col][row]).ToList()).ToList()
-            : Enumerable.Range(0, MaxRows).Select(row => Enumerable.Range(0, MaxColumns).Select(col => Rows[row][col]).ToList()).ToList();
+        RebuildColumns(makeSquare, emptyOverrideForSquare);
     }
 
     public List<List<T>> Rows { get; private set; }
 
-    public List<List<T>> Columns { get; init; }
+    public List<List<T>> Columns { get; private set; }
 
     public List<T> Row(int row) => Rows[row];
 
     public List<T> Column(int col) => Columns[col];
 
-    public int Count => MaxRows;
+    public List<T> Row(Coordinates coord) => Rows[coord.X];
 
-    public int MaxRows => Rows.Count;
+    public List<T> Column(Coordinates coord) => Columns[coord.Y];
 
-    public int MaxColumns => Rows.Max(x => x.Count);
+    public Coordinates TopLeft => new(this, 0, 0);
+    public Coordinates TopRight => new(this, 0, Width - 1);
+    public Coordinates BottomLeft => new(this, Height - 1, 0);
+    public Coordinates BottomRight => new(this, Height - 1, Width - 1);
 
-    public string ToString(string rowSeparator = "") => string.Join("\n", ListExtensions.ForNTimesFill(MaxRows, (int row) => string.Join(rowSeparator, ListExtensions.ForNTimesFill<string>(Row(row).Count, (int col) => this[row, col].ToString()))));
+    public int Height => Rows.Count;
+
+    public int Width => Rows.Max(x => x.Count);
+
+    public void RebuildColumns(bool makeSquare = false, string emptyOverrideForSquare = "") {
+        Columns = makeSquare || Height == Width
+            ? Enumerable.Range(0, Height).Select(row => Enumerable.Range(0, Width).Select(col => makeSquare && col >= Height ? GetEmpty(emptyOverrideForSquare) : Rows[col][row]).ToList()).ToList()
+            : Enumerable.Range(0, Width).Select(col => Enumerable.Range(0, Height).Select(row => Rows[row][col]).ToList()).ToList();
+    }
+
+    public string ToString(string rowSeparator = "") => string.Join("\n", ListExtensions.ForNTimesFill(Height, (int row) => string.Join(rowSeparator, ListExtensions.ForNTimesFill<string>(Row(row).Count, (int col) => this[row, col].ToString()))));
 
     public override string ToString() => ToString();
+
+    public void InsertRow(int index, T emptyValue, int repeat = 1, bool rebuildColumns = true) {
+        ListExtensions.ForNTimesDo(repeat, () => {
+            Rows.Insert(index, ListExtensions.ForNTimesFill(Width, () => emptyValue));
+            if (rebuildColumns) {
+                RebuildColumns();
+            }
+        });
+    }
+
+    public void AddRow(T emptyValue, int repeat = 1, bool rebuildColumns = true) {
+        ListExtensions.ForNTimesDo(repeat, () => {
+            Rows.Add(ListExtensions.ForNTimesFill(Width, () => emptyValue));
+            if (rebuildColumns) {
+                RebuildColumns();
+            }
+        });
+    }
+
+    public void InsertColumn(int index, T emptyValue, int repeat = 1, bool rebuildColumns = true) {
+        ListExtensions.ForNTimesDo(repeat, () => {
+            Rows.ForEach(row => row.Insert(index, emptyValue));
+            if (rebuildColumns) {
+                RebuildColumns();
+            }
+        });
+    }
+
+    public void AddColumn(T emptyValue, int repeat = 1, bool rebuildColumns = true) {
+        ListExtensions.ForNTimesDo(repeat, () => {
+            Rows.ForEach(row => row.Add(emptyValue));
+            if (rebuildColumns) {
+                RebuildColumns();
+            }
+        });
+    }
 
     public List<T> RowSliceLeft(Coordinates pos, bool reverse = true, bool includePosition = false) => RowSliceLeft(pos.X, pos.Y, reverse, includePosition);
 
@@ -95,6 +145,10 @@ internal class Grid<T> : IGrid {
 
     public List<T> ColumnSliceDown(int column, int row, bool includePosition = false) {
         return Columns[column].Skip(row + (includePosition ? 0 : 1)).ToList();
+    }
+
+    public static Grid<string> CreateGrid(int rows, int columns, char points = '.') {
+        return new Grid<string>(Enumerable.Range(0, rows).Select(i => new string(points, columns)), singleCharacters: true);
     }
 
     private void InitializeString(IEnumerable<string> source, string separator, StringSplitOptions stringSplitOptions, bool singleCharacters) {

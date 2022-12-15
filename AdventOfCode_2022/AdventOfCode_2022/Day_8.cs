@@ -12,7 +12,7 @@ internal static class Day_8 {
     }
 
     public static int Part_2(Grid<int> trees) {
-        Coordinates pos = new(trees.MaxRows, trees.MaxColumns, true);
+        Coordinates pos = new(trees.Height, trees.Width, true);
         int value = 0;
 
         int treeValue(int tree, List<int> trees) {
@@ -37,7 +37,7 @@ internal static class Day_8 {
     }
 
     public static int Part_1(Grid<int> trees) {
-        Coordinates pos = new(trees.MaxRows, trees.MaxColumns, true);
+        Coordinates pos = new(trees.Height, trees.Width, true);
         int visibleTrees = 0;
 
         while (pos.TraverseGrid()) {
@@ -52,6 +52,6 @@ internal static class Day_8 {
             }
         }
 
-        return visibleTrees + (trees.Count * 2) + ((trees.Count - 2) * 2);
+        return visibleTrees + (trees.Height * 2) + ((trees.Height - 2) * 2);
     }
 }
