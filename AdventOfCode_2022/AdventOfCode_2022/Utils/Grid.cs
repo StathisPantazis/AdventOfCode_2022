@@ -8,11 +8,11 @@ internal interface IGrid {
 }
 
 internal class Grid<T> : IGrid {
-    public T this[int row, int col] {
-        get => Rows[row][col];
+    public T this[int x, int y] {
+        get => Rows[y][x];
         set {
-            Rows[row][col] = value;
-            Columns[col][row] = value;
+            Rows[y][x] = value;
+            Columns[x][y] = value;
         }
     }
 
@@ -22,7 +22,11 @@ internal class Grid<T> : IGrid {
 
     }
 
-    public Grid(IEnumerable<string> source, string separator = " ", bool singleCharacters = false, StringSplitOptions stringSplitOptions = StringSplitOptions.RemoveEmptyEntries, bool makeSquare = false, string emptyOverrideForSquare = "") {
+    private Grid() {
+        Rows = new();
+    }
+
+    public Grid(IEnumerable<string> source, string separator = " ", bool singleCharacters = false, StringSplitOptions stringSplitOptions = StringSplitOptions.RemoveEmptyEntries) {
         if (typeof(T) == typeof(string)) {
             InitializeString(source, separator, stringSplitOptions, singleCharacters);
         }
@@ -39,47 +43,51 @@ internal class Grid<T> : IGrid {
             InitializeGridable(source, separator, stringSplitOptions, typeof(T));
         }
 
-        if (makeSquare) {
-            for (int i = 0; i < Height; i++) {
-                if (Rows[i].Count < Width) {
-                    for (int j = Rows[i].Count; j < Width; j++) {
-                        Rows[i].Add(GetEmpty(emptyOverrideForSquare));
-                    }
-                }
-            }
-        }
-
-        RebuildColumns(makeSquare, emptyOverrideForSquare);
+        RebuildColumns();
     }
 
     public List<List<T>> Rows { get; private set; }
 
     public List<List<T>> Columns { get; private set; }
 
-    public List<T> Row(int row) => Rows[row];
+    public List<T> Row(int y) => Rows[y];
 
-    public List<T> Column(int col) => Columns[col];
+    public List<T> Column(int x) => Columns[x];
 
-    public List<T> Row(Coordinates coord) => Rows[coord.X];
+    public List<T> Row(Coordinates coord) => Rows[coord.Y];
 
-    public List<T> Column(Coordinates coord) => Columns[coord.Y];
+    public List<T> Column(Coordinates coord) => Columns[coord.X];
 
     public Coordinates TopLeft => new(this, 0, 0);
-    public Coordinates TopRight => new(this, 0, Width - 1);
-    public Coordinates BottomLeft => new(this, Height - 1, 0);
-    public Coordinates BottomRight => new(this, Height - 1, Width - 1);
+    public Coordinates TopRight => new(this, Width - 1, 0);
+    public Coordinates BottomLeft => new(this, 0, Height - 1);
+    public Coordinates BottomRight => new(this, Width - 1, Height - 1);
 
     public int Height => Rows.Count;
 
     public int Width => Rows.Max(x => x.Count);
 
-    public void RebuildColumns(bool makeSquare = false, string emptyOverrideForSquare = "") {
-        Columns = makeSquare || Height == Width
-            ? Enumerable.Range(0, Height).Select(row => Enumerable.Range(0, Width).Select(col => makeSquare && col >= Height ? GetEmpty(emptyOverrideForSquare) : Rows[col][row]).ToList()).ToList()
-            : Enumerable.Range(0, Width).Select(col => Enumerable.Range(0, Height).Select(row => Rows[row][col]).ToList()).ToList();
+    public void RebuildColumns() {
+        Columns = Enumerable.Range(0, Width).Select(x => Enumerable.Range(0, Height).Select(y => Rows[y][x]).ToList()).ToList();
     }
 
-    public string ToString(string rowSeparator = "") => string.Join("\n", ListExtensions.ForNTimesFill(Height, (int row) => string.Join(rowSeparator, ListExtensions.ForNTimesFill<string>(Row(row).Count, (int col) => this[row, col].ToString()))));
+    public void CropBottomOfGrid(int remainingRows, bool rebuildColumns = false) {
+        Rows = Rows.Take(remainingRows).ToList();
+
+        if (rebuildColumns) {
+            RebuildColumns();
+        }
+    }
+
+    public void CropTopOfGrid(int remainingRows, bool rebuildColumns = false) {
+        Rows = Rows.Skip(Height - remainingRows).ToList();
+
+        if (rebuildColumns) {
+            RebuildColumns();
+        }
+    }
+
+    public string ToString(string rowSeparator = "") => string.Join("\n", ListExtensions.ForNTimesFill(Height, (int y) => string.Join(rowSeparator, ListExtensions.ForNTimesFill<string>(Row(y).Count, (int x) => this[x, y].ToString()))));
 
     public override string ToString() => ToString();
 
@@ -99,6 +107,10 @@ internal class Grid<T> : IGrid {
                 RebuildColumns();
             }
         });
+    }
+
+    public void RemoveRow(int index) {
+        Rows.RemoveAt(index);
     }
 
     public void InsertColumn(int index, T emptyValue, int repeat = 1, bool rebuildColumns = true) {
@@ -121,31 +133,33 @@ internal class Grid<T> : IGrid {
 
     public List<T> RowSliceLeft(Coordinates pos, bool reverse = true, bool includePosition = false) => RowSliceLeft(pos.X, pos.Y, reverse, includePosition);
 
-    public List<T> RowSliceLeft(int row, int column, bool reverse = true, bool includePosition = false) {
+    public List<T> RowSliceLeft(int x, int y, bool reverse = true, bool includePosition = false) {
         return reverse
-            ? Rows[row].Take(column + (includePosition ? 1 : 0)).Reverse().ToList()
-            : Rows[row].Take(column + (includePosition ? 1 : 0)).ToList();
+            ? Rows[y].Take(x + (includePosition ? 1 : 0)).Reverse().ToList()
+            : Rows[y].Take(x + (includePosition ? 1 : 0)).ToList();
     }
 
     public List<T> RowSliceRight(Coordinates pos, bool includePosition = false) => RowSliceRight(pos.X, pos.Y, includePosition);
 
-    public List<T> RowSliceRight(int row, int column, bool includePosition = false) {
-        return Rows[row].Skip(column + (includePosition ? 0 : 1)).ToList();
+    public List<T> RowSliceRight(int x, int y, bool includePosition = false) {
+        return Rows[y].Skip(x + (includePosition ? 0 : 1)).ToList();
     }
 
-    public List<T> ColumnSliceUp(Coordinates pos, bool reverse = true, bool includePosition = false) => ColumnSliceUp(pos.Y, pos.X, reverse, includePosition);
+    public List<T> ColumnSliceUp(Coordinates pos, bool reverse = true, bool includePosition = false) => ColumnSliceUp(pos.X, pos.Y, reverse, includePosition);
 
-    public List<T> ColumnSliceUp(int column, int row, bool reverse = true, bool includePosition = false) {
+    public List<T> ColumnSliceUp(int x, int y, bool reverse = true, bool includePosition = false) {
         return reverse
-            ? Columns[column].Take(row + (includePosition ? 1 : 0)).Reverse().ToList()
-            : Columns[column].Take(row + (includePosition ? 1 : 0)).ToList();
+            ? Columns[x].Take(y + (includePosition ? 1 : 0)).Reverse().ToList()
+            : Columns[x].Take(y + (includePosition ? 1 : 0)).ToList();
     }
 
-    public List<T> ColumnSliceDown(Coordinates pos, bool includePosition = false) => ColumnSliceDown(pos.Y, pos.X, includePosition);
+    public List<T> ColumnSliceDown(Coordinates pos, bool includePosition = false) => ColumnSliceDown(pos.X, pos.Y, includePosition);
 
-    public List<T> ColumnSliceDown(int column, int row, bool includePosition = false) {
-        return Columns[column].Skip(row + (includePosition ? 0 : 1)).ToList();
+    public List<T> ColumnSliceDown(int x, int y, bool includePosition = false) {
+        return Columns[x].Skip(y + (includePosition ? 0 : 1)).ToList();
     }
+
+    public static Grid<string> CreateEmptyGrid() => new();
 
     public static Grid<string> CreateGrid(int rows, int columns, char points = '.') {
         return new Grid<string>(Enumerable.Range(0, rows).Select(i => new string(points, columns)), singleCharacters: true);
@@ -179,21 +193,5 @@ internal class Grid<T> : IGrid {
 
     private void InitializeGridable(IEnumerable<string> source, string separator, StringSplitOptions stringSplitOptions, Type type) {
         Rows = source.Select(x => x.Split(separator, stringSplitOptions).Select(y => (T)(object)(Gridable)Activator.CreateInstance(type, y)).ToList()).ToList();
-    }
-
-    private static T GetEmpty(string emptyOverride) {
-        if (typeof(T) == typeof(string)) {
-            return (T)(object)(!string.IsNullOrEmpty(emptyOverride) ? emptyOverride : "_");
-        }
-        else if (typeof(T) == typeof(char)) {
-            return (T)(object)(!string.IsNullOrEmpty(emptyOverride) ? emptyOverride : '_');
-        }
-        else if (typeof(T) == typeof(int)) {
-            return (T)(object)(!string.IsNullOrEmpty(emptyOverride) ? emptyOverride : 0);
-        }
-        else if (typeof(T) == typeof(double)) {
-            return (T)(object)(!string.IsNullOrEmpty(emptyOverride) ? emptyOverride : 0);
-        }
-        return default;
     }
 }

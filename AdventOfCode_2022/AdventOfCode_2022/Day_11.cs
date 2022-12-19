@@ -20,10 +20,6 @@ internal static class Day_11 {
         monkeys.ForEachDo(x => commonMultiple *= x.DivisibleBy);
 
         ListExtensions.ForNTimesDo(10000, (int i) => {
-            var lasala = monkeys.Select(x => x.TimesInspected).ToList();
-            if (i is 20 or 21) {
-                var lala = "";
-            }
             monkeys.ForEach(monkey =>
                 new List<ulong>(monkey.Items).ForEach(item => {
                     ulong worry = monkey.CalculateWorry(item) % commonMultiple;

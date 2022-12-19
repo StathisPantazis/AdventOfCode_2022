@@ -4,7 +4,7 @@ internal static class Tests {
     public static void TestTraverse() {
         for (int i = 0; i < 2; i++) {
             bool startFromNegative = i == 0;
-            Coordinates pos = new(10, 10, startFromNegative);
+            LegacyCoordinates pos = new(10, 10, startFromNegative);
             Console.WriteLine($"Grid: {pos.X_Border + 1} x {pos.Y_Border + 1} - StartFromNegative = {startFromNegative}");
             Console.WriteLine(pos);
 
@@ -17,7 +17,7 @@ internal static class Tests {
     }
 
     public static void TestTraverseReverse() {
-        Coordinates pos = new(10, 10);
+        LegacyCoordinates pos = new(10, 10);
         pos.GoToEnd();
         Console.WriteLine($"Grid: {pos.X_Border + 1} x {pos.Y_Border + 1}");
         Console.WriteLine(pos);
@@ -31,7 +31,7 @@ internal static class Tests {
         for (int i = 0; i < 2; i++) {
             bool allowOverlap = i != 0;
 
-            Coordinates from = new(10, 10), to = from.Copy();
+            LegacyCoordinates from = new(10, 10), to = from.Copy();
 
             to.GoToEnd();
 

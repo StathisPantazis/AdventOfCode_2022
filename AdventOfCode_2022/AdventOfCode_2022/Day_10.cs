@@ -35,8 +35,8 @@ internal static class Day_10 {
     }
 
     public static string Part_2(List<(int cycle, int sum)> cycles) {
-        Grid<string> crt = new(Enumerable.Range(0, 6).Select(i => new string('.', 40)), singleCharacters: true);
-        Coordinates pos = new(crt);
+        LegacyGrid<string> crt = new(Enumerable.Range(0, 6).Select(i => new string('.', 40)), singleCharacters: true);
+        LegacyCoordinates pos = new(crt);
         string spriteTemplate = new('.', 40);
         string sprite = spriteTemplate;
 

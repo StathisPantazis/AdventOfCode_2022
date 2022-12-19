@@ -5,14 +5,14 @@ namespace AdventOfCode_2022;
 
 internal static class Day_8 {
     public static void Solve() {
-        Grid<int> trees = new(Helpers.File_CleanReadLines(8), singleCharacters: true);
+        LegacyGrid<int> trees = new(Helpers.File_CleanReadLines(8), singleCharacters: true);
 
         Console.WriteLine(Part_1(trees));
         Console.WriteLine(Part_2(trees));
     }
 
-    public static int Part_2(Grid<int> trees) {
-        Coordinates pos = new(trees.Height, trees.Width, true);
+    public static int Part_2(LegacyGrid<int> trees) {
+        LegacyCoordinates pos = new(trees.Height, trees.Width, true);
         int value = 0;
 
         int treeValue(int tree, List<int> trees) {
@@ -36,8 +36,8 @@ internal static class Day_8 {
         return value;
     }
 
-    public static int Part_1(Grid<int> trees) {
-        Coordinates pos = new(trees.Height, trees.Width, true);
+    public static int Part_1(LegacyGrid<int> trees) {
+        LegacyCoordinates pos = new(trees.Height, trees.Width, true);
         int visibleTrees = 0;
 
         while (pos.TraverseGrid()) {

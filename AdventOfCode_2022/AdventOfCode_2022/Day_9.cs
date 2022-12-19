@@ -17,11 +17,11 @@ internal static class Day_9 {
     }
 
     public static int Part_2(List<(Direction dir, int steps)> instructions) {
-        Grid<string> bridge = GetGrid();
+        LegacyGrid<string> bridge = GetGrid();
         int startX = 300, startY = 300;
 
-        Coordinates pos_H = new(_borders, _borders, startX, startY);
-        List<Coordinates> tail = ListExtensions.ForNTimesFill(9, () => new Coordinates(_borders, _borders, startX, startY));
+        LegacyCoordinates pos_H = new(_borders, _borders, startX, startY);
+        List<LegacyCoordinates> tail = ListExtensions.ForNTimesFill(9, () => new LegacyCoordinates(_borders, _borders, startX, startY));
 
         instructions.ForEachDo(instr => ListExtensions.ForNTimesDo(instr.steps, () => {
             pos_H.Move(instr.dir);
@@ -34,9 +34,9 @@ internal static class Day_9 {
     }
 
     public static int Part_1(List<(Direction dir, int steps)> instructions) {
-        Grid<string> bridge = GetGrid();
+        LegacyGrid<string> bridge = GetGrid();
         int startX = 200, startY = 10;
-        Coordinates pos_H = new(_borders, _borders, startX, startY), pos_T = pos_H.Copy();
+        LegacyCoordinates pos_H = new(_borders, _borders, startX, startY), pos_T = pos_H.Copy();
         bridge[pos_T] = "#";
 
         instructions.ForEachDo(instr => ListExtensions.ForNTimesDo(instr.steps, () => {
@@ -48,5 +48,5 @@ internal static class Day_9 {
         return bridge.ToString().Count(x => x == '#');
     }
 
-    private static Grid<string> GetGrid() => new(Helpers.GetGriddedStringList(_borders, '.'), singleCharacters: true);
+    private static LegacyGrid<string> GetGrid() => new(Helpers.GetGriddedStringList(_borders, '.'), singleCharacters: true);
 }

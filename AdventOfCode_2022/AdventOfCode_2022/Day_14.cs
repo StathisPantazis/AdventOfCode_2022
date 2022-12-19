@@ -16,7 +16,7 @@ internal static class Day_14 {
     }
 
     private static int Part_2(List<(int x, int y)> coordPairs) {
-        Grid<string> cave = BuildCave(coordPairs, out Coordinates pour);
+        LegacyGrid<string> cave = BuildCave(coordPairs, out LegacyCoordinates pour);
         cave.AddRow(".", rebuildColumns: false);
         cave.AddRow("#");
 
@@ -25,7 +25,7 @@ internal static class Day_14 {
         while (!top) {
             pour = pour.CopyBase(0, cave.Row(0).IndexOf("+"));
 
-            while (Fall(cave, pour, true) is Coordinates sand) {
+            while (Fall(cave, pour, true) is LegacyCoordinates sand) {
                 pour = pour.CopyBase(0, cave.Row(0).IndexOf("+"));
                 cave[sand] = "O";
 
@@ -40,24 +40,24 @@ internal static class Day_14 {
     }
 
     private static int Part_1(List<(int x, int y)> coordPairs) {
-        Grid<string> cave = BuildCave(coordPairs, out Coordinates pour);
+        LegacyGrid<string> cave = BuildCave(coordPairs, out LegacyCoordinates pour);
 
-        while (Fall(cave, pour, false) is Coordinates sand) {
+        while (Fall(cave, pour, false) is LegacyCoordinates sand) {
             cave[sand] = "O";
         }
 
         return cave.ToString().Count(x => x == 'O');
     }
 
-    private static Coordinates Fall(Grid<string> cave, Coordinates pour, bool expandBorders) {
-        Coordinates initialDrop = GetTarget(cave, pour);
-        Coordinates grain = initialDrop.Copy();
+    private static LegacyCoordinates Fall(LegacyGrid<string> cave, LegacyCoordinates pour, bool expandBorders) {
+        LegacyCoordinates initialDrop = GetTarget(cave, pour);
+        LegacyCoordinates grain = initialDrop.Copy();
         MoveType nextMove = MoveType.Roll;
 
-        bool stopClause(Coordinates pos) => pos.IsInsideOfBorder && _blocks.Contains(cave[pos]);
-        bool outOfBorder(Coordinates pos) => pos.IsOutsideOfBorder;
-        bool fallAgain(Coordinates pos) => cave[pos.D] == ".";
-        Coordinates move(Coordinates sand, out MoveType nextMove) {
+        bool stopClause(LegacyCoordinates pos) => pos.IsInsideOfBorder && _blocks.Contains(cave[pos]);
+        bool outOfBorder(LegacyCoordinates pos) => pos.IsOutsideOfBorder;
+        bool fallAgain(LegacyCoordinates pos) => cave[pos.D] == ".";
+        LegacyCoordinates move(LegacyCoordinates sand, out MoveType nextMove) {
             if (expandBorders) {
                 if (sand.Y == 0) {
                     cave.InsertColumn(0, ".", 2, true);
@@ -97,21 +97,21 @@ internal static class Day_14 {
         return grain;
     }
 
-    private static Grid<string> BuildCave(List<(int x, int y)> coordPairs, out Coordinates pour) {
+    private static LegacyGrid<string> BuildCave(List<(int x, int y)> coordPairs, out LegacyCoordinates pour) {
         int maxX = coordPairs.Max(x => x.x);
         int minY = coordPairs.Min(x => x.y), maxY = coordPairs.Max(x => x.y);
 
-        Grid<string> cave = Grid<string>.CreateGrid(maxX + 1, maxY - minY + 1);
+        LegacyGrid<string> cave = LegacyGrid<string>.CreateGrid(maxX + 1, maxY - minY + 1);
         pour = new(cave, 0, cave.Width + 500 - maxY - 1);
 
-        List<List<Coordinates>> rockPaths = Helpers.File_CleanReadText(14).Replace(" -> ", "_")
-            .Split('\n').Select(x => x.Split('_').Select(y => new Coordinates(cave, int.Parse(y.Split(',')[1]), cave.Width + int.Parse(y.Split(',')[0]) - maxY - 1)).ToList())
+        List<List<LegacyCoordinates>> rockPaths = Helpers.File_CleanReadText(14).Replace(" -> ", "_")
+            .Split('\n').Select(x => x.Split('_').Select(y => new LegacyCoordinates(cave, int.Parse(y.Split(',')[1]), cave.Width + int.Parse(y.Split(',')[0]) - maxY - 1)).ToList())
             .ToList();
 
         cave[pour] = "+";
         rockPaths.ForEach(path => {
             ListExtensions.ForNTimesDo(path.Count - 1, (int i) => {
-                Coordinates start = path[0];
+                LegacyCoordinates start = path[0];
                 cave[start] = "#";
 
                 while (start.NotEquals(path[i + 1])) {
@@ -125,7 +125,7 @@ internal static class Day_14 {
         return cave;
     }
 
-    private static Coordinates GetTarget(Grid<string> cave, Coordinates pour) {
+    private static LegacyCoordinates GetTarget(LegacyGrid<string> cave, LegacyCoordinates pour) {
         List<string> column = cave.ColumnSliceDown(pour, true);
         int rock = column.IndexOf("#"), sand = column.IndexOf("O");
         int x = pour.X + (sand == -1 ? rock - 1 : Math.Min(rock - 1, sand - 1));
