@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode_2022.Extensions;
+﻿using System.Xml.Serialization;
+
+namespace AdventOfCode_2022.Extensions;
 
 internal static class ListExtensions {
     public static int NMax<T>(this IEnumerable<T> collection, int nth, Func<T, int> selector) {

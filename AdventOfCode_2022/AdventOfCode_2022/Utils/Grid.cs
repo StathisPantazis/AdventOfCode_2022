@@ -8,6 +8,8 @@ internal interface IGrid {
 }
 
 internal class Grid<T> : IGrid {
+    private readonly T _emptyValue;
+
     public T this[int x, int y] {
         get => Rows[y][x];
         set {
@@ -26,7 +28,8 @@ internal class Grid<T> : IGrid {
         Rows = new();
     }
 
-    public Grid(IEnumerable<string> source, string separator = " ", bool singleCharacters = false, StringSplitOptions stringSplitOptions = StringSplitOptions.RemoveEmptyEntries) {
+    public Grid(IEnumerable<string> source, string separator = " ", bool singleCharacters = false, StringSplitOptions stringSplitOptions = StringSplitOptions.RemoveEmptyEntries, T emptyValue = default) {
+        _emptyValue = emptyValue;
         if (typeof(T) == typeof(string)) {
             InitializeString(source, separator, stringSplitOptions, singleCharacters);
         }
@@ -68,7 +71,7 @@ internal class Grid<T> : IGrid {
     public int Width => Rows.Max(x => x.Count);
 
     public void RebuildColumns() {
-        Columns = Enumerable.Range(0, Width).Select(x => Enumerable.Range(0, Height).Select(y => Rows[y][x]).ToList()).ToList();
+        Columns = Enumerable.Range(0, Width).Select(x => Enumerable.Range(0, Height).Select(y => x < Height ? Rows[y][x] : _emptyValue).ToList()).ToList();
     }
 
     public void CropBottomOfGrid(int remainingRows, bool rebuildColumns = false) {
@@ -167,7 +170,7 @@ internal class Grid<T> : IGrid {
 
     private void InitializeString(IEnumerable<string> source, string separator, StringSplitOptions stringSplitOptions, bool singleCharacters) {
         if (singleCharacters) {
-            Rows = source.Select(x => x.ToCharArray().Select(y => (T)(object)(y.ToString())).ToList()).ToList();
+            Rows = source.Select(x => x.ToCharArray().Select(y => (T)(object)y.ToString()).ToList()).ToList();
         }
         else {
             Rows = source.Select(x => x.Split(separator, stringSplitOptions).Select(y => (T)(object)y).ToList()).ToList();
