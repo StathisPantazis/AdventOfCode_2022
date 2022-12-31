@@ -1,4 +1,5 @@
-﻿using AdventOfCode_2022.Utils;
+﻿using AdventOfCode_2022.Models;
+using AdventOfCode_2022.Utils;
 
 namespace AdventOfCode_2022;
 

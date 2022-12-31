@@ -1,8 +1,10 @@
-﻿namespace AdventOfCode_2022.Utils;
+﻿using AdventOfCode_2022.Models;
+
+namespace AdventOfCode_2022.Utils;
 
 internal static class Helpers {
     public static string GetPath(int day, string extraPath = "") => 
-        @$"C:\Source\AdventOfCode_2022\AdventOfCode_2022\AdventOfCode_2022\Resources\day_{day}{extraPath}.txt";
+        @$"{Path.Combine(Path.GetFullPath(@"..\..\..\"), "Resources", $"day_{day}{extraPath}.txt")}";
 
     public static string[] File_CleanReadLines(int day, string extraPath = "") {
         IEnumerable<string> lines = File.ReadLines(GetPath(day, extraPath));

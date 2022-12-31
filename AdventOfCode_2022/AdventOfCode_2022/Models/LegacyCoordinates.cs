@@ -1,29 +1,35 @@
-﻿namespace AdventOfCode_2022.Utils;
+﻿namespace AdventOfCode_2022.Models;
 
-internal class LegacyCoordinates {
-    public LegacyCoordinates() {
+internal class LegacyCoordinates
+{
+    public LegacyCoordinates()
+    {
         X_Border = int.MaxValue;
         Y_Border = int.MaxValue;
     }
 
-    public LegacyCoordinates(int gridWidth, int gridHeight, bool startFromNegative = false) {
+    public LegacyCoordinates(int gridWidth, int gridHeight, bool startFromNegative = false)
+    {
         X_Border = gridWidth - 1;
         Y_Border = gridHeight - 1;
         X = startFromNegative ? -1 : 0;
     }
 
-    public LegacyCoordinates(int gridWidth, int gridHeight, int startX, int startY) : this(gridWidth, gridHeight) {
+    public LegacyCoordinates(int gridWidth, int gridHeight, int startX, int startY) : this(gridWidth, gridHeight)
+    {
         X = startX;
         Y = startY;
     }
 
-    public LegacyCoordinates(ILegacyGrid grid, bool startFromNegative = false) {
+    public LegacyCoordinates(ILegacyGrid grid, bool startFromNegative = false)
+    {
         X_Border = grid.Height - 1;
         Y_Border = grid.Width - 1;
         X = startFromNegative ? -1 : 0;
     }
 
-    public LegacyCoordinates(ILegacyGrid grid, int startX, int startY) : this(grid) {
+    public LegacyCoordinates(ILegacyGrid grid, int startX, int startY) : this(grid)
+    {
         X = startX;
         Y = startY;
     }
@@ -52,24 +58,29 @@ internal class LegacyCoordinates {
     private bool FirstCol => Y == 0;
     private bool LastCol => Y == Y_Border;
 
-    public void GoToStart(bool startFromNegative = false) {
+    public void GoToStart(bool startFromNegative = false)
+    {
         X = startFromNegative ? -1 : 0;
         Y = 0;
     }
 
-    public void GoToEnd() {
+    public void GoToEnd()
+    {
         X = X_Border;
         Y = Y_Border;
     }
 
-    public bool TryGetNeighbour(Direction direction, out LegacyCoordinates neighbour) {
+    public bool TryGetNeighbour(Direction direction, out LegacyCoordinates neighbour)
+    {
         neighbour = new(X_Border + 1, Y_Border + 1, X + GetXmove(direction), Y + GetYmove(direction));
         return CanMove(direction, neighbour);
     }
 
-    public bool Move(Direction direction, Func<LegacyCoordinates, bool> stopClause = null) {
+    public bool Move(Direction direction, Func<LegacyCoordinates, bool> stopClause = null)
+    {
         LegacyCoordinates nextMove = GetFromDirection(direction);
-        if (CantMove(direction, nextMove, stopClause)) {
+        if (CantMove(direction, nextMove, stopClause))
+        {
             return false;
         }
 
@@ -78,12 +89,15 @@ internal class LegacyCoordinates {
         return true;
     }
 
-    public bool MoveTowards(LegacyCoordinates pos, bool allowOverlap = false, Func<LegacyCoordinates, bool> stopClause = null) {
-        if (pos.Equals(this)) {
+    public bool MoveTowards(LegacyCoordinates pos, bool allowOverlap = false, Func<LegacyCoordinates, bool> stopClause = null)
+    {
+        if (pos.Equals(this))
+        {
             return false;
         }
 
-        Direction direction = pos switch {
+        Direction direction = pos switch
+        {
             _ when pos.X < X && pos.Y < Y => Direction.UL,
             _ when pos.X < X && pos.Y > Y => Direction.UR,
             _ when pos.X < X => Direction.U,
@@ -99,18 +113,22 @@ internal class LegacyCoordinates {
         int xMove = GetXmove(direction), yMove = GetYmove(direction);
 
         // overlap will take place on move
-        if (!allowOverlap && xMove + X == pos.X && yMove + Y == pos.Y) {
+        if (!allowOverlap && xMove + X == pos.X && yMove + Y == pos.Y)
+        {
             return false;
         }
         return Move(direction, stopClause: stopClause);
     }
 
-    public bool MoveOpposite(LegacyCoordinates pos) {
-        if (pos.Equals(this)) {
+    public bool MoveOpposite(LegacyCoordinates pos)
+    {
+        if (pos.Equals(this))
+        {
             return false;
         }
 
-        Direction? direction = pos switch {
+        Direction? direction = pos switch
+        {
             _ when pos.X == X && pos.Y < Y => Direction.R,
             _ when pos.X == X && pos.Y > Y => Direction.L,
             _ when pos.Y == Y && pos.X < X => Direction.D,
@@ -126,12 +144,15 @@ internal class LegacyCoordinates {
         return direction is not null && Move((Direction)direction);
     }
 
-    public bool TraverseGrid() {
-        if (X == -1) { // for start with negative case
+    public bool TraverseGrid()
+    {
+        if (X == -1)
+        { // for start with negative case
             X = 0;
             return true;
         }
-        else if (LastRow && LastCol) {
+        else if (LastRow && LastCol)
+        {
             return false;
         }
 
@@ -141,8 +162,10 @@ internal class LegacyCoordinates {
         return true;
     }
 
-    public bool TraverseGridReverse() {
-        if (FirstRow && FirstCol) {
+    public bool TraverseGridReverse()
+    {
+        if (FirstRow && FirstCol)
+        {
             return false;
         }
 
@@ -160,16 +183,20 @@ internal class LegacyCoordinates {
 
     public LegacyCoordinates Copy() => new(X_Border + 1, Y_Border + 1, X, Y);
 
-    private static int GetXmove(Direction direction) {
-        return direction switch {
+    private static int GetXmove(Direction direction)
+    {
+        return direction switch
+        {
             Direction.U or Direction.UR or Direction.UL => -1,
             Direction.D or Direction.DR or Direction.DL => 1,
             _ => 0
         };
     }
 
-    private static int GetYmove(Direction direction) {
-        return direction switch {
+    private static int GetYmove(Direction direction)
+    {
+        return direction switch
+        {
             Direction.R or Direction.UR or Direction.DR => 1,
             Direction.L or Direction.UL or Direction.DL => -1,
             _ => 0
@@ -178,8 +205,10 @@ internal class LegacyCoordinates {
 
     public LegacyCoordinates CopyBase(int newX, int newY) => new(X_Border + 1, Y_Border + 1, newX, newY);
 
-    private LegacyCoordinates GetFromDirection(Direction direction) {
-        return direction switch {
+    private LegacyCoordinates GetFromDirection(Direction direction)
+    {
+        return direction switch
+        {
             Direction.R => R,
             Direction.L => L,
             Direction.U => U,
@@ -191,16 +220,20 @@ internal class LegacyCoordinates {
         };
     }
 
-    private bool CanMove(Direction direction, LegacyCoordinates nextMove, Func<LegacyCoordinates, bool> stopClause = null) {
+    private bool CanMove(Direction direction, LegacyCoordinates nextMove, Func<LegacyCoordinates, bool> stopClause = null)
+    {
         return !CantMove(direction, nextMove, stopClause);
     }
 
-    private bool CantMove(Direction direction, LegacyCoordinates nextMove, Func<LegacyCoordinates, bool> stopClause = null) {
-        if (stopClause is not null && stopClause(nextMove)) {
+    private bool CantMove(Direction direction, LegacyCoordinates nextMove, Func<LegacyCoordinates, bool> stopClause = null)
+    {
+        if (stopClause is not null && stopClause(nextMove))
+        {
             return true;
         }
 
-        return direction switch {
+        return direction switch
+        {
             Direction.R => LastCol,
             Direction.L => FirstCol,
             Direction.U => FirstRow,

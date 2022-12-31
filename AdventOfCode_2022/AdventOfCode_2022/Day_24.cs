@@ -1,4 +1,5 @@
-﻿using AdventOfCode_2022.Utils;
+﻿using AdventOfCode_2022.Models;
+using AdventOfCode_2022.Utils;
 using System.Security.Cryptography.X509Certificates;
 using static AdventOfCode_2022.Day_24;
 

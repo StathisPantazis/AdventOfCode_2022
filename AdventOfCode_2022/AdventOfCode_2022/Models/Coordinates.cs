@@ -1,29 +1,35 @@
-﻿namespace AdventOfCode_2022.Utils;
+﻿namespace AdventOfCode_2022.Models;
 
-internal class Coordinates {
-    public Coordinates() {
+internal class Coordinates
+{
+    public Coordinates()
+    {
         X_Border = int.MaxValue;
         Y_Border = int.MaxValue;
     }
 
-    public Coordinates(int gridWidth, int gridHeight, bool startFromNegative = false) {
+    public Coordinates(int gridWidth, int gridHeight, bool startFromNegative = false)
+    {
         X_Border = gridWidth - 1;
         Y_Border = gridHeight - 1;
         X = startFromNegative ? -1 : 0;
     }
 
-    public Coordinates(int gridWidth, int gridHeight, int startX, int startY) : this(gridWidth, gridHeight) {
+    public Coordinates(int gridWidth, int gridHeight, int startX, int startY) : this(gridWidth, gridHeight)
+    {
         X = startX;
         Y = startY;
     }
 
-    public Coordinates(IGrid grid, bool startFromNegative = false) {
+    public Coordinates(IGrid grid, bool startFromNegative = false)
+    {
         X_Border = grid.Width - 1;
         Y_Border = grid.Height - 1;
         X = startFromNegative ? -1 : 0;
     }
 
-    public Coordinates(IGrid grid, int startX, int startY) : this(grid) {
+    public Coordinates(IGrid grid, int startX, int startY) : this(grid)
+    {
         X = startX;
         Y = startY;
     }
@@ -52,24 +58,29 @@ internal class Coordinates {
     private bool FirstCol => X == 0;
     private bool LastCol => X == X_Border;
 
-    public void GoToStart(bool startFromNegative = false) {
+    public void GoToStart(bool startFromNegative = false)
+    {
         X = startFromNegative ? -1 : 0;
         Y = 0;
     }
 
-    public void GoToEnd() {
+    public void GoToEnd()
+    {
         X = X_Border;
         Y = Y_Border;
     }
 
-    public bool TryGetNeighbour(Direction direction, out Coordinates neighbour) {
+    public bool TryGetNeighbour(Direction direction, out Coordinates neighbour)
+    {
         neighbour = GetFromDirection(direction);
         return CanMove(direction, neighbour);
     }
 
-    public bool Move(Direction direction, Func<Coordinates, bool> stopClause = null, bool allowOutside = false) {
+    public bool Move(Direction direction, Func<Coordinates, bool> stopClause = null, bool allowOutside = false)
+    {
         Coordinates nextMove = GetFromDirection(direction);
-        if (CantMove(direction, nextMove, stopClause, allowOutside)) {
+        if (CantMove(direction, nextMove, stopClause, allowOutside))
+        {
             return false;
         }
 
@@ -78,12 +89,15 @@ internal class Coordinates {
         return true;
     }
 
-    public bool MoveTowards(Coordinates pos, bool allowOverlap = false, Func<Coordinates, bool> stopClause = null) {
-        if (pos.Equals(this)) {
+    public bool MoveTowards(Coordinates pos, bool allowOverlap = false, Func<Coordinates, bool> stopClause = null)
+    {
+        if (pos.Equals(this))
+        {
             return false;
         }
 
-        Direction direction = pos switch {
+        Direction direction = pos switch
+        {
             _ when pos.X < X && pos.Y < Y => Direction.UL,
             _ when pos.X < X && pos.Y > Y => Direction.DL,
             _ when pos.X < X => Direction.L,
@@ -99,18 +113,22 @@ internal class Coordinates {
         int xMove = GetXmove(direction), yMove = GetYmove(direction);
 
         // overlap will take place on move
-        if (!allowOverlap && xMove + X == pos.X && yMove + Y == pos.Y) {
+        if (!allowOverlap && xMove + X == pos.X && yMove + Y == pos.Y)
+        {
             return false;
         }
         return Move(direction, stopClause: stopClause);
     }
 
-    public bool MoveOpposite(Coordinates pos) {
-        if (pos.Equals(this)) {
+    public bool MoveOpposite(Coordinates pos)
+    {
+        if (pos.Equals(this))
+        {
             return false;
         }
 
-        Direction? direction = pos switch {
+        Direction? direction = pos switch
+        {
             _ when pos.X == X && pos.Y < Y => Direction.D,
             _ when pos.X == X && pos.Y > Y => Direction.U,
             _ when pos.Y == Y && pos.X < X => Direction.R,
@@ -126,12 +144,15 @@ internal class Coordinates {
         return direction is not null && Move((Direction)direction);
     }
 
-    public bool TraverseGrid() {
-        if (X == -1) { // for start with negative case
+    public bool TraverseGrid()
+    {
+        if (X == -1)
+        { // for start with negative case
             X = 0;
             return true;
         }
-        else if (LastRow && LastCol) {
+        else if (LastRow && LastCol)
+        {
             return false;
         }
 
@@ -141,8 +162,10 @@ internal class Coordinates {
         return true;
     }
 
-    public bool TraverseGridReverse() {
-        if (FirstRow && FirstCol) {
+    public bool TraverseGridReverse()
+    {
+        if (FirstRow && FirstCol)
+        {
             return false;
         }
 
@@ -160,16 +183,20 @@ internal class Coordinates {
 
     public Coordinates Copy() => new(X_Border + 1, Y_Border + 1, X, Y);
 
-    private static int GetXmove(Direction direction) {
-        return direction switch {
+    private static int GetXmove(Direction direction)
+    {
+        return direction switch
+        {
             Direction.L or Direction.UL or Direction.DL => -1,
             Direction.R or Direction.UR or Direction.DR => 1,
             _ => 0
         };
     }
 
-    private static int GetYmove(Direction direction) {
-        return direction switch {
+    private static int GetYmove(Direction direction)
+    {
+        return direction switch
+        {
             Direction.U or Direction.UR or Direction.UL => -1,
             Direction.D or Direction.DR or Direction.DL => 1,
             _ => 0
@@ -178,8 +205,10 @@ internal class Coordinates {
 
     public Coordinates CopyBase(int newX, int newY) => new(X_Border + 1, Y_Border + 1, newX, newY);
 
-    public Coordinates GetFromDirection(Direction direction) {
-        return direction switch {
+    public Coordinates GetFromDirection(Direction direction)
+    {
+        return direction switch
+        {
             Direction.R => R,
             Direction.L => L,
             Direction.U => U,
@@ -191,8 +220,10 @@ internal class Coordinates {
         };
     }
 
-    public Coordinates GetFromDirectionWithDistance(Direction direction, int distance) {
-        return direction switch {
+    public Coordinates GetFromDirectionWithDistance(Direction direction, int distance)
+    {
+        return direction switch
+        {
             Direction.R => CopyBase(X + distance, Y),
             Direction.L => CopyBase(X - distance, Y),
             Direction.U => CopyBase(X, Y - distance),
@@ -204,16 +235,20 @@ internal class Coordinates {
         };
     }
 
-    private bool CanMove(Direction direction, Coordinates nextMove, Func<Coordinates, bool> stopClause = null) {
+    private bool CanMove(Direction direction, Coordinates nextMove, Func<Coordinates, bool> stopClause = null)
+    {
         return !CantMove(direction, nextMove, stopClause);
     }
 
-    private bool CantMove(Direction direction, Coordinates nextMove, Func<Coordinates, bool> stopClause = null, bool allowOutside = false) {
-        if (stopClause is not null && stopClause(nextMove)) {
+    private bool CantMove(Direction direction, Coordinates nextMove, Func<Coordinates, bool> stopClause = null, bool allowOutside = false)
+    {
+        if (stopClause is not null && stopClause(nextMove))
+        {
             return true;
         }
 
-        return !allowOutside && direction switch {
+        return !allowOutside && direction switch
+        {
             Direction.R => LastCol,
             Direction.L => FirstCol,
             Direction.U => FirstRow,
