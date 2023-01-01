@@ -1,34 +1,38 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using AdventOfCode_2022.Extensions;
+using AdventOfCode_2022.Models.Bases;
+using System.Diagnostics;
+using static AdventOfCode_2022.Day_19;
 
 namespace AdventOfCode_2022.Models;
 
-public class DFS<TNode, TMemoValue>
-    where TNode : class, INode
+public class DFS<TNode> where TNode : NodeBase
 {
     private Func<TNode, List<TNode>> GetNeighbours { get; set; }
     private Func<TNode, bool> Prune { get; set; }
     private Action<TNode> VisitNode { get; set; }
-    private Func<TNode, bool> CloseNode { get; set; }
+    private Func<TNode, bool> ShouldCloseNode { get; set; }
+    private Action<TNode> CloseParent { get; set; }
+    private Action<TNode> CloseChildren { get; set; }
 
     public DFS(
-        Func<TNode, List<TNode>> getNeighboursFunc,
-        Func<TNode, bool> closeNodeAction,
-        Action<TNode> visitNodeAction = null,
-        Func<TNode, bool> pruneFunc = null)
+        Func<TNode, List<TNode>> getNeighbours,
+        Func<TNode, bool> shouldCloseNode,
+        Action<TNode> visitNode = null,
+        Action<TNode> closeParent = null,
+        Action<TNode> closeChildren = null,
+        Func<TNode, bool> prune = null)
     {
-        GetNeighbours = getNeighboursFunc;
-        CloseNode = closeNodeAction;
-        VisitNode = visitNodeAction;
-        Prune = pruneFunc;
+        GetNeighbours = getNeighbours;
+        ShouldCloseNode = shouldCloseNode;
+        VisitNode = visitNode;
+        CloseParent = closeParent;
+        CloseChildren = closeChildren;
+        Prune = prune;
     }
 
     public Stack<TNode> Stack { get; set; } = new();
-
     public HashSet<TNode> Visited { get; set; } = new();
-
     public int VisitedCountHit { get; set; }
-    public int MemoCountHit { get; set; }
     public int PruneCountHit { get; set; }
 
     public void Search(TNode start, bool debugMode = false)
@@ -74,11 +78,15 @@ public class DFS<TNode, TMemoValue>
             Console.WriteLine($"Elapsed: {sw.ElapsedMilliseconds}");
             Console.WriteLine($"Visited: {Visited.Count}");
             Console.WriteLine($"Visited Hits: {VisitedCountHit}");
-            Console.WriteLine($"Prune Hits: {PruneCountHit}");
+
+            if (Prune is not null)
+            {
+                Console.WriteLine($"Prune Hits: {PruneCountHit}");
+            }
         }
     }
 
-    public void Visit(TNode node)
+    private void Visit(TNode node)
     {
         if (VisitNode is not null)
         {
@@ -87,8 +95,32 @@ public class DFS<TNode, TMemoValue>
         Visited.Add(node);
     }
 
-    public bool Close(TNode node)
+    private bool Close(TNode node)
     {
-        return CloseNode(node);
+        if (ShouldCloseNode(node))
+        {
+            node.Closed = true;
+
+            if (CloseParent is not null)
+            {
+                CloseParent(node);
+            }
+
+            TNode parent = (TNode)node.Parent;
+            while (parent?.Children?.All(x => x.Closed) == true)
+            {
+                parent.Closed = true;
+
+                if (CloseChildren is not null)
+                {
+                    CloseChildren(parent);
+                }
+
+                parent = (TNode)parent.Parent;
+            }
+
+            return true;
+        }
+        return false;
     }
 }

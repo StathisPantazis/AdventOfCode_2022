@@ -1,163 +1,125 @@
-﻿using AdventOfCode_2022.Extensions;
-using AdventOfCode_2022.Models;
+﻿using AdventOfCode_2022.Models;
+using AdventOfCode_2022.Models.Bases;
 using AdventOfCode_2022.Utils;
-using System.ComponentModel;
-using System.IO;
 
 namespace AdventOfCode_2022;
 
-internal static class Day_12 {
+internal static class Day_12
+{
+    private static readonly int _startValue = 0;
+    private static readonly int _endValue = 27;
     private static readonly Direction[] AllowedMoves = new Direction[] { Direction.L, Direction.R, Direction.U, Direction.D };
 
-    public static void Solve() {
-        LegacyGrid<char> grid = new(Helpers.File_CleanReadLines(12), singleCharacters: true);
-        LegacyCoordinates pos = new(grid, true);
-        LegacyCoordinates goal = new(grid);
-        List<NodePath> paths = new();
-        Dictionary<LegacyCoordinates, int> availableNodes = new();
-        List<Node> availablePaths = new();
-        Dictionary<LegacyCoordinates, int> fastestPaths = new();
+    public static void Solve()
+    {
+        string[] input = Helpers.File_CleanReadLines(12).Select(x => x.Replace("S", "0").Replace("E", "_")).ToArray();
+        Grid<int> grid = GetGrid(input);
 
-        while (pos.TraverseGrid()) {
-            fastestPaths.Add(pos.Copy(), 0);
-        }
-        pos.GoToStart(true);
+        Console.WriteLine($"Part_1: {Part_1(grid)}");
+        Console.WriteLine($"Part_2: {Part_2(grid)}");
+    }
 
-        // Find start and finish
-        while (pos.TraverseGrid()) {
-            if (grid[pos] == 'S') {
-                grid[pos] = 'a';
+    private static int Part_1(Grid<int> grid)
+    {
+        Node start = null;
+        Coordinates pos = new(grid, true);
+
+        while (pos.TraverseGrid())
+        {
+            if (grid[pos] == _startValue)
+            {
+                start = new Node(pos.Copy());
                 break;
             }
         }
 
-        while (goal.TraverseGrid()) {
-            if (grid[goal] == 'E') {
-                grid[goal] = '{';
-                break;
-            }
-        }
+        BFS<Node> bfs = GetBFS(grid);
+        bfs.SearchShortestPath(start);
+        return bfs.ShortestPath;
+    }
 
-        Node currentNode = new(pos, null);
+    private static int Part_2(Grid<int> grid)
+    {
         List<Node> nodes = new();
-        bool started = true;
-        while (started || availablePaths.Count > 0) {
-            started = false;
-            NodePath path = new();
-            if (Move(grid, currentNode, nodes, path, availableNodes, availablePaths, fastestPaths)) {
-                paths.Add(path);
+        Coordinates pos = new(grid, true);
+
+        while (pos.TraverseGrid())
+        {
+            int elevation = grid[pos];
+
+            if (elevation == _startValue || elevation == 1)
+            {
+                nodes.Add(new Node(pos.Copy()));
             }
+        }
 
-            for (int i = path.Nodes.Count - 2; i > 0; i--) {
-                availableNodes[path.Nodes[i].Coordinates] -= 1;
+        int shortestPath = int.MaxValue;
+        BFS<Node> bfs = GetBFS(grid);
 
-                if (availableNodes[path.Nodes[i].Coordinates] > 0) {
-                    break;
+        foreach (Node node in nodes)
+        {
+            bfs.SearchShortestPath(node);
+            if (bfs.PathFound)
+            {
+                shortestPath = bfs.ShortestPath < shortestPath ? bfs.ShortestPath : shortestPath;
+            }
+        }
+
+        return shortestPath;
+    }
+
+    private static BFS<Node> GetBFS(Grid<int> grid)
+    {
+        List<Node> getNeighbours(Node node)
+        {
+            List<Node> neighbours = new();
+            List<Node> sameLevelNeighbours = new();
+
+            foreach (Direction dir in AllowedMoves)
+            {
+                Coordinates next = node.Position.GetFromDirection(dir);
+                if (next.NotEquals(node.Position) && next.IsInsideOfBorder && grid[next] - grid[node.Position] <= 1)
+                {
+                    neighbours.Add(new Node(next));
                 }
             }
 
-            if (availablePaths.Count > 0) {
-                currentNode = availablePaths.First();
-            }
-        }
-
-        var lala = paths.Where(x => x.Nodes.Last().Coordinates.Equals(goal)).OrderBy(x => x.Nodes.Count).ToList().First().Nodes.Count - 1;
-        Console.WriteLine(lala);
-    }
-
-    private static bool Move(LegacyGrid<char> grid, Node currentNode, List<Node> visitedNodes, NodePath path, Dictionary<LegacyCoordinates, int> availableNodes, List<Node> availblePaths, Dictionary<LegacyCoordinates, int> fastestPaths) {
-        Node nextNode = GetNode(grid, currentNode, path, availableNodes, availblePaths);
-
-        if (nextNode is null) {
-            return false;
-        }
-
-        currentNode = new(currentNode.Coordinates, (Direction)nextNode.Direction);
-        visitedNodes.Add(currentNode);
-        path.Nodes.Add(currentNode);
-
-        if (grid[nextNode.Coordinates] == '{') {
-            path.Nodes.Add(nextNode);
-
-            for (int i = path.Nodes.Count - 1; i > 0; i--) {
-                fastestPaths[path.Nodes[i].Coordinates] = i;
-            }
-
-            return true;
-        }
-        else {
-            return Move(grid, nextNode, visitedNodes, path, availableNodes, availblePaths, fastestPaths);
-        }
-    }
-
-    private static Node GetNode(LegacyGrid<char> grid, Node currentNode, NodePath path, Dictionary<LegacyCoordinates, int> availableNodes, List<Node> availblePaths) {
-        Node nextNode = null;
-
-        List<Node> nextNodes = GetNextMoves(grid, currentNode, path);
-
-        if (!availableNodes.ContainsKey(currentNode.Coordinates)) {
-            availableNodes.Add(currentNode.Coordinates, nextNodes.Count);
-
-            foreach (Node node in nextNodes) {
-                availblePaths.Add(new Node(currentNode.Coordinates, node.Direction));
-            }
-        }
-
-        if (availableNodes[currentNode.Coordinates] != 0) {
-            foreach (Direction direction in nextNodes.Select(x => x.Direction)) {
-                if (availblePaths.FirstOrDefault(x => x.Equals(new Node(currentNode.Coordinates, direction))) is Node n) {
-                    nextNode = nextNodes.First(x => x.Direction == direction);
-                    availblePaths.Remove(n);
-                    break;
-                }
-            }
-        }
-
-        return nextNode;
-    }
-
-    private static List<Node> GetNextMoves(LegacyGrid<char> grid, Node currentNode, NodePath path) {
-        Direction? previous = currentNode.Direction is null ? null : currentNode.Direction switch {
-            Direction.L => Direction.R,
-            Direction.R => Direction.L,
-            Direction.U => Direction.D,
-            Direction.D => Direction.U,
-            _ => null
+            return neighbours.Count > 0 ? neighbours : sameLevelNeighbours;
         };
+        bool shouldCloseNode(Node node) => grid[node.Position] == _endValue;
 
-        List<Node> nodes = new();
+        BFS<Node> bfs = new(getNeighbours, shouldCloseNode);
+        return bfs;
+    }
 
-        foreach (Direction d in AllowedMoves.Where(x => x != previous)) {
-            if (currentNode.Coordinates.TryGetNeighbour(d, out LegacyCoordinates near)
-                && path.Nodes.None(x => x.Coordinates.Equals(near))
-                && grid[near] - grid[currentNode.Coordinates] is int dif && dif is 0 or 1) {
-                nodes.Add(new Node(near, d));
+    private static Grid<int> GetGrid(string[] input)
+    {
+        List<List<int>> numbers = new();
+
+        foreach (string line in input)
+        {
+            List<int> ints = new();
+            foreach (char letter in line)
+            {
+                ints.Add(char.IsDigit(letter) ? int.Parse(letter.ToString()) : letter == '_' ? 27 : letter - 96);
             }
+            numbers.Add(ints);
         }
 
-        return nodes;
+        return new Grid<int>(numbers);
     }
 
-    private class NodePath {
-        public List<Node> Nodes { get; set; } = new();
-
-        public override string ToString() => string.Join("", Nodes.Select(x => x.Direction));
-    }
-
-    private class Node {
-        public Node(LegacyCoordinates coordinates, Direction? direction) {
-            Coordinates = coordinates;
-            Direction = direction;
+    public class Node : NodeBase
+    {
+        public Node(Coordinates pos)
+        {
+            Position = pos;
         }
 
-        public LegacyCoordinates Coordinates { get; set; }
+        public Coordinates Position { get; set; }
 
-        public Direction? Direction { get; set; }
-
-        public bool Equals(Node other) => other.Coordinates.Equals(Coordinates) && other.Direction == Direction;
-
-        public Node Copy() => new(Coordinates, Direction);
-
-        public override string ToString() => $"[{Coordinates.X} , {Coordinates.Y}] - {Direction}";
+        public override bool Equals(object? obj) => ((Node)obj).Position.Equals(Position);
+        public override int GetHashCode() => Position.GetHashCode();
+        public override string ToString() => Position.ToString();
     }
 }

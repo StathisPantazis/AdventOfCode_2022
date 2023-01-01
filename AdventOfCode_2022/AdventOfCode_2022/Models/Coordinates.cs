@@ -146,8 +146,8 @@ internal class Coordinates
 
     public bool TraverseGrid()
     {
-        if (X == -1)
-        { // for start with negative case
+        if (X == -1) // for start with negative case
+        {
             X = 0;
             return true;
         }
@@ -156,26 +156,17 @@ internal class Coordinates
             return false;
         }
 
-        X += LastCol ? 1 : 0;
-        Y += LastCol ? -Y_Border : 1;
-        StepsTraversed++;
-        return true;
-    }
-
-    public bool TraverseGridReverse()
-    {
-        if (FirstRow && FirstCol)
-        {
-            return false;
-        }
-
-        X += FirstCol ? -1 : 0;
-        Y += FirstCol ? Y_Border : -1;
+        X += LastCol ? -X_Border : 1;
+        Y += LastCol ? 1 : 0;
         StepsTraversed++;
         return true;
     }
 
     public override string ToString() => $"{X} , {Y}";
+
+    public override bool Equals(object? obj) => ((Coordinates)obj).X == X && ((Coordinates)obj).Y == Y;
+
+    public override int GetHashCode() => $"{X}{Y}".GetHashCode();
 
     public bool Equals(Coordinates otherPos) => otherPos.X == X && Y == otherPos.Y;
 

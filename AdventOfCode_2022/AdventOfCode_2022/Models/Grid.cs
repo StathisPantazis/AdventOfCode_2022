@@ -1,4 +1,6 @@
 ﻿using AdventOfCode_2022.Extensions;
+using AdventOfCode_2022.Models.Bases;
+using System;
 
 namespace AdventOfCode_2022.Models;
 
@@ -58,6 +60,12 @@ internal class Grid<T> : IGrid
             InitializeGridable(source, separator, stringSplitOptions, typeof(T));
         }
 
+        RebuildColumns();
+    }
+
+    public Grid(IEnumerable<IEnumerable<int>> source)
+    {
+        Rows = source.Select(line => line.Select(elem => (T)(object)elem).ToList()).ToList();
         RebuildColumns();
     }
 

@@ -1,4 +1,5 @@
 ﻿using AdventOfCode_2022.Extensions;
+using AdventOfCode_2022.Models.Bases;
 
 namespace AdventOfCode_2022.Models;
 

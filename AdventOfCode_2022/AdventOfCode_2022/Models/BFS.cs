@@ -1,77 +1,144 @@
-﻿namespace AdventOfCode_2022.Models;
+﻿using AdventOfCode_2022.Extensions;
+using AdventOfCode_2022.Models.Bases;
+using System.Diagnostics;
 
-public class BFS<TNode, TMemo, TData>
-    where TNode : class, INode
-    where TMemo : struct, IMemo
-    where TData : class
+namespace AdventOfCode_2022.Models;
+
+public class BFS<TNode> where TNode : NodeBase
 {
     private Func<TNode, List<TNode>> GetNeighbours { get; set; }
     private Func<TNode, bool> Prune { get; set; }
     private Action<TNode> VisitNode { get; set; }
-    private Func<TNode, TData, bool> CloseNode { get; set; }
+    private Func<TNode, bool> ShouldCloseNode { get; set; }
 
     public BFS(
-        TData iterationData,
         Func<TNode, List<TNode>> getNeighboursFunc,
-        Func<TNode, TData, bool> closeNodeAction,
-        Action<TNode> visitNodeAction = null,
-        Func<TNode, bool> pruneFunc = null)
+        Func<TNode, bool> shouldCloseNode,
+        Action<TNode> visitNode = null,
+        Func<TNode, bool> prune = null)
     {
-        IterationData = iterationData;
         GetNeighbours = getNeighboursFunc;
-        CloseNode = closeNodeAction;
-        VisitNode = visitNodeAction;
-        Prune = pruneFunc;
+        ShouldCloseNode = shouldCloseNode;
+        VisitNode = visitNode;
+        Prune = prune;
     }
 
-    public Queue<TNode> Queue { get; set; } = new();
+    public Queue<TNode> Queue { get; set; }
+    public HashSet<TNode> Visited { get; set; }
+    public Dictionary<TNode, int> Memos { get; set; } = new();
+    public int VisitedCountHit { get; set; }
+    public int PruneCountHit { get; set; }
+    public int ShortestPath { get; set; }
+    public bool PathFound { get; set; }
 
-    public HashSet<TNode> Visited { get; set; } = new();
-
-    public HashSet<IMemo> Memos { get; set; } = new();
-
-    private TData IterationData { get; set; }
-
-    public void Search(TNode start)
+    public void SearchShortestPath(TNode start, bool debugMode = false)
     {
-        TNode node;
+        Stopwatch sw = new();
+        sw.Start();
+
+        ResetNodes();
+        TNode node = start;
         Queue.Enqueue(start);
 
         while (Queue.Count > 0)
         {
             node = Queue.Dequeue();
 
-            if (Prune is not null && Prune(node))
-                continue;
-            else if (Visited.Contains(node))
-                continue;
-
             Visit(node);
 
-            if (Close(node))
-                continue;
-
-            foreach (TNode n in GetNeighbours(node))
+            if (Memos.ContainsKey(node) || Close(node))
             {
-                if (!Visited.Contains(n))
+                PathFound = true;
+                break;
+            }
+
+            foreach (NodeBase n in GetNeighbours(node))
+            {
+                if (Queue.Contains(n))
+                    continue;
+
+                if (Visited.Contains(n))
                 {
-                    Queue.Enqueue(n);
+                    VisitedCountHit++;
                 }
+                else if (Prune is not null && Prune(node))
+                {
+                    PruneCountHit++;
+                }
+                else
+                {
+                    node.AddChild(n);
+                    n.SetParent(node);
+                    Queue.Enqueue((TNode)n);
+                }
+            }
+        }
+
+        ShortestPath = PathFound ? CountParents(node) + Memos[node] : int.MaxValue;
+        sw.Stop();
+
+        if (debugMode)
+        {
+            Console.WriteLine($"Elapsed: {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"Visited: {Visited.Count}");
+            Console.WriteLine($"Visited Hits: {VisitedCountHit}");
+
+            if (Prune is not null)
+            {
+                Console.WriteLine($"Prune Hits: {PruneCountHit}");
             }
         }
     }
 
-    public void Visit(TNode node)
+    private void Visit(TNode node)
     {
-        Visited.Add(node);
         if (VisitNode is not null)
         {
             VisitNode(node);
         }
+        Visited.Add(node);
     }
 
-    public bool Close(TNode node)
+    private bool Close(TNode node)
     {
-        return CloseNode(node, IterationData);
+        if (ShouldCloseNode(node))
+        {
+            int steps = 0;
+            Memos.Add(node, steps);
+
+            TNode parent = (TNode)node.Parent;
+            while (parent is not null)
+            {
+                steps++;
+                Memos.Add(parent, steps);
+                parent = (TNode)parent.Parent;
+            }
+
+            PathFound = true;
+            return true;
+        }
+        return false;
+    }
+
+    private int CountParents(TNode node)
+    {
+        int steps = 0;
+        TNode parent = (TNode)node.Parent;
+        while (parent is not null)
+        {
+            steps++;
+            parent = (TNode)parent.Parent;
+        }
+        return steps;
+    }
+
+    private void ResetNodes()
+    {
+        Queue = new Queue<TNode>();
+        Visited = new HashSet<TNode>();
+        PathFound = false;
+        VisitedCountHit = 0;
+        PruneCountHit = 0;
+        ShortestPath = -1;
     }
 }

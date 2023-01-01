@@ -1,6 +1,6 @@
 ﻿using AdventOfCode_2022.Models;
+using AdventOfCode_2022.Models.Bases;
 using AdventOfCode_2022.Utils;
-using System.Diagnostics;
 
 namespace AdventOfCode_2022;
 
@@ -124,25 +124,9 @@ internal static class Day_19
 
             return nodes;
         };
-        bool closeNodeAction(Node node)
-        {
-            if (node.Minute == lastMinute)
-            {
-                node.Closed = true;
-                node.MaxGeodes = node.Money[Mineral.Geode];
-
-                Node parent = node.Parent;
-                while (parent?.Children?.All(x => x.Closed) == true)
-                {
-                    parent.Closed = true;
-                    parent.MaxGeodes = parent.Children.Max(x => x.MaxGeodes);
-                    parent = parent.Parent;
-                }
-
-                return true;
-            }
-            return false;
-        }
+        bool shouldCloseNode(Node node) => node.Minute == lastMinute;
+        void closeParent(Node node) => node.MaxGeodes = node.Money[Mineral.Geode];
+        void closeChildren(Node parent) => parent.MaxGeodes = parent.Children.Max(x => ((Node)x).MaxGeodes);
         void visitNode(Node node)
         {
             if (minute_maxGeodes.TryGetValue(node.Minute, out int geodeMax) && geodeMax < node.Robots[Mineral.Geode])
@@ -150,19 +134,19 @@ internal static class Day_19
                 minute_maxGeodes[node.Minute] = node.Robots[Mineral.Geode];
             }
         }
-        bool pruning(Node node) => node.ConsecutiveNoBuys > 4
+        bool prune(Node node) => node.ConsecutiveNoBuys > 4
             || (minute_maxGeodes.TryGetValue(node.Minute, out int geodeMax) && geodeMax > node.Robots[Mineral.Geode] + 1)
             || node.Robots[Mineral.Ore] > blueprint.MaxOreRobots
             || node.Robots[Mineral.Clay] > blueprint.MaxClayRobots
             || node.Robots[Mineral.Obsidian] > blueprint.MaxObsidianRobots;
 
-        DFS<Node, int> dfs = new(getNeighbours, closeNodeAction, visitNode, pruneFunc: pruning);
+        DFS<Node> dfs = new(getNeighbours, shouldCloseNode, visitNode, closeParent, closeChildren, prune);
         Node start = new(1, robots, money);
         dfs.Search(start);
         return dfs.Visited.Max(x => x.MaxGeodes);
     }
 
-    public class Node : INode
+    public class Node : NodeBase
     {
         public Node(int minute, Dictionary<Mineral, int> robots, Dictionary<Mineral, int> money)
         {
@@ -174,14 +158,8 @@ internal static class Day_19
         public int Minute { get; set; }
         public Dictionary<Mineral, int> Robots { get; set; }
         public Dictionary<Mineral, int> Money { get; set; }
-        public Node Parent { get; set; }
-        public List<Node> Children { get; set; } = new();
-        public bool Closed { get; set; }
         public int MaxGeodes { get; set; }
         public int ConsecutiveNoBuys { get; set; }
-
-        public void AddChild(INode child) => Children.Add((Node)child);
-        public void SetParent(INode parent) => Parent = (Node)parent;
 
         public Node GetNextNode(Decision decision, RobotFactory factory)
         {
