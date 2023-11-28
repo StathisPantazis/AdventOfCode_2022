@@ -28,6 +28,18 @@ public class Day_14 : AoCBaseDay<int, int, List<(int x, int y)>>
     protected override int Part1(List<(int x, int y)> coordPairs)
     {
         var cave = BuildCave(coordPairs, _resourceType, out var pour);
+
+        while (Fall(cave, pour, false) is LegacyCoordinates sand)
+        {
+            cave[sand] = "O";
+        }
+
+        return cave.ToString().Count(x => x == 'O');
+    }
+
+    protected override int Part2(List<(int x, int y)> coordPairs)
+    {
+        var cave = BuildCave(coordPairs, _resourceType, out var pour);
         cave.AddRow(".", rebuildColumns: false);
         cave.AddRow("#");
 
@@ -48,18 +60,6 @@ public class Day_14 : AoCBaseDay<int, int, List<(int x, int y)>>
                     break;
                 }
             }
-        }
-
-        return cave.ToString().Count(x => x == 'O');
-    }
-
-    protected override int Part2(List<(int x, int y)> coordPairs)
-    {
-        var cave = BuildCave(coordPairs, _resourceType, out var pour);
-
-        while (Fall(cave, pour, false) is LegacyCoordinates sand)
-        {
-            cave[sand] = "O";
         }
 
         return cave.ToString().Count(x => x == 'O');

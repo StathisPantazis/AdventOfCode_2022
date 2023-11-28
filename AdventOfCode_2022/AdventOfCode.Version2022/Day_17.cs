@@ -8,7 +8,7 @@ namespace AdventOfCode.Version2022;
 public class Day_17 : AoCBaseDay<long, long, long>
 {
     private Dictionary<int, List<DirectionMarker>> _dirIndexes;
-    private List<Direction> _directions = new();
+    private readonly List<Direction> _directions = new();
     private int _dictKey = 0;
     private int _iterationsUntilRepetition = 0;
 
