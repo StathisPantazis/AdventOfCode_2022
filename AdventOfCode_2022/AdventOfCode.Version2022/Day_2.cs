@@ -8,9 +8,9 @@ public class Day_2 : AoCBaseDay<int, int, string[]>
 {
     private static readonly Dictionary<int, Dictionary<string, int>> _dictPartPoints = new() {
         { 1, new Dictionary<string, int>() {
-            { "X", 1 },
-            { "Y", 2 },
-            { "Z", 3 },
+            { "L", 0 },
+            { "D", 3 },
+            { "W", 6 },
         }},
         { 2, new Dictionary<string, int>() {
             { "X", 0 },
