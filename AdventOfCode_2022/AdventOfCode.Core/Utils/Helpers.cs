@@ -4,6 +4,11 @@ namespace AdventOfCode.Core.Utils;
 
 public static class Helpers
 {
+    public static string GetFilePath(int day, int year, AoCResourceType resourceType)
+    {
+        return GetPath(day, year, resourceType);
+    }
+
     public static string[] File_CleanReadLines(int day, int year, AoCResourceType resourceType, string extraPath = "")
     {
         var lines = File.ReadLines(GetPath(day, year, resourceType, extraPath));
