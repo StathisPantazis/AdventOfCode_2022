@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core.Extensions;
+using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
 
@@ -8,7 +9,7 @@ public class Day_1 : AoCBaseDay<int, int, string>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(1, 2023, AoCResourceType.Solution);
+        var text = Helpers.File_CleanReadText(ToString().AoCDay(), GetType().AoCYear(), AoCResourceType.Solution);
         return new AoCSolution<int, int>(Part1(text), Part2(text));
     }
 
