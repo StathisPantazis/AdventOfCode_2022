@@ -11,7 +11,7 @@ public class Day_15 : AoCBaseDay<int, int, List<((int x, int y) sensor, (int x, 
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        List<((int x, int y) sensor, (int x, int y) beacon)> sensor_beacons = Helpers.File_CleanReadText(15, 2022, resourceType)
+        List<((int x, int y) sensor, (int x, int y) beacon)> sensor_beacons = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace("Sensor at x=", "")
             .Replace(" y=", "")
             .Replace("Sensor at x=", "")

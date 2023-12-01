@@ -14,7 +14,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
 
     public override AoCSolution<long, long> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_ReadText(17, 2022, resourceType);
+        var text = Helpers.File_ReadText(FileDescription(this, resourceType));
 
         text.ForEachDo(c => _directions.Add(c == '<' ? Direction.L : Direction.R));
 

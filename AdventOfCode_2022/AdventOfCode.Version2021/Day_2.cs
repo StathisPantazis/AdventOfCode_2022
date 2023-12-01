@@ -9,7 +9,7 @@ public class Day_2 : AoCBaseDay<int, int, Tuple<Dir, int>[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var movements = Helpers.File_CleanReadLines(2, 2021, AoCResourceType.Solution)
+        var movements = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Split(' ').ToArray() is string[] arr ? Tuple.Create(Enum.Parse<Dir>(arr[0]), int.Parse(arr[1])) : null)
             .ToArray();
 

@@ -12,7 +12,7 @@ public class Day_9 : AoCBaseDay<int, int, List<(Direction dir, int steps)>>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var instructionsFlipped = Helpers.File_CleanReadText(9, 2022, resourceType)
+        var instructionsFlipped = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace("U", "_")
             .Replace("D", "U")
             .Replace("_", "D");

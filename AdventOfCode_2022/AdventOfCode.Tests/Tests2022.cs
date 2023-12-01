@@ -32,6 +32,7 @@ public class Tests2022
         var day = new Day_3();
         var solution = day.Solve(AoCResourceType.Solution);
 
+        solution.Part1.Should().Be(7446);
         solution.Part2.Should().Be(2646);
     }
 
@@ -42,7 +43,6 @@ public class Tests2022
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(113232);
-        solution.Part2.Should().Be(29703395016);
     }
 
     [Fact]

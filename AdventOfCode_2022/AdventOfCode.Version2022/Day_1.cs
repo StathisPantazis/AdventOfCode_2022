@@ -8,7 +8,7 @@ public class Day_1 : AoCBaseDay<string, string, int[]>
 {
     public override AoCSolution<string, string> Solve(AoCResourceType resourceType)
     {
-        var cals = Helpers.File_ReadText(1, 2022, resourceType)
+        var cals = Helpers.File_ReadText(FileDescription(this, resourceType))
             .Split("\n\r\n")
             .Select(x => x.Replace("\r", ""))
             .Select(x => x.Split('\n')

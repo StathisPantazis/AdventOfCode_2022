@@ -13,7 +13,7 @@ public class Day_10 : AoCBaseDay<int, string, List<(int cycle, int sum)>>
 
     public override AoCSolution<int, string> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(10, 2022, resourceType).Replace("addx", _addx).Replace("noop", _noop);
+        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType)).Replace("addx", _addx).Replace("noop", _noop);
         List<(string instr, int num)> input = Helpers.Text_CleanReadLines(text)
             .Select(x => x.Split(' ') is string[] ar ? (ar[0].ToString(), ar.Length > 1 ? int.Parse(ar[1].ToString()) : 0) : default)
             .ToList();

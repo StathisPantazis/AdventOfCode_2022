@@ -10,7 +10,7 @@ public class Day_8 : AoCBaseDay<int, int, LegacyGrid<int>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadLines(8, 2022, resourceType);
+        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
         var trees = new LegacyGrid<int>(lines, singleCharacters: true);
 
         return new AoCSolution<int, int>(Part1(trees), Part2(trees));

@@ -9,7 +9,7 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(19, 2022, resourceType)
+        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace("Blueprint ", "").Replace(": Each ore robot costs ", ",").Replace(" ore. Each clay robot costs ", ",").Replace(" ore. Each obsidian robot costs ", ",")
             .Replace(" ore and ", ",").Replace(" clay. Each geode robot costs ", ",").Replace(" obsidian.", "");
 

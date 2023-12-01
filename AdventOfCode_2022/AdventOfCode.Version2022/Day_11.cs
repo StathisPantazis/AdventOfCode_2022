@@ -10,7 +10,7 @@ public class Day_11 : AoCBaseDay<int, ulong, List<Monkey>>
 {
     public override AoCSolution<int, ulong> Solve(AoCResourceType resourceType)
     {
-        var monkeys = Helpers.File_ReadText(11, 2022, resourceType)
+        var monkeys = Helpers.File_ReadText(FileDescription(this, resourceType))
             .Replace("old * old", "^ 0")
             .Split("Monkey", StringSplitOptions.RemoveEmptyEntries)
             .Select(x => new Monkey(x))

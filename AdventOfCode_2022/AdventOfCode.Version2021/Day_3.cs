@@ -9,7 +9,7 @@ public class Day_3 : AoCBaseDay<int, int, string[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadLines(int.Parse(ToString().Split('_')[1]), 2021, AoCResourceType.Solution);
+        var lines = Helpers.File_CleanReadLines(FileDescription(this));
         return new AoCSolution<int, int>(Part1(lines), Part2(lines));
     }
 

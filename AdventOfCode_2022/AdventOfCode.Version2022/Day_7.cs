@@ -9,7 +9,7 @@ public class Day_7 : AoCBaseDay<int, int, Dir>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(7, 2022, resourceType)
+        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace("$ ls", "")
             .Replace("$ cd /", "");
 

@@ -8,7 +8,7 @@ public class Day_16 : AoCBaseDay<int, int, string[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_ReadText(16, 2022, resourceType)
+        var text = Helpers.File_ReadText(FileDescription(this, resourceType))
             .Replace("valves", "valve")
             .Replace("leads", "lead")
             .Replace("tunnels", "tunnel")

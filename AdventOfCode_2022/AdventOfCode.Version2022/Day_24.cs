@@ -9,7 +9,7 @@ public class Day_24 : AoCBaseDay<int, int, List<Blizzard>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadLines(24, 2022, resourceType);
+        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
         var grid = new Grid<string>(lines, singleCharacters: true);
         var start = new Coordinates(grid, grid.Row(0).IndexOf("."), 0);
         var end = new Coordinates(grid, grid.Rows.Count - 1, grid.Row(grid.Rows.Count - 1).IndexOf("."));

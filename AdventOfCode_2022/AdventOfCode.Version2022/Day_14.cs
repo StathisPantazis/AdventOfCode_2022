@@ -15,7 +15,7 @@ public class Day_14 : AoCBaseDay<int, int, List<(int x, int y)>>
     {
         _resourceType = resourceType;
 
-        List<(int x, int y)> coordPairs = Helpers.File_CleanReadText(14, 2022, resourceType)
+        List<(int x, int y)> coordPairs = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace("\n", "_")
             .Replace(" -> ", "_")
             .Split('_')
@@ -123,7 +123,7 @@ public class Day_14 : AoCBaseDay<int, int, List<(int x, int y)>>
         return grain;
     }
 
-    private static LegacyGrid<string> BuildCave(List<(int x, int y)> coordPairs, AoCResourceType resourceType, out LegacyCoordinates pour)
+    private LegacyGrid<string> BuildCave(List<(int x, int y)> coordPairs, AoCResourceType resourceType, out LegacyCoordinates pour)
     {
         var maxX = coordPairs.Max(x => x.x);
         int minY = coordPairs.Min(x => x.y), maxY = coordPairs.Max(x => x.y);
@@ -131,7 +131,7 @@ public class Day_14 : AoCBaseDay<int, int, List<(int x, int y)>>
         var cave = LegacyGrid<string>.CreateGrid(maxX + 1, maxY - minY + 1);
         pour = new(cave, 0, cave.Width + 500 - maxY - 1);
 
-        var rockPaths = Helpers.File_CleanReadText(14, 2022, resourceType).Replace(" -> ", "_")
+        var rockPaths = Helpers.File_CleanReadText(FileDescription(this, resourceType)).Replace(" -> ", "_")
             .Split('\n').Select(x => x.Split('_').Select(y => new LegacyCoordinates(cave, int.Parse(y.Split(',')[1]), cave.Width + int.Parse(y.Split(',')[0]) - maxY - 1)).ToList())
             .ToList();
 

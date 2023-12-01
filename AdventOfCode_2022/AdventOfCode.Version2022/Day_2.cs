@@ -27,7 +27,7 @@ public class Day_2 : AoCBaseDay<int, int, string[]>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var games = Helpers.File_CleanReadLines(2, 2022, resourceType);
+        var games = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
         return new AoCSolution<int, int>(Part1(games), Part2(games));
     }
 

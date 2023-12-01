@@ -4,14 +4,9 @@ namespace AdventOfCode.Core.Utils;
 
 public static class Helpers
 {
-    public static string GetFilePath(int day, int year, AoCResourceType resourceType)
+    public static string[] File_CleanReadLines(FileDescription fileDescription)
     {
-        return GetPath(day, year, resourceType);
-    }
-
-    public static string[] File_CleanReadLines(int day, int year, AoCResourceType resourceType, string extraPath = "")
-    {
-        var lines = File.ReadLines(GetPath(day, year, resourceType, extraPath));
+        var lines = File.ReadLines(GetPath(fileDescription));
         lines = lines.Select(x => x.Replace("\r", string.Empty));
         return lines.ToArray();
     }
@@ -21,14 +16,14 @@ public static class Helpers
         return text.Replace("\r", string.Empty).Split("\n").ToArray();
     }
 
-    public static string File_CleanReadText(int day, int year, AoCResourceType resourceType, string extraPath = "")
+    public static string File_CleanReadText(FileDescription fileDescription)
     {
-        return File_ReadText(day, year, resourceType, extraPath).Replace("\r", string.Empty);
+        return File_ReadText(fileDescription).Replace("\r", string.Empty);
     }
 
-    public static string File_ReadText(int day, int year, AoCResourceType resourceType, string extraPath = "")
+    public static string File_ReadText(FileDescription fileDescription)
     {
-        return File.ReadAllText(GetPath(day, year, resourceType, extraPath));
+        return File.ReadAllText(GetPath(fileDescription));
     }
 
     public static Direction GetDirection(string str)
@@ -53,14 +48,14 @@ public static class Helpers
         return Enumerable.Range(0, borders).Select(i => new string(character, borders)).ToList();
     }
 
-    private static string GetPath(int day, int year, AoCResourceType resourceType, string extraPath = "")
+    private static string GetPath(FileDescription fileDescription)
     {
-        var resource = resourceType is AoCResourceType.Example ? "_0" : "_1";
-        var fullPath = @$"{Path.Combine(Path.GetFullPath(@"..\..\..\"), "Resources", $"day_{day}{resource}{extraPath}.txt")}";
+        var resource = fileDescription.ResourceType is AoCResourceType.Example ? "_0" : "_1";
+        var fullPath = @$"{Path.Combine(Path.GetFullPath(@"..\..\..\"), "Resources", $"day_{fileDescription.AoCDay}{resource}.txt")}";
 
         if (fullPath.Contains("Tests"))
         {
-            fullPath = fullPath.Replace("Tests", $"Version{year}");
+            fullPath = fullPath.Replace("Tests", $"Version{fileDescription.AoCYear}");
         }
 
         return fullPath;

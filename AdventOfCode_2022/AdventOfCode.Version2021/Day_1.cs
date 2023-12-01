@@ -8,7 +8,7 @@ public class Day_1 : AoCBaseDay<int, int, int[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var measurements = Helpers.File_CleanReadLines(1, 2021, resourceType)
+        var measurements = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
             .Select(int.Parse)
             .ToArray();
 

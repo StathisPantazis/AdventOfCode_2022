@@ -8,7 +8,7 @@ public class Day_4 : AoCBaseDay<int, int, List<int[]>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(4, 2022, resourceType)
+        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace(",", "-");
 
         var pairs = Helpers.Text_CleanReadLines(text)
