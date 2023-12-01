@@ -212,6 +212,27 @@ public class Grid<T> : IGrid
         return new Grid<string>(Enumerable.Range(0, rows).Select(i => new string(points, columns)), singleCharacters: true);
     }
 
+    public static Grid<Tin> CreateGrid<Tin>(int rows, int columns) where Tin : new()
+    {
+        List<Tin> listOfEmpties()
+        {
+            var list = new List<Tin>();
+
+            for (var i = 0; i < columns; i++)
+            {
+                list.Add(new Tin());
+            }
+
+            return list;
+        }
+
+        var grid = Enumerable.Range(0, rows)
+            .Select(i => listOfEmpties())
+            .ToList();
+
+        return new Grid<Tin>(grid);
+    }
+
     private void InitializeString(IEnumerable<string> source, string separator, StringSplitOptions stringSplitOptions, bool singleCharacters)
     {
         if (singleCharacters)

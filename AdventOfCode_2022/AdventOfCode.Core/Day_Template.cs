@@ -8,7 +8,7 @@ public class Day_X : AoCBaseDay<int, int, string[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType));
+        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
 
 
 
