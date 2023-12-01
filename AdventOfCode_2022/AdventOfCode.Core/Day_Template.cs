@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core.Extensions;
+using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Core;
@@ -7,7 +8,8 @@ public class Day_X
 {
     public void Solve()
     {
-        var text = Helpers.File_ReadText(int.Parse(ToString().Split('_')[1]), 2000, AoCResourceType.Example);
+        var text = Helpers.File_CleanReadText(ToString().AoCDay(), GetType().AoCYear(), AoCResourceType.Example);
+
 
     }
 
