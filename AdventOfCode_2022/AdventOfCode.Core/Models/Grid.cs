@@ -13,6 +13,8 @@ public class Grid<T> : IGrid
 {
     private readonly T _emptyValue;
 
+    public string Id { get; } = Guid.NewGuid().ToString();
+
     public T this[int x, int y]
     {
         get => Rows[y][x];
@@ -62,7 +64,7 @@ public class Grid<T> : IGrid
         RebuildColumns();
     }
 
-    public Grid(IEnumerable<IEnumerable<int>> source)
+    public Grid(IEnumerable<IEnumerable<T>> source)
     {
         Rows = source.Select(line => line.Select(elem => (T)(object)elem).ToList()).ToList();
         RebuildColumns();
@@ -114,7 +116,7 @@ public class Grid<T> : IGrid
         }
     }
 
-    public string ToString(string rowSeparator = "") => string.Join("\n", ListExtensions.ForNTimesFill(Height, (y) => string.Join(rowSeparator, ListExtensions.ForNTimesFill<string>(Row(y).Count, (x) => this[x, y]!.ToString()!))));
+    public string ToString(string rowSeparator = "") => string.Join("\n", ListExtensions.ForNTimesFill(Height, (y) => string.Join(rowSeparator, ListExtensions.ForNTimesFill(Row(y).Count, (x) => this[x, y]!.ToString()!))));
 
     public override string ToString() => ToString();
 
