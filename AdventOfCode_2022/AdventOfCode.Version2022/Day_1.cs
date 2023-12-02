@@ -16,7 +16,7 @@ public class Day_1 : AoCBaseDay<string, string, int[]>
             .Sum())
             .ToArray();
 
-        return new AoCSolution<string, string>(Part1(cals), Part2(cals));
+        return Solution(cals);
     }
 
     protected override string Part1(int[] args)

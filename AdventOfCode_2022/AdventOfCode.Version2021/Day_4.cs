@@ -22,7 +22,7 @@ public class Day_4 : AoCBaseDay<int, int, (int[] draws, Grid<BingoNumber>[] boar
             .Select(x => new Grid<BingoNumber>(x))
             .ToArray();
 
-        return new AoCSolution<int, int>(Part1((draws, boards)), Part2((draws, boards)));
+        return Solution((draws, boards));
     }
 
     protected override int Part1((int[] draws, Grid<BingoNumber>[] boards) p)

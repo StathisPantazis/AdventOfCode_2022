@@ -18,7 +18,7 @@ public class Day_12 : AoCBaseDay<int, int, Grid<int>>
 
         var grid = GetGrid(input);
 
-        return new AoCSolution<int, int>(Part1(grid), Part2(grid));
+        return Solution(grid);
     }
 
     protected override int Part1(Grid<int> grid)

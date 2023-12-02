@@ -22,7 +22,7 @@ public class Day_14 : AoCBaseDay<int, int, List<(int x, int y)>>
             .Select(x => (int.Parse(x.Split(',')[1]), int.Parse(x.Split(',')[0])))
             .ToList();
 
-        return new AoCSolution<int, int>(Part1(coordPairs), Part2(coordPairs));
+        return Solution(coordPairs);
     }
 
     protected override int Part1(List<(int x, int y)> coordPairs)

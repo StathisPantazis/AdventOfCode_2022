@@ -19,7 +19,7 @@ public class Day_7 : AoCBaseDay<int, int, Dir>
 
         var dir = CreateDirFromInputs(inputs);
 
-        return new AoCSolution<int, int>(Part1(dir), Part2(dir));
+        return Solution(dir);
     }
 
     protected override int Part1(Dir dir)

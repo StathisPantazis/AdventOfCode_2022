@@ -14,7 +14,7 @@ public class Day_5 : AoCBaseDay<string, string, string[]>
 
         var lines = Helpers.Text_CleanReadLines(text);
 
-        return new AoCSolution<string, string>(Part1(lines), Part2(lines));
+        return Solution(lines);
     }
 
     protected override string Part1(string[] args)

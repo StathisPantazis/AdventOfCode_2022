@@ -21,7 +21,7 @@ public class Day_9 : AoCBaseDay<int, int, List<(Direction dir, int steps)>>
             .Select(x => (Helpers.GetDirection(x.Split(" ")[0].ToString()), int.Parse(x.Split(" ")[1].ToString())))
             .ToList();
 
-        return new AoCSolution<int, int>(Part1(instructions), Part2(instructions));
+        return Solution(instructions);
     }
 
     protected override int Part1(List<(Direction dir, int steps)> instructions)

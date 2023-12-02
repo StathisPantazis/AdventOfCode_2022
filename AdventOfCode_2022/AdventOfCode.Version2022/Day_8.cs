@@ -13,7 +13,7 @@ public class Day_8 : AoCBaseDay<int, int, LegacyGrid<int>>
         var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
         var trees = new LegacyGrid<int>(lines, singleCharacters: true);
 
-        return new AoCSolution<int, int>(Part1(trees), Part2(trees));
+        return Solution(trees);
     }
 
     protected override int Part1(LegacyGrid<int> trees)

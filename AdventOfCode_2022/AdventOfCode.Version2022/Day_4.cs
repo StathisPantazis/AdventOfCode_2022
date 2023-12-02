@@ -15,7 +15,7 @@ public class Day_4 : AoCBaseDay<int, int, List<int[]>>
             .Select(x => x.Split('-').Select(y => int.Parse(y.ToString())).ToArray())
             .ToList();
 
-        return new AoCSolution<int, int>(Part1(pairs), Part2(pairs));
+        return Solution(pairs);
     }
 
     protected override int Part1(List<int[]> args)

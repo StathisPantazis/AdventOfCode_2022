@@ -11,7 +11,7 @@ public class Day_3 : AoCBaseDay<int, int, (string[] comps, List<char> types)>
         var comps = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
         var types = Enumerable.Range('a', 26).ToList().Union(Enumerable.Range('A', 26)).Select(x => (char)x).ToList();
 
-        return new AoCSolution<int, int>(Part1((comps, types)), Part2((comps, types)));
+        return Solution((comps, types));
     }
 
     protected override int Part1((string[] comps, List<char> types) args)

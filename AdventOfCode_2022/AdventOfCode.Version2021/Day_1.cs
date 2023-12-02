@@ -12,7 +12,7 @@ public class Day_1 : AoCBaseDay<int, int, int[]>
             .Select(int.Parse)
             .ToArray();
 
-        return new AoCSolution<int, int>(Part1(measurements), Part2(measurements));
+        return Solution(measurements);
     }
 
     protected override int Part1(int[] measurements)

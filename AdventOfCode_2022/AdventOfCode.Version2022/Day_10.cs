@@ -36,7 +36,7 @@ public class Day_10 : AoCBaseDay<int, string, List<(int cycle, int sum)>>
             cycles.Add((cycle, sum));
         }
 
-        return new AoCSolution<int, string>(Part1(cycles), Part2(cycles));
+        return Solution(cycles);
     }
 
     protected override int Part1(List<(int cycle, int sum)> cycles)

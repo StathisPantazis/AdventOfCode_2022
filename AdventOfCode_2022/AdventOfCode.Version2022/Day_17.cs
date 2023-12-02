@@ -44,7 +44,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
             }
         }
 
-        return new AoCSolution<long, long>(Part1(2022), Part2(1000000000000));
+        return ReturnResult(2022, 1000000000000);
     }
 
     protected override long Part1(long args)
@@ -89,7 +89,6 @@ public class Day_17 : AoCBaseDay<long, long, long>
 
         for (var i = 0; i < 40000; i++)
         {
-
             if (dirIndex is null)
             {
                 var caveString = string.Join("\n", cave.Rows.Take(10).Select(x => string.Join(string.Empty, x)));

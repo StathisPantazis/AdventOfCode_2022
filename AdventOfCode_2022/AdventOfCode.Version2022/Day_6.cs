@@ -10,7 +10,7 @@ public class Day_6 : AoCBaseDay<int, int, string>
     {
         var text = Helpers.File_CleanReadText(FileDescription(this, resourceType));
 
-        return new AoCSolution<int, int>(Part1(text), Part2(text));
+        return Solution(text);
     }
 
     protected override int Part1(string args)

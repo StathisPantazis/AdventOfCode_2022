@@ -12,7 +12,7 @@ public class Day_5 : AoCBaseDay<int, int, string>
         var text = Helpers.File_CleanReadText(FileDescription(this, resourceType));
         text = text.Replace(" -> ", ",");
 
-        return new AoCSolution<int, int>(Part1(text), Part2(text));
+        return Solution(text);
     }
 
     protected override int Part1(string text)
@@ -57,7 +57,7 @@ public class Day_5 : AoCBaseDay<int, int, string>
         return grid.Rows.Sum(x => x.Count(y => y.Overlaps > 1));
     }
 
-    public class Vent
+    private class Vent
     {
         public int Overlaps { get; set; }
 

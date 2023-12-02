@@ -16,7 +16,7 @@ public class Day_11 : AoCBaseDay<int, ulong, List<Monkey>>
             .Select(x => new Monkey(x))
             .ToList();
 
-        return new AoCSolution<int, ulong>(Part1(monkeys), Part2(monkeys));
+        return Solution(monkeys);
     }
 
     protected override int Part1(List<Monkey> monkeys)

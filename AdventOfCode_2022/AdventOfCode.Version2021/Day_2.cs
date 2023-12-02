@@ -13,7 +13,7 @@ public class Day_2 : AoCBaseDay<int, int, Tuple<Dir, int>[]>
             .Select(x => x.Split(' ').ToArray() is string[] arr ? Tuple.Create(Enum.Parse<Dir>(arr[0]), int.Parse(arr[1])) : null)
             .ToArray();
 
-        return new AoCSolution<int, int>(Part1(movements), Part2(movements));
+        return Solution(movements);
     }
 
     protected override int Part1(Tuple<Dir, int>[] movements)

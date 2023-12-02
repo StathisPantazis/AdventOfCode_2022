@@ -18,7 +18,7 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
             .Select(x => new Blueprint(int.Parse(x[0].ToString()), int.Parse(x[1].ToString()), int.Parse(x[2].ToString()), int.Parse(x[3].ToString()), int.Parse(x[4].ToString()), int.Parse(x[5].ToString()), int.Parse(x[6].ToString())))
             .ToList();
 
-        return new AoCSolution<int, int>(Part1(blueprints), Part2(blueprints));
+        return Solution(blueprints);
     }
 
     protected override int Part1(List<Blueprint> args)
