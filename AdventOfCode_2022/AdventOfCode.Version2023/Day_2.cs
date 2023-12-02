@@ -15,24 +15,17 @@ public class Day_2 : AoCBaseDay<int, int, Game[]>
     {
         var texta = Helpers.File_CleanReadText(FileDescription(this, resourceType));
 
-        Console.WriteLine(texta);
-
         var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
             .Replace("Game ", string.Empty)
             .Replace(": ", ":")
             .Replace(", ", ",")
             .Replace("; ", ";");
 
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine(text);
-
         var games = Helpers.Text_CleanReadLines(text)
             .Select(x => x.Split(':') is string[] arr ? new Game(int.Parse(arr[0]), arr[1]) : new Game(0, string.Empty))
             .ToArray();
 
-        return new AoCSolution<int, int>(Part1(games), Part2(games));
+        return Solution(games);
     }
 
     protected override int Part1(Game[] games)
