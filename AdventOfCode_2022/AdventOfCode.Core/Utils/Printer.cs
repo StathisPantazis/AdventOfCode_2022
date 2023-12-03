@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core.Extensions;
+using AdventOfCode.Core.Models;
 
 namespace AdventOfCode.Core.Utils;
 
@@ -6,14 +7,12 @@ public static class Printer
 {
     public static void Print<T>(this IEnumerable<T> list)
     {
-        var print = string.Join("\n", list.Select(x => x.ToString()));
-        Console.WriteLine(print);
+        Console.WriteLine(list.ListToString());
     }
 
     public static void Print<TKey, TValue>(this IDictionary<TKey, TValue> dict)
     {
-        var print = string.Join("\n", dict.Select(pair => $"{pair.Key}  |  {pair.Value}"));
-        Console.WriteLine(print);
+        Console.WriteLine(dict.DictionaryToString());
     }
 
     public static void Print(this IGrid grid)

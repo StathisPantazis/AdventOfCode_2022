@@ -1,4 +1,7 @@
-﻿namespace AdventOfCode.Core.Extensions;
+﻿using System.Collections;
+using System.Text;
+
+namespace AdventOfCode.Core.Extensions;
 
 public static class ListExtensions
 {
@@ -92,4 +95,44 @@ public static class ListExtensions
 
         return true;
     }
+
+    public static string ListToString<T>(this IEnumerable<T> list, string separator = "\n") => string.Join(separator, list.Select(x => x.ToString()));
+
+    public static string ListToString(this IEnumerable list, string separator = "\n")
+    {
+        var stringBuilder = new StringBuilder();
+
+        foreach (var item in list)
+        {
+            if (stringBuilder.Length > 0)
+            {
+                stringBuilder.Append(separator);
+            }
+
+            stringBuilder.Append(item.ToString() ?? string.Empty);
+        }
+
+        return stringBuilder.ToString();
+    }
+
+    public static void AddRangeDistinct<T>(this List<T> list, List<T> newList)
+    {
+        var distinctItems = new HashSet<T>(list);
+
+        foreach (var item in newList)
+        {
+            distinctItems.Add(item);
+        }
+
+        list.Clear();
+        list.AddRange(distinctItems);
+    }
+
+    public static IEnumerable<T> Except<T>(this IEnumerable<T> list, T exceptedElement)
+    {
+        return list.Where(x => !x.Equals(exceptedElement)).ToList();
+    }
+
+    public static string DictionaryToString<TKey, TValue>(this IDictionary<TKey, TValue> dict, string separator = "\n")
+        => string.Join(separator, dict.Select(pair => $"{pair.Key}  |  {(typeof(IEnumerable).IsAssignableFrom(typeof(TValue)) ? ((IEnumerable)pair.Value).ListToString(",") : pair.Value)}"));
 }
