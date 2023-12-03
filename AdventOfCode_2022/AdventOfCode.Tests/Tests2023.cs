@@ -25,4 +25,14 @@ public class Tests2023
         solution.Part1.Should().Be(2265);
         solution.Part2.Should().Be(64097);
     }
+
+    [Fact]
+    public void Day3()
+    {
+        var day = new Day_3();
+        var solution = day.Solve(AoCResourceType.Solution);
+
+        solution.Part1.Should().Be(539433);
+        solution.Part2.Should().Be(75847567);
+    }
 }

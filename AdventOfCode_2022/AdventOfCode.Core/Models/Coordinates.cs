@@ -158,8 +158,9 @@ public class Coordinates
             return false;
         }
 
-        X += LastCol ? -X_Border : 1;
-        Y += LastCol ? 1 : 0;
+        var lastCol = LastCol;
+        X += lastCol ? -X_Border : 1;
+        Y += lastCol ? 1 : 0;
         StepsTraversed++;
         return true;
     }
@@ -254,5 +255,22 @@ public class Coordinates
             Direction.DL => LastRow || LastCol,
             _ => throw new NotImplementedException(),
         };
+    }
+
+    public List<Coordinates> GetAllNeighbours()
+    {
+        var neighbours = new List<Coordinates>()
+        {
+            R,
+            L,
+            U,
+            D,
+            UR,
+            DR,
+            UL,
+            DL,
+        };
+
+        return neighbours.Where(x => x.IsInsideOfBorder).ToList();
     }
 }
