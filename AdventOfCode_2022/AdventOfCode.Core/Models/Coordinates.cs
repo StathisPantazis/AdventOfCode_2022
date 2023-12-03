@@ -257,7 +257,7 @@ public class Coordinates
         };
     }
 
-    public List<Coordinates> GetAllNeighbours()
+    public List<Coordinates> GetAllNeighbours(Func<Coordinates, bool> condition = null)
     {
         var neighbours = new List<Coordinates>()
         {
@@ -271,6 +271,8 @@ public class Coordinates
             DL,
         };
 
-        return neighbours.Where(x => x.IsInsideOfBorder).ToList();
+        return condition == null
+            ? neighbours.Where(x => x.IsInsideOfBorder).ToList()
+            : neighbours.Where(x => x.IsInsideOfBorder && condition(x)).ToList();
     }
 }

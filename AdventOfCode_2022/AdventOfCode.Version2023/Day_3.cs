@@ -35,16 +35,13 @@ public class Day_3 : AoCBaseDay<int, int, Grid<Point>>
 
                 if (!number.IsPartNumber)
                 {
-                    var neighbours = coord.GetAllNeighbours();
+                    var neighbours = coord.GetAllNeighbours(x => grid[x].IsSymbol);
 
                     foreach (var neighbour in neighbours)
                     {
-                        if (grid[neighbour].IsSymbol)
-                        {
-                            number.IsPartNumber = true;
-                            numbers.Add(number);
-                            break;
-                        }
+                        number.IsPartNumber = true;
+                        numbers.Add(number);
+                        break;
                     }
                 }
 
@@ -70,15 +67,12 @@ public class Day_3 : AoCBaseDay<int, int, Grid<Point>>
 
             if (point.Character == "*")
             {
-                var neighbours = coord.GetAllNeighbours();
+                var neighbours = coord.GetAllNeighbours(x => grid[x].IsNumber);
                 var adjacentNumbers = new List<Number>();
 
                 foreach (var neighbour in neighbours)
                 {
-                    if (grid[neighbour].IsNumber)
-                    {
-                        adjacentNumbers.Add(grid[neighbour].Number);
-                    }
+                    adjacentNumbers.Add(grid[neighbour].Number);
                 }
 
                 adjacentNumbers = adjacentNumbers.DistinctBy(x => x.Id).ToList();
