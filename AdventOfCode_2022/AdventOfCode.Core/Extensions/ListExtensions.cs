@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Numerics;
 using System.Text;
 
 namespace AdventOfCode.Core.Extensions;
@@ -135,4 +136,60 @@ public static class ListExtensions
 
     public static string DictionaryToString<TKey, TValue>(this IDictionary<TKey, TValue> dict, string separator = "\n")
         => string.Join(separator, dict.Select(pair => $"{pair.Key}  |  {(typeof(IEnumerable).IsAssignableFrom(typeof(TValue)) ? ((IEnumerable)pair.Value).ListToString(",") : pair.Value)}"));
+
+    public static int Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector) => Multiply(source, selector);
+    public static long Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, long> selector) => Multiply(source, selector);
+    public static float Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, float> selector) => Multiply(source, selector);
+    public static double Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, double> selector) => Multiply(source, selector);
+    public static decimal Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> selector) => Multiply(source, selector);
+    public static TResult Multiply<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+        where TResult : struct, INumber<TResult>
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        if (selector is null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        using var iterator = source.GetEnumerator();
+        if (!iterator.MoveNext())
+        {
+            return default;
+        }
+
+        var total = selector(iterator.Current);
+        while (iterator.MoveNext())
+        {
+            var currentValue = selector(iterator.Current);
+            total *= currentValue;
+        }
+
+        return total;
+    }
+    public static int Multiply(this IEnumerable<int> source) => Multiply<int, int>(source);
+    public static long Multiply(this IEnumerable<long> source) => Multiply<long, long>(source);
+    public static float Multiply(this IEnumerable<float> source) => (float)Multiply<float, double>(source);
+    public static double Multiply(this IEnumerable<double> source) => Multiply<double, double>(source);
+    public static decimal Multiply(this IEnumerable<decimal> source) => Multiply<decimal, decimal>(source);
+    private static TResult Multiply<TSource, TResult>(this IEnumerable<TSource> source)
+        where TSource : struct, INumber<TSource>
+        where TResult : struct, INumber<TResult>
+    {
+        if (source == null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        var product = TResult.One;
+        foreach (var item in source)
+        {
+            product *= TResult.CreateChecked(item);
+        }
+
+        return product;
+    }
 }
