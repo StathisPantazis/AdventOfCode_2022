@@ -3,16 +3,17 @@ using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
 using System.Data;
-using static AdventOfCode.Version2023.Day_5;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_5 : AoCBaseDay<long, long, (List<Map> maps, List<long> seeds)>
+public class Day_5 : AoCBaseDay<long, long, List<long>>
 {
+    private List<Map> _maps = new();
+
     public override AoCSolution<long, long> Solve(AoCResourceType resourceType)
     {
-        var maps = Helpers.File_CleanReadText(FileDescription(this, resourceType))
-            .Split("\n\n")
+        _maps = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+            .Split("\n\n", StringSplitOptions.RemoveEmptyEntries)
             .Skip(1)
             .Select(x => x.Split('\n').ToList() is List<string> descriptions ? new Map()
             {
@@ -24,7 +25,7 @@ public class Day_5 : AoCBaseDay<long, long, (List<Map> maps, List<long> seeds)>
             } : new())
             .ToList();
 
-        foreach (var map in maps)
+        foreach (var map in _maps)
         {
             for (var i = 0; i < map.Sources.Count; i++)
             {
@@ -36,124 +37,91 @@ public class Day_5 : AoCBaseDay<long, long, (List<Map> maps, List<long> seeds)>
             }
         }
 
-        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var seeds = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
             .First().Split(": ")[1].Split(' ').Select(long.Parse).ToList();
 
-        //var part1 = Part1((maps, lines));
-        var part2 = Part2((maps, lines));
+        Console.WriteLine(Part1(seeds));
 
-        //Console.WriteLine($"Part 1: {part1}\n");
-        //Console.WriteLine($"Part 2: {part2}");
-
-        return default;
+        return Solution(seeds);
     }
 
-    protected override long Part1((List<Map> maps, List<long> seeds) args)
+    protected override long Part1(List<long> seeds)
     {
-        return GetBestLocation(args.seeds, args.maps).location;
+        return GetBestLocation(seeds).Location;
     }
 
-    protected override long Part2((List<Map> maps, List<long> seeds) args)
+    protected override long Part2(List<long> seeds)
     {
-        var seedRanges = ListBuilder.RangeFromTo(0, args.seeds.Count, 2)
-            .Select(i => ListBuilder.RangeFromNTimes(args.seeds[i], args.seeds[i + 1]))
+        var seedRanges = ListBuilder.RangeFromTo(0, seeds.Count, 2)
+            .Select(i => (seeds[i], seeds[i] + seeds[i + 1]))
             .ToList();
 
-        seedRanges.Print();
+        var bestResult = new SearchResult(long.MaxValue, long.MaxValue);
 
-        //var ranges = new List<SeedPair>();
+        Console.WriteLine("Getting best range...");
+        // Get best range
+        for (var i = 0; i < seedRanges.Count; i++)
+        {
+            var range = seedRanges[i];
+            var searchRange = ListBuilder.RangeFromTo(range.Item1, range.Item2, StepConsideringExample(range.Item1, 10000));
+            var result = GetBestLocation(searchRange);
+            result.SearchIndex = i;
+            Console.WriteLine(result);
 
-        //for (var i = 0; i < seedPairs.Count; i++)
-        //{
-        //    var pair = seedPairs[i];
+            if (result.Location < bestResult.Location)
+            {
+                bestResult = result;
+            }
+        }
+        Console.WriteLine("\nSelecting best result...");
+        Console.WriteLine(bestResult);
 
-        //    if (ranges.FirstOrDefault(x => pair.Start <= x.Start && x.Start < pair.End) is SeedPair startIncuded)
-        //    {
-        //        startIncuded.Start = pair.Start;
-        //    }
+        // Filter best range
+        Console.WriteLine("\nFiltering best range...");
+        var range1 = seedRanges[bestResult.SearchIndex];
+        var searchRange1 = ListBuilder.RangeFromTo(range1.Item1, range1.Item2, StepConsideringExample(range1.Item1, 9999));
+        var result1 = GetBestLocation(searchRange1);
+        Console.WriteLine($"From: {result1}");
 
-        //    if (ranges.FirstOrDefault(x => pair.Start <= x.End && x.End < pair.End) is SeedPair endIncuded)
-        //    {
-        //        endIncuded.End = pair.End;
-        //    }
+        if (result1.Location < bestResult.Location)
+        {
+            bestResult = result1;
+        }
+        Console.WriteLine($"To: {bestResult}");
 
-        //    if (ranges.None(x => x.Start <= pair.Start && pair.End <= x.End))
-        //    {
-        //        ranges.Add(new SeedPair(pair.Start, pair.End));
-        //    }
-        //}
+        // Pad best result
+        Console.WriteLine("\nPadding result...");
+        var searchRange2 = ListBuilder.RangeFromTo((bestResult.Seed - 10000).AtLeast(range1.Item1), (bestResult.Seed + 10000).LimitBy(range1.Item2), 1);
+        var result2 = GetBestLocation(searchRange2);
 
-        //seeds = ListBuilder.NumRange(result.seed - 30000, result.seed + 30000);
-        //result = GetBestLocation(seeds, args.maps);
-
-        //var minus1 = SingleSolve(result.seed - 1, args.maps);
-        //var plus1 = SingleSolve(result.seed - 1, args.maps);
-
-        //Console.WriteLine($"-2: {SingleSolve(result.seed - 2, args.maps)}");
-        //Console.WriteLine($"-1: {minus1}");
-        //Console.WriteLine($"0: {result.location}");
-        //Console.WriteLine($"+1: {plus1}");
-        //Console.WriteLine($"+2: {SingleSolve(result.seed + 2, args.maps)}");
-        //Console.WriteLine($"+3: {SingleSolve(result.seed + 3, args.maps)}");
-        //Console.WriteLine($"+4: {SingleSolve(result.seed + 4, args.maps)}");
-        //Console.WriteLine($"+5: {SingleSolve(result.seed + 5, args.maps)}");
-        //Console.WriteLine($"+6: {SingleSolve(result.seed + 6, args.maps)}");
+        Console.WriteLine("\nBest Solution:");
+        Console.WriteLine(result2);
 
         return default;
     }
 
-    private static long SingleSolve(long seed, List<Map> maps)
+    private SearchResult GetBestLocation(List<long> seeds)
     {
-        var map = maps.First(x => x.SourceName == "seed");
-        var location = seed;
-
-        while (true)
-        {
-            for (var i = 0; i < map.Sources.Count; i++)
-            {
-                var sourceGreaterThanDest = map.SourceGreaterThanDest[i];
-                var mapLength = map.Lengths[i];
-                var min = map.Sources[i];
-
-                if (location >= min && location <= min + mapLength)
-                {
-                    location += map.Distances[i];
-                    break;
-                }
-            }
-
-            if (map.DestinationName == "location")
-            {
-                break;
-            }
-
-            map = maps.First(x => x.SourceName == map.DestinationName);
-        }
-
-        return location;
-    }
-
-    private static (long location, long seed) GetBestLocation(List<long> seeds, List<Map> maps)
-    {
-        var locations_seed = new List<(long location, long seed)>();
+        var results = new List<SearchResult>();
         var startingMap = "seed";
 
-        foreach (var seed in seeds)
+        for (var i = 0; i < seeds.Count; i++)
         {
-            var map = maps.First(x => x.SourceName == startingMap);
-            var source = seed;
+            var seed = seeds[i];
+            var map = _maps.First(x => x.SourceName == startingMap);
+            var location = seed;
 
             while (true)
             {
-                for (var i = 0; i < map.Sources.Count; i++)
+                for (var j = 0; j < map.Sources.Count; j++)
                 {
-                    var sourceGreaterThanDest = map.SourceGreaterThanDest[i];
-                    var mapLength = map.Lengths[i];
-                    var min = map.Sources[i];
+                    var sourceGreaterThanDest = map.SourceGreaterThanDest[j];
+                    var mapLength = map.Lengths[j];
+                    var min = map.Sources[j];
 
-                    if (source >= min && source <= min + mapLength)
+                    if (location >= min && location <= min + mapLength)
                     {
-                        source += map.Distances[i];
+                        location += map.Distances[j];
                         break;
                     }
                 }
@@ -163,14 +131,16 @@ public class Day_5 : AoCBaseDay<long, long, (List<Map> maps, List<long> seeds)>
                     break;
                 }
 
-                map = maps.First(x => x.SourceName == map.DestinationName);
+                map = _maps.First(x => x.SourceName == map.DestinationName);
             }
 
-            locations_seed.Add(new(source, seed));
+            results.Add(new(seed, location));
         }
 
-        return locations_seed.OrderBy(x => x.location).First();
+        return results.OrderBy(x => x.Location).First();
     }
+
+    private static int StepConsideringExample(long start, int step) => start < 100 ? 1 : step;
 
     public class Map
     {
@@ -183,5 +153,10 @@ public class Day_5 : AoCBaseDay<long, long, (List<Map> maps, List<long> seeds)>
         public List<bool> SourceGreaterThanDest { get; set; } = new();
 
         public override string ToString() => $"{SourceName} to {DestinationName}";
+    }
+
+    private record SearchResult(long Seed, long Location)
+    {
+        public int SearchIndex { get; set; } = -1;
     }
 }
