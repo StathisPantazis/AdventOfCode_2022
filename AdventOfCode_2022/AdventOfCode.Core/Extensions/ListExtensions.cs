@@ -97,25 +97,6 @@ public static class ListExtensions
         return true;
     }
 
-    public static string ListToString<T>(this IEnumerable<T> list, string separator = "\n") => string.Join(separator, list.Select(x => x.ToString()));
-
-    public static string ListToString(this IEnumerable list, string separator = "\n")
-    {
-        var stringBuilder = new StringBuilder();
-
-        foreach (var item in list)
-        {
-            if (stringBuilder.Length > 0)
-            {
-                stringBuilder.Append(separator);
-            }
-
-            stringBuilder.Append(item.ToString() ?? string.Empty);
-        }
-
-        return stringBuilder.ToString();
-    }
-
     public static void AddRangeDistinct<T>(this List<T> list, List<T> newList)
     {
         var distinctItems = new HashSet<T>(list);
@@ -134,8 +115,57 @@ public static class ListExtensions
         return list.Where(x => !x.Equals(exceptedElement)).ToList();
     }
 
+    /// <summary>
+    /// Turns { 1, 2, 3 }, { 1, 2, 3 } to { 1, 1 }, { 2, 2 }, { 3, 3 }
+    /// </summary>
+    public static List<List<T>> RotateRowsColumns<T>(this IEnumerable<IEnumerable<T>> source)
+    {
+        var list = source.Select(x => x.ToList()).ToList();
+        var size = list.First().Count;
+
+        if (list.Any(x => x.Count != size))
+        {
+            throw new ArgumentException("Every list should have the same amount of elements.");
+        }
+
+        var rowCount = list.Count;
+        var newLists = new List<List<T>>();
+
+        for (var column = 0; column < size; column++)
+        {
+            var newList = new List<T>();
+            newLists.Add(newList);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                newList.Add(list[row][column]);
+            }
+        }
+
+        return newLists;
+    }
+
     public static string DictionaryToString<TKey, TValue>(this IDictionary<TKey, TValue> dict, string separator = "\n")
         => string.Join(separator, dict.Select(pair => $"{pair.Key}  |  {(typeof(IEnumerable).IsAssignableFrom(typeof(TValue)) ? ((IEnumerable)pair.Value).ListToString(",") : pair.Value)}"));
+
+    public static string ListToString<T>(this IEnumerable<T> list, string separator = "\n") => string.Join(separator, list.Select(x => x.ToString()));
+
+    public static string ListToString(this IEnumerable list, string separator = "\n")
+    {
+        var stringBuilder = new StringBuilder();
+
+        foreach (var item in list)
+        {
+            if (stringBuilder.Length > 0)
+            {
+                stringBuilder.Append(separator);
+            }
+
+            stringBuilder.Append(item.ToString() ?? string.Empty);
+        }
+
+        return stringBuilder.ToString();
+    }
 
     public static int Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector) => Multiply(source, selector);
     public static long Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, long> selector) => Multiply(source, selector);

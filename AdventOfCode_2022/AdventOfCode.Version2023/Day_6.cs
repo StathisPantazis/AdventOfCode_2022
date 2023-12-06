@@ -18,17 +18,12 @@ public class Day_6 : AoCBaseDay<int, int, string>
 
     protected override int Part1(string input)
     {
-        var lines = input
+        var races = input
             .Split("\n")
             .Select(x => x.Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(y => int.Parse(y.ToString())).ToList())
+            .RotateRowsColumns()
+            .Select(x => (x[0], x[1]))
             .ToList();
-
-        var races = new List<(int duration, int record)>();
-
-        for (var i = 0; i < lines[0].Count; i++)
-        {
-            races.Add(new(lines[0][i], lines[1][i]));
-        }
 
         var waysToWin = Enumerable.Range(0, races.Count).Select(x => 0).ToList();
 
@@ -38,10 +33,7 @@ public class Day_6 : AoCBaseDay<int, int, string>
 
             for (var holdSeconds = 1; holdSeconds < duration; holdSeconds++)
             {
-                if ((duration - holdSeconds) * holdSeconds > record)
-                {
-                    waysToWin[i] += 1;
-                }
+                waysToWin[i] += (duration - holdSeconds) * holdSeconds > record ? 1 : 0;
             }
         }
 
@@ -62,10 +54,7 @@ public class Day_6 : AoCBaseDay<int, int, string>
 
         for (var holdSeconds = 1; holdSeconds < duration; holdSeconds++)
         {
-            if ((duration - holdSeconds) * holdSeconds > recordDistance)
-            {
-                waysToWin++;
-            }
+            waysToWin += (duration - holdSeconds) * holdSeconds > recordDistance ? 1 : 0;
         }
 
         return waysToWin;
