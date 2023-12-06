@@ -42,14 +42,13 @@ public class Day_6 : AoCBaseDay<int, int, string>
 
     protected override int Part2(string input)
     {
-        var lines = input
+        (var duration, var recordDistance) = input
             .Replace(" ", "")
             .Split("\n")
             .Select(x => long.Parse(x.ToString()))
-            .ToList();
+            .ToList()
+            is List<long> list ? (list[0], list[1]) : default;
 
-        var duration = lines[0];
-        var recordDistance = lines[1];
         var waysToWin = 0;
 
         for (var holdSeconds = 1; holdSeconds < duration; holdSeconds++)
