@@ -2,9 +2,9 @@
 
 public static class ListBuilder
 {
-    public static List<int> IntRange(int start, int stop, int step = 1)
+    public static List<long> RangeFromTo(long start, long stop, long step = 1)
     {
-        var list = new List<int>();
+        var list = new List<long>();
 
         if (start < stop && step > 0)
         {
@@ -23,6 +23,24 @@ public static class ListBuilder
 
         return list;
     }
+
+    public static List<int> RangeFromTo(int start, int stop, int step = 1) => RangeFromTo((long)start, stop, step).Select(x => (int)x).ToList();
+
+    public static List<long> RangeFromNTimes(long start, long times, long step = 1)
+    {
+        var list = new List<long>();
+        var counter = 0;
+
+        for (var i = start; counter < times; i += step)
+        {
+            counter++;
+            list.Add(i);
+        }
+
+        return list;
+    }
+
+    public static List<int> RangeFromNTimes(int start, int times, int step = 1) => RangeFromNTimes(start, times, step).Select(x => (int)x).ToList();
 
     public static List<char> CharRange(char start, char stop, int step = 1)
     {

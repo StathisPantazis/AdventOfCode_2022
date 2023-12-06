@@ -14,7 +14,7 @@ public class Day_7 : AoCBaseDay<int, int, Dictionary<int, int>>
             .Select(int.Parse)
             .ToList();
 
-        var allPositionsMinMax = ListBuilder.IntRange(positions.Min(), positions.Max() - positions.Min() + 1);
+        var allPositionsMinMax = ListBuilder.RangeFromTo(positions.Min(), positions.Max() - positions.Min() + 1);
         var positionCrabsDict = allPositionsMinMax.ToDictionary(x => x, x => positions.Count(c => c == x));
 
         return Solution(positionCrabsDict);
