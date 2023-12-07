@@ -26,7 +26,7 @@ public static class ListBuilder
 
     public static List<int> RangeFromTo(int start, int stop, int step = 1) => RangeFromTo((long)start, stop, step).Select(x => (int)x).ToList();
 
-    public static List<long> RangeFromNTimes(long start, long times, long step = 1)
+    public static List<long> Iterator(long start, long times, long step = 1)
     {
         var list = new List<long>();
         var counter = 0;
@@ -40,7 +40,7 @@ public static class ListBuilder
         return list;
     }
 
-    public static List<int> RangeFromNTimes(int start, int times, int step = 1) => RangeFromNTimes(start, times, step).Select(x => (int)x).ToList();
+    public static List<int> Iterator(int start, int times, int step = 1) => Iterator((long)start, times, step).Select(x => (int)x).ToList();
 
     public static List<char> CharRange(char start, char stop, int step = 1)
     {
