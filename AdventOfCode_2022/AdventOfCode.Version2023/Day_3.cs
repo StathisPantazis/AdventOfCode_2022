@@ -5,7 +5,7 @@ using Point = AdventOfCode.Version2023.Day_3.Point;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_3 : AoCBaseDay<int, int, Grid<Point>>
+public class Day_3 : AoCBaseDay<int, int, IndexedGrid<Point>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
@@ -13,16 +13,16 @@ public class Day_3 : AoCBaseDay<int, int, Grid<Point>>
             .Select(s => s.Select(c => new Point(c)))
             .ToList();
 
-        var grid = new Grid<Point>(lines);
+        var grid = new IndexedGrid<Point>(lines);
 
         return Solution(grid);
     }
 
-    protected override int Part1(Grid<Point> grid)
+    protected override int Part1(IndexedGrid<Point> grid)
     {
         var numbers = new List<Number>();
         Number number = null;
-        var coord = new Coordinates(grid, true);
+        var coord = grid.GetCoordinates(true);
 
         while (coord.TraverseGrid())
         {
@@ -56,10 +56,10 @@ public class Day_3 : AoCBaseDay<int, int, Grid<Point>>
         return numbers.Sum(x => x.Num);
     }
 
-    protected override int Part2(Grid<Point> grid)
+    protected override int Part2(IndexedGrid<Point> grid)
     {
         var gearRatios = 0;
-        var coord = new Coordinates(grid, true);
+        var coord = grid.GetCoordinates(true);
 
         while (coord.TraverseGrid())
         {

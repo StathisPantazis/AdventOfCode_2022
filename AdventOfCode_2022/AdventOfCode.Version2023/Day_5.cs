@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Core.Extensions;
-using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
 using System.Data;
@@ -52,7 +51,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
 
     protected override long Part2(List<long> seeds)
     {
-        var seedRanges = ListBuilder.RangeFromTo(0, seeds.Count, 2)
+        var seedRanges = ListBuilder.ForI(0, seeds.Count, 2)
             .Select(i => (seeds[i], seeds[i] + seeds[i + 1]))
             .ToList();
 
@@ -63,7 +62,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         for (var i = 0; i < seedRanges.Count; i++)
         {
             var range = seedRanges[i];
-            var searchRange = ListBuilder.RangeFromTo(range.Item1, range.Item2, StepConsideringExample(range.Item1, 10000));
+            var searchRange = ListBuilder.FromXtoN(range.Item1, range.Item2, StepConsideringExample(range.Item1, 1));
             var result = GetBestLocation(searchRange);
             result.SearchIndex = i;
             Console.WriteLine(result);
@@ -76,26 +75,26 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         Console.WriteLine("\nSelecting best result...");
         Console.WriteLine(bestResult);
 
-        // Filter best range
-        Console.WriteLine("\nFiltering best range...");
-        var range1 = seedRanges[bestResult.SearchIndex];
-        var searchRange1 = ListBuilder.RangeFromTo(range1.Item1, range1.Item2, StepConsideringExample(range1.Item1, 9999));
-        var result1 = GetBestLocation(searchRange1);
-        Console.WriteLine($"From: {result1}");
+        //// Filter best range
+        //Console.WriteLine("\nFiltering best range...");
+        //var range1 = seedRanges[bestResult.SearchIndex];
+        //var searchRange1 = ListBuilder.RangeFromTo(range1.Item1, range1.Item2, StepConsideringExample(range1.Item1, 9999));
+        //var result1 = GetBestLocation(searchRange1);
+        //Console.WriteLine($"From: {result1}");
 
-        if (result1.Location < bestResult.Location)
-        {
-            bestResult = result1;
-        }
-        Console.WriteLine($"To: {bestResult}");
+        //if (result1.Location < bestResult.Location)
+        //{
+        //    bestResult = result1;
+        //}
+        //Console.WriteLine($"To: {bestResult}");
 
-        // Pad best result
-        Console.WriteLine("\nPadding result...");
-        var searchRange2 = ListBuilder.RangeFromTo((bestResult.Seed - 10000).AtLeast(range1.Item1), (bestResult.Seed + 10000).LimitBy(range1.Item2), 1);
-        var result2 = GetBestLocation(searchRange2);
+        //// Pad best result
+        //Console.WriteLine("\nPadding result...");
+        //var searchRange2 = ListBuilder.RangeFromTo((bestResult.Seed - 10000).AtLeast(range1.Item1), (bestResult.Seed + 10000).LimitBy(range1.Item2), 1);
+        //var result2 = GetBestLocation(searchRange2);
 
-        Console.WriteLine("\nBest Solution:");
-        Console.WriteLine(result2);
+        //Console.WriteLine("\nBest Solution:");
+        //Console.WriteLine(result2);
 
         return default;
     }
@@ -104,6 +103,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
     {
         var results = new List<SearchResult>();
         var startingMap = "seed";
+        var total = seeds.Count;
 
         for (var i = 0; i < seeds.Count; i++)
         {

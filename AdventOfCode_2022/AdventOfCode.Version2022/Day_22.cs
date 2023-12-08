@@ -4,7 +4,7 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_22 : AoCBaseDay<int, int, List<string>>
+public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
 {
     private string _password = string.Empty;
 
@@ -28,20 +28,22 @@ public class Day_22 : AoCBaseDay<int, int, List<string>>
             inputRows.Add(line);
         }
 
-        return new AoCSolution<int, int>(Part1(inputRows), Part2(inputRows));
+        var rows = inputRows.Select(x => x.Select(y => y.ToString()).ToList()).ToList();
+
+        return new AoCSolution<int, int>(Part1(rows), Part2(rows));
     }
 
-    protected override int Part1(List<string> args)
+    protected override int Part1(List<List<string>> args)
     {
         return SharedSolution(1, args);
     }
 
-    protected override int Part2(List<string> args)
+    protected override int Part2(List<List<string>> args)
     {
         return SharedSolution(2, args);
     }
 
-    private static bool MoveOver_Part1(Grid<string> grid, Coordinates pos, Direction dir)
+    private static bool MoveOver_Part1(IndexedGrid<string> grid, Coordinates pos, Direction dir)
     {
         int index;
         var next = pos.GetFromDirection(dir);
@@ -91,7 +93,7 @@ public class Day_22 : AoCBaseDay<int, int, List<string>>
         return false;
     }
 
-    private static bool MoveOver_Part2(Grid<string> grid, Coordinates pos, Direction dir, List<Plane> planes, out Direction walkTo)
+    private static bool MoveOver_Part2(IndexedGrid<string> grid, Coordinates pos, Direction dir, List<Plane> planes, out Direction walkTo)
     {
         walkTo = dir;
         var next = pos.GetFromDirection(dir);
@@ -121,16 +123,16 @@ public class Day_22 : AoCBaseDay<int, int, List<string>>
         return true;
     }
 
-    private int SharedSolution(int part, List<string> inputRows)
+    private int SharedSolution(int part, List<List<string>> inputRows)
     {
-        var grid = new Grid<string>(inputRows, singleCharacters: true, emptyValue: "O");
-        var pos = new Coordinates(grid, grid.Row(0).FindIndex(x => x == "."), 0);
+        var grid = new IndexedGrid<string>(inputRows, emptyValue: "O");
+        var pos = grid.GetCoordinates(grid.Row(0).FindIndex(x => x == "."), 0);
 
         var planes = part == 1 ? null : IdentifyPlanes(grid, 4);
 
         var map = new InstructionReader(_password);
         var walkTo = Direction.R;
-        bool stopClause(Coordinates next) => next.IsInsideOfBorder && grid[next] is "#" or "O";
+        bool shouldStop(Coordinates next) => next.IsInsideOfBorder && grid[next] is "#" or "O";
 
         while (map.HasMoreInstructions)
         {
@@ -140,7 +142,7 @@ public class Day_22 : AoCBaseDay<int, int, List<string>>
             {
                 if (part == 1 && !MoveOver_Part1(grid, pos, walkTo) || part == 2 && !MoveOver_Part2(grid, pos, walkTo, planes, out walkTo))
                 {
-                    if (!pos.Move(walkTo, stopClause))
+                    if (!pos.Move(walkTo, shouldStop))
                     {
                         break;
                     }
@@ -176,7 +178,7 @@ public class Day_22 : AoCBaseDay<int, int, List<string>>
         return value;
     }
 
-    private static List<Plane> IdentifyPlanes(Grid<string> grid, int size)
+    private static List<Plane> IdentifyPlanes(IndexedGrid<string> grid, int size)
     {
         static void setBridges(Plane plane1, Plane plane2, Strategy plane1To2Strategy, Strategy plane2To1Strategy, Direction plane1Side, Direction plane2Side)
         {
@@ -355,9 +357,9 @@ public class Day_22 : AoCBaseDay<int, int, List<string>>
 
         public bool ContainsPosition(Coordinates pos) => pos.X >= LeftBorder && pos.X <= RightBorder && pos.Y >= UpBorder && pos.Y <= DownBorder;
 
-        public Coordinates ToPlaneCoordinates(Coordinates pos) => pos.CopyBase(pos.X - LeftBorder, pos.Y - UpBorder);
+        public Coordinates ToPlaneCoordinates(Coordinates pos) => pos.Copy(pos.X - LeftBorder, pos.Y - UpBorder);
 
-        public Coordinates ToGridCoordinates(Coordinates pos) => pos.CopyBase(pos.X + LeftBorder, pos.Y + UpBorder);
+        public Coordinates ToGridCoordinates(Coordinates pos) => pos.Copy(pos.X + LeftBorder, pos.Y + UpBorder);
 
         public override string ToString() =>
             $"{Type} --> L: {LeftBorder}  - R: {RightBorder}  - U: {UpBorder}  - D: {DownBorder}";

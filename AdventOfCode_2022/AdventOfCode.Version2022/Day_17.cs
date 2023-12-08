@@ -75,7 +75,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
     private static long? LetTheRocksHitDaFloor(List<Direction> directions, out Dictionary<int, List<DirectionMarker>> dirIndexes, long runTimesAfterDirIndex = 0, int? dirIndex = null)
     {
         NextTracker tracker = new(directions);
-        var cave = Grid<string>.CreateEmptyGrid();
+        var cave = new IndexedGrid<string>();
 
         dirIndexes = new Dictionary<int, List<DirectionMarker>>();
         for (var i = 0; i < directions.Count; i++)
@@ -146,7 +146,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         return null;
     }
 
-    private static bool Fall(Grid<string> cave, Rock rock, int caveHeight)
+    private static bool Fall(IndexedGrid<string> cave, Rock rock, int caveHeight)
     {
         var lastRockIndex = GetLastRockIndex(cave);
 
@@ -200,7 +200,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         var cropCave = false;
         if (caveHeight < cave.Height)
         {
-            cave.RemoveRow(lastRockIndex + 1);
+            cave.RemoveRows(lastRockIndex + 1);
             cropCave = true;
         }
 
@@ -208,7 +208,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         return true;
     }
 
-    private static void ReplaceRockInCave(Rock rock, Grid<string> cave, bool cropCave = true)
+    private static void ReplaceRockInCave(Rock rock, IndexedGrid<string> cave, bool cropCave = true)
     {
         var lastRockIndex = GetLastRockIndex(cave);
 
@@ -234,7 +234,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         }
     }
 
-    private static int GetLastRockIndex(Grid<string> cave)
+    private static int GetLastRockIndex(IndexedGrid<string> cave)
     {
         var lastRockIndex = 0;
         var found = false;
@@ -329,7 +329,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         public int Width { get; init; }
         public List<string> Bottom => Shape.Last();
 
-        public bool Blow(Direction dir, Grid<string> cave)
+        public bool Blow(Direction dir, IndexedGrid<string> cave)
         {
             // Check
             if (dir is Direction.R)

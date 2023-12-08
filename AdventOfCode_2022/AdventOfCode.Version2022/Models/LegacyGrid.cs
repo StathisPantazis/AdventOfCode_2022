@@ -1,5 +1,4 @@
 ﻿using AdventOfCode.Core.Extensions;
-using AdventOfCode.Core.Models.Bases;
 
 namespace AdventOfCode.Version2022.Models;
 
@@ -45,10 +44,6 @@ public class LegacyGrid<T> : ILegacyGrid
         else if (typeof(T) == typeof(double))
         {
             InitializeDouble(source, separator, stringSplitOptions);
-        }
-        else if (typeof(T).BaseType == typeof(GridBase))
-        {
-            InitializeGridable(source, separator, stringSplitOptions, typeof(T));
         }
 
         if (makeSquare)
@@ -217,11 +212,6 @@ public class LegacyGrid<T> : ILegacyGrid
     private void InitializeDouble(IEnumerable<string> source, string separator, StringSplitOptions stringSplitOptions)
     {
         Rows = source.Select(x => x.Split(separator, stringSplitOptions).Select(y => (T)(object)double.Parse(y)).ToList()).ToList();
-    }
-
-    private void InitializeGridable(IEnumerable<string> source, string separator, StringSplitOptions stringSplitOptions, Type type)
-    {
-        Rows = source.Select(x => x.Split(separator, stringSplitOptions).Select(y => (T)(object)(GridBase)Activator.CreateInstance(type, y)).ToList()).ToList();
     }
 
     private static T GetEmpty(string emptyOverride)

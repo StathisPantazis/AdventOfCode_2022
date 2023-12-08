@@ -1,8 +1,8 @@
-﻿namespace AdventOfCode.Core.Extensions;
+﻿namespace AdventOfCode.Core.Utils;
 
 public static class ListBuilder
 {
-    public static List<long> RangeFromTo(long start, long stop, long step = 1)
+    public static List<long> FromXtoN(long start, long stop, long step = 1)
     {
         var list = new List<long>();
 
@@ -24,23 +24,21 @@ public static class ListBuilder
         return list;
     }
 
-    public static List<int> RangeFromTo(int start, int stop, int step = 1) => RangeFromTo((long)start, stop, step).Select(x => (int)x).ToList();
+    public static List<int> FromXtoN(int start, int stop, int step = 1) => FromXtoN((long)start, stop, step).Select(x => (int)x).ToList();
 
-    public static List<long> Iterator(long start, long times, long step = 1)
+    public static List<long> ForI(long start, long times, long step = 1)
     {
         var list = new List<long>();
-        var counter = 0;
 
-        for (var i = start; counter < times; i += step)
+        for (var i = start; i < start + times; i += step)
         {
-            counter++;
             list.Add(i);
         }
 
         return list;
     }
 
-    public static List<int> Iterator(int start, int times, int step = 1) => Iterator((long)start, times, step).Select(x => (int)x).ToList();
+    public static List<int> ForI(int start, int times, int step = 1) => ForI((long)start, times, step).Select(x => (int)x).ToList();
 
     public static List<char> CharRange(char start, char stop, int step = 1)
     {
@@ -73,4 +71,17 @@ public static class ListBuilder
     }
 
     public static List<string> StringRange(string start, string stop, int step = 1) => CharRange(char.Parse(start), char.Parse(stop), step).Select(x => x.ToString()).ToList();
+
+    public static List<T> Repeat<T>(int count, T emptyValue = default)
+    {
+        var list = new List<T>();
+
+        for (var i = 0; i < count; i++)
+        {
+            var value = emptyValue ?? GenericBuilder.GetDefault<T>();
+            list.Add(value);
+        }
+
+        return list;
+    }
 }

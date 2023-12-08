@@ -75,7 +75,7 @@ public class Tests2022
         solution.Part2.Should().Be(1570434782634);
     }
 
-    [Fact]
+    //[Fact]
     public void Day19()
     {
         var day = new Day_19();

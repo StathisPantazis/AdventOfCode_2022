@@ -4,7 +4,7 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_12 : AoCBaseDay<int, int, Grid<int>>
+public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
 {
     private static readonly int _startValue = 0;
     private static readonly int _endValue = 27;
@@ -21,10 +21,10 @@ public class Day_12 : AoCBaseDay<int, int, Grid<int>>
         return Solution(grid);
     }
 
-    protected override int Part1(Grid<int> grid)
+    protected override int Part1(IndexedGrid<int> grid)
     {
         Node start = null;
-        Coordinates pos = new(grid, true);
+        var pos = grid.GetCoordinates(true);
 
         while (pos.TraverseGrid())
         {
@@ -40,10 +40,10 @@ public class Day_12 : AoCBaseDay<int, int, Grid<int>>
         return bfs.ShortestPath;
     }
 
-    protected override int Part2(Grid<int> grid)
+    protected override int Part2(IndexedGrid<int> grid)
     {
         List<Node> nodes = new();
-        Coordinates pos = new(grid, true);
+        var pos = grid.GetCoordinates(true);
 
         while (pos.TraverseGrid())
         {
@@ -70,7 +70,7 @@ public class Day_12 : AoCBaseDay<int, int, Grid<int>>
         return shortestPath;
     }
 
-    private static BFS<Node> GetBFS(Grid<int> grid)
+    private static BFS<Node> GetBFS(IndexedGrid<int> grid)
     {
         List<Node> getNeighbours(Node node)
         {
@@ -94,7 +94,7 @@ public class Day_12 : AoCBaseDay<int, int, Grid<int>>
         return bfs;
     }
 
-    private static Grid<int> GetGrid(string[] input)
+    private static IndexedGrid<int> GetGrid(string[] input)
     {
         List<List<int>> numbers = new();
 
@@ -108,7 +108,7 @@ public class Day_12 : AoCBaseDay<int, int, Grid<int>>
             numbers.Add(ints);
         }
 
-        return new Grid<int>(numbers);
+        return new IndexedGrid<int>(numbers);
     }
 
     public class Node : NodeBase

@@ -1,5 +1,6 @@
 ﻿using AdventOfCode.Core.Extensions;
 using AdventOfCode.Core.Models;
+using AdventOfCode.Core.Models.Bases;
 
 namespace AdventOfCode.Core.Utils;
 

@@ -5,7 +5,7 @@ using static AdventOfCode.Version2021.Day_4;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_4 : AoCBaseDay<int, int, (int[] draws, Grid<BingoNumber>[] boards)>
+public class Day_4 : AoCBaseDay<int, int, (int[] draws, IndexedGrid<BingoNumber>[] boards)>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
@@ -19,16 +19,16 @@ public class Day_4 : AoCBaseDay<int, int, (int[] draws, Grid<BingoNumber>[] boar
         var boards = Enumerable.Range(0, (lines.Length) / 5)
             .Select(i => lines.Skip(i * 5).Take(5))
             .Select(x => x.Select(y => y.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(z => new BingoNumber(int.Parse(z)))))
-            .Select(x => new Grid<BingoNumber>(x))
+            .Select(x => new IndexedGrid<BingoNumber>(x))
             .ToArray();
 
         return Solution((draws, boards));
     }
 
-    protected override int Part1((int[] draws, Grid<BingoNumber>[] boards) p)
+    protected override int Part1((int[] draws, IndexedGrid<BingoNumber>[] boards) p)
     {
         var drawnNumbers = new List<int>();
-        Grid<BingoNumber> firstBoard = null;
+        IndexedGrid<BingoNumber> firstBoard = null;
 
         foreach (var num in p.draws)
         {
@@ -67,7 +67,7 @@ public class Day_4 : AoCBaseDay<int, int, (int[] draws, Grid<BingoNumber>[] boar
         return unmarkedNumbersSum * drawnNumbers.Last();
     }
 
-    protected override int Part2((int[] draws, Grid<BingoNumber>[] boards) p)
+    protected override int Part2((int[] draws, IndexedGrid<BingoNumber>[] boards) p)
     {
         var drawnNumbers = new List<int>();
         var finishedBoards = new List<string>();

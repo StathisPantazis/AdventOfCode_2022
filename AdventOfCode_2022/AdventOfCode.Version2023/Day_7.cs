@@ -31,7 +31,7 @@ public class Day_7 : AoCBaseDay<int, int, List<Hand>>
         }
 
         var results = hands.OrderBy(x => x.Result).ThenBy(x => x.Value).ToList();
-        return ListBuilder.Iterator(0, results.Count).Sum(i => results[i].Bid * (i + 1));
+        return ListBuilder.ForI(0, results.Count).Sum(i => results[i].Bid * (i + 1));
     }
 
     protected override int Part2(List<Hand> hands)
@@ -62,16 +62,16 @@ public class Day_7 : AoCBaseDay<int, int, List<Hand>>
         }
 
         var results = hands.OrderBy(x => x.Result).ThenBy(x => x.Value).ThenByDescending(x => x.JacksCount).ToList();
-        return ListBuilder.Iterator(0, results.Count).Sum(i => results[i].Bid * (i + 1));
+        return ListBuilder.ForI(0, results.Count).Sum(i => results[i].Bid * (i + 1));
     }
 
     private static Dictionary<char, string> GetCardValues(char[] cards)
     {
         var letters = ListBuilder.StringRange("a", "m");
-        return ListBuilder.Iterator(0, cards.Length).ToDictionary(i => cards[i], i => letters[i]);
+        return ListBuilder.ForI(0, cards.Length).ToDictionary(i => cards[i], i => letters[i]);
     }
 
-    private static string GetHandValue(Dictionary<char, string> cardValues, Hand hand) => string.Join("", ListBuilder.Iterator(0, 5).Select(i => cardValues[hand.Cards[i]]));
+    private static string GetHandValue(Dictionary<char, string> cardValues, Hand hand) => string.Join("", ListBuilder.ForI(0, 5).Select(i => cardValues[hand.Cards[i]]));
 
     private static Code GetHandResult(List<int> cardCounts)
     {

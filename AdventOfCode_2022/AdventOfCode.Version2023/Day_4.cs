@@ -73,7 +73,6 @@ public class Day_4 : AoCBaseDay<int, int, List<Card>>
         public int Id { get; set; }
         public List<int> Winning { get; set; } = new();
         public List<int> Own { get; set; } = new();
-        public int Points { get; set; }
         public int Wins
         {
             get
