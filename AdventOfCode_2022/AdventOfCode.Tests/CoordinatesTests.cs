@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Core.Extensions;
+using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Models.Enums;
 using AdventOfCode.Tests.Shared;
@@ -83,7 +84,7 @@ public class CoordinatesTests
     public void Should_move_correctly_towards(GridType gridType, AsymmetrySide asymmetrySide, bool allowOverlap)
     {
         var grid = GridBuilder.GetGrid(gridType, asymmetrySide);
-        var start = grid.GetCoordinates(0, 0);
+        var start = grid.GetCoordinates(GridCorner.Start);
         var end = start.Copy();
         end.GoToEnd();
 
@@ -104,19 +105,42 @@ public class CoordinatesTests
     }
 
     [Theory]
-    [InlineData(GridType.Indexed, AsymmetrySide.None)]
-    [InlineData(GridType.Indexed, AsymmetrySide.MoreRows)]
-    [InlineData(GridType.Indexed, AsymmetrySide.MoreColumns)]
-    [InlineData(GridType.Indexed, AsymmetrySide.BigSquare)]
-    [InlineData(GridType.Cartesian, AsymmetrySide.None)]
-    [InlineData(GridType.Cartesian, AsymmetrySide.MoreRows)]
-    [InlineData(GridType.Cartesian, AsymmetrySide.MoreColumns)]
-    [InlineData(GridType.Cartesian, AsymmetrySide.BigSquare)]
-    public void Should_move_correctly_opposite(GridType gridType, AsymmetrySide asymmetrySide)
+    [InlineData(GridType.Indexed, GridCorner.TopLeft, true)]
+    [InlineData(GridType.Indexed, GridCorner.TopLeft, false)]
+    [InlineData(GridType.Cartesian, GridCorner.TopLeft, true)]
+    [InlineData(GridType.Cartesian, GridCorner.TopLeft, false)]
+    [InlineData(GridType.Indexed, GridCorner.TopRight, true)]
+    [InlineData(GridType.Indexed, GridCorner.TopRight, false)]
+    [InlineData(GridType.Cartesian, GridCorner.TopRight, true)]
+    [InlineData(GridType.Cartesian, GridCorner.TopRight, false)]
+    [InlineData(GridType.Indexed, GridCorner.BottomLeft, true)]
+    [InlineData(GridType.Indexed, GridCorner.BottomLeft, false)]
+    [InlineData(GridType.Cartesian, GridCorner.BottomLeft, true)]
+    [InlineData(GridType.Cartesian, GridCorner.BottomLeft, false)]
+    [InlineData(GridType.Indexed, GridCorner.BottomRight, true)]
+    [InlineData(GridType.Indexed, GridCorner.BottomRight, false)]
+    [InlineData(GridType.Cartesian, GridCorner.BottomRight, true)]
+    [InlineData(GridType.Cartesian, GridCorner.BottomRight, false)]
+    public void Should_move_correctly_opposite_for_diagonal(GridType gridType, GridCorner gridCorner, bool touching)
     {
-        var grid = GridBuilder.GetGrid(gridType, asymmetrySide);
-        var start = grid.GetCoordinates(1, 1);
-        var awayFrom = grid.GetCoordinates(0, 0);
+        var grid = GridBuilder.GetGrid(gridType, AsymmetrySide.HugeSquare);
+        var awayFrom = grid.GetCoordinates(gridCorner);
+
+        var direction = gridCorner switch
+        {
+            GridCorner.TopLeft => Direction.DR,
+            GridCorner.TopRight => Direction.DL,
+            GridCorner.BottomLeft => Direction.UR,
+            GridCorner.BottomRight => Direction.UL,
+        };
+
+        var start = awayFrom.Copy();
+        start.Move(direction);
+
+        if (!touching)
+        {
+            start.Move(direction);
+        }
 
         while (start.MoveOpposite(awayFrom))
         {
@@ -124,9 +148,67 @@ public class CoordinatesTests
         }
 
         var allPoints = grid.GetAllPoints();
-        var isSquare = grid.Rows.Count == grid.Columns.Count;
-        var dots = NumericExtensions.MaxBetween(grid.Rows.Count, grid.Columns.Count) - Math.Abs(grid.Rows.Count - grid.Columns.Count) + (isSquare ? -1 : 0) - 1;
+        var dots = grid.Rows.Count - 2 - (touching ? 0 : 1);
         allPoints.Count(x => x.Text == ".").Should().Be(dots);
+
+        grid[7, 7].Text.Should().Be(".");
+    }
+
+    [Theory]
+    [InlineData(GridType.Indexed, Direction.L, true)]
+    [InlineData(GridType.Indexed, Direction.L, false)]
+    [InlineData(GridType.Cartesian, Direction.L, true)]
+    [InlineData(GridType.Cartesian, Direction.L, false)]
+    [InlineData(GridType.Indexed, Direction.R, true)]
+    [InlineData(GridType.Indexed, Direction.R, false)]
+    [InlineData(GridType.Cartesian, Direction.R, true)]
+    [InlineData(GridType.Cartesian, Direction.R, false)]
+    [InlineData(GridType.Indexed, Direction.U, true)]
+    [InlineData(GridType.Indexed, Direction.U, false)]
+    [InlineData(GridType.Cartesian, Direction.U, true)]
+    [InlineData(GridType.Cartesian, Direction.U, false)]
+    [InlineData(GridType.Indexed, Direction.D, true)]
+    [InlineData(GridType.Indexed, Direction.D, false)]
+    [InlineData(GridType.Cartesian, Direction.D, true)]
+    [InlineData(GridType.Cartesian, Direction.D, false)]
+    public void Should_move_correctly_opposite_for_straight(GridType gridType, Direction direction, bool touching)
+    {
+        var grid = GridBuilder.GetGrid(gridType, AsymmetrySide.HugeSquare);
+
+        var gridCorner = direction switch
+        {
+            Direction.L => GridCorner.TopRight,
+            Direction.R => GridCorner.TopLeft,
+            Direction.U => GridCorner.BottomLeft,
+            Direction.D => GridCorner.TopLeft,
+        };
+
+        var awayFrom = grid.GetCoordinates(gridCorner);
+
+        var start = awayFrom.Copy();
+        start.Move(direction);
+
+        if (!touching)
+        {
+            start.Move(direction);
+        }
+
+        while (start.MoveOpposite(awayFrom))
+        {
+            grid[start] = new Point(".");
+        }
+
+        var allPoints = grid.GetAllPoints();
+        var dots = grid.Rows.Count - 2 - (touching ? 0 : 1);
+        allPoints.Count(x => x.Text == ".").Should().Be(dots);
+
+        var dotsToCheck = direction switch
+        {
+            Direction.L or Direction.R => grid.Rows[0],
+            Direction.U or Direction.D => grid.Columns[0],
+        };
+
+        dotsToCheck.Count(x => x.Text == ".").Should().Be(dots);
     }
 
     [Theory]

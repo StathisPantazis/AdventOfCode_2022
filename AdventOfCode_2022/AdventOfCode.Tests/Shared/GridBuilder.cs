@@ -18,6 +18,7 @@ internal static class GridBuilder
         {
             AsymmetrySide.MoreRows or AsymmetrySide.ManyColumns => 4,
             AsymmetrySide.ManyRows or AsymmetrySide.BigSquare => 7,
+            AsymmetrySide.HugeSquare => 15,
             _ => 3
         };
 
@@ -25,6 +26,7 @@ internal static class GridBuilder
         {
             AsymmetrySide.MoreColumns or AsymmetrySide.ManyRows => 4,
             AsymmetrySide.ManyColumns or AsymmetrySide.BigSquare => 7,
+            AsymmetrySide.HugeSquare => 15,
             _ => 3
         };
 

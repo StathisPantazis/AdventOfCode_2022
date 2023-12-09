@@ -8,4 +8,5 @@ public enum AsymmetrySide
     ManyRows,
     ManyColumns,
     BigSquare,
+    HugeSquare,
 }

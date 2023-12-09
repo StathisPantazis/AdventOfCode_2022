@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Core.Extensions;
+using AdventOfCode.Core.Models.Enums;
 using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Core.Models.Bases;
@@ -61,6 +62,8 @@ public abstract class Grid<T> : IGrid
     public abstract Coordinates GetCoordinates(bool startFromNegative = false);
 
     public abstract Coordinates GetCoordinates(int startX, int startY);
+
+    public abstract Coordinates GetCoordinates(GridCorner gridCorner);
 
     public int Height => Rows.Count;
 

@@ -63,6 +63,48 @@ public class GridTests
     [Theory]
     [InlineData(GridType.Indexed)]
     [InlineData(GridType.Cartesian)]
+    public void Should_correcetly_get_grid_corners(GridType gridType)
+    {
+        var grid = GridBuilder.GetGrid(gridType, AsymmetrySide.None);
+
+        var coord = grid.GetCoordinates(GridCorner.TopLeft);
+        grid[coord] = new Point("A");
+
+        coord = grid.GetCoordinates(GridCorner.TopRight);
+        grid[coord] = new Point("B");
+
+        coord = grid.GetCoordinates(GridCorner.BottomLeft);
+        grid[coord] = new Point("C");
+
+        coord = grid.GetCoordinates(GridCorner.BottomRight);
+        grid[coord] = new Point("D");
+
+        grid.Rows.First().First().Text.Should().Be("A");
+        grid.Rows.First().Last().Text.Should().Be("B");
+        grid.Rows.Last().First().Text.Should().Be("C");
+        grid.Rows.Last().Last().Text.Should().Be("D");
+
+        coord = grid.GetCoordinates(GridCorner.Start);
+        grid[coord] = new Point("S");
+
+        coord = grid.GetCoordinates(GridCorner.End);
+        grid[coord] = new Point("E");
+
+        if (gridType is GridType.Cartesian)
+        {
+            grid.Rows.Last().First().Text.Should().Be("S");
+            grid.Rows.First().Last().Text.Should().Be("E");
+        }
+        else if (gridType is GridType.Indexed)
+        {
+            grid.Rows.First().First().Text.Should().Be("S");
+            grid.Rows.Last().Last().Text.Should().Be("E");
+        }
+    }
+
+    [Theory]
+    [InlineData(GridType.Indexed)]
+    [InlineData(GridType.Cartesian)]
     public void Should_index_operator_work(GridType gridType)
     {
         var grid = GridBuilder.GetGrid(gridType, AsymmetrySide.ManyRows);

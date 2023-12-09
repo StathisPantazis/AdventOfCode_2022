@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Core.Models.Bases;
+using AdventOfCode.Core.Models.Enums;
 using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Core.Models;
@@ -30,6 +31,18 @@ public class CartesianGrid<T> : Grid<T>
     public override Coordinates GetCoordinates(bool startFromNegative = false) => new CartesianCoordinates(this, startFromNegative);
 
     public override Coordinates GetCoordinates(int startX, int startY) => new CartesianCoordinates(this, startX, startY);
+
+    public override Coordinates GetCoordinates(GridCorner gridCorner)
+    {
+        return gridCorner switch
+        {
+            GridCorner.Start or GridCorner.BottomLeft => new CartesianCoordinates(this, 0, 0),
+            GridCorner.End or GridCorner.TopRight => new CartesianCoordinates(this, Columns.Count - 1, Rows.Count - 1),
+            GridCorner.BottomRight => new CartesianCoordinates(this, Columns.Count - 1, 0),
+            GridCorner.TopLeft => new CartesianCoordinates(this, 0, Rows.Count - 1),
+            _ => throw new NotImplementedException()
+        };
+    }
 
     public override void InsertRows(int y, int repeat = 1)
     {

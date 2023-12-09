@@ -9,30 +9,39 @@ internal class Lalala
 {
     public void Run()
     {
-        var grid = GetGrid(GridType.Cartesian, AsymmetrySide.ManyRows);
-        var coord = grid.GetCoordinates(3, 3);
+        var grid = GetGrid(GridType.Cartesian, AsymmetrySide.None);
 
-        var start = grid.GetCoordinates(1, 1);
-        grid[start] = new Point("S");
-        var awayFrom = grid.GetCoordinates(0, 0);
-        grid[awayFrom] = new Point("X");
-        grid.Print();
+        var coord = grid.GetCoordinates(GridCorner.TopLeft);
+        grid[coord] = new Point("A");
 
-        while (start.MoveOpposite(awayFrom))
-        {
-            grid[start] = new Point(".");
-        }
+        coord = grid.GetCoordinates(GridCorner.TopRight);
+        grid[coord] = new Point("B");
+
+        coord = grid.GetCoordinates(GridCorner.BottomLeft);
+        grid[coord] = new Point("C");
+
+        coord = grid.GetCoordinates(GridCorner.BottomRight);
+        grid[coord] = new Point("D");
 
         grid.Print();
         Console.WriteLine("Cartesian");
 
-        //var indexed = GetGrid(GridType.Indexed, AsymmetrySide.BigSquare);
-        //var indCoord = indexed.GetCoordinates(3, 3);
-        ////indCoord = indCoord.U;
-        //indexed[indCoord] = new Point(".");
+        grid = GetGrid(GridType.Indexed, AsymmetrySide.None);
 
-        //indexed.Print(false);
-        //Console.WriteLine("Indexed");
+        coord = grid.GetCoordinates(GridCorner.TopLeft);
+        grid[coord] = new Point("A");
+
+        coord = grid.GetCoordinates(GridCorner.TopRight);
+        grid[coord] = new Point("B");
+
+        coord = grid.GetCoordinates(GridCorner.BottomLeft);
+        grid[coord] = new Point("C");
+
+        coord = grid.GetCoordinates(GridCorner.BottomRight);
+        grid[coord] = new Point("D");
+
+        grid.Print(false);
+        Console.WriteLine("Indexed");
     }
 
     public static Grid<Point> GetGrid(GridType gridType, AsymmetrySide asymmetrySide, bool rowsSameNumber = false, bool columnsSameNumber = false)
@@ -46,6 +55,7 @@ internal class Lalala
         {
             AsymmetrySide.MoreRows or AsymmetrySide.ManyColumns => 4,
             AsymmetrySide.ManyRows or AsymmetrySide.BigSquare => 7,
+            AsymmetrySide.HugeSquare => 15,
             _ => 3
         };
 
@@ -53,6 +63,7 @@ internal class Lalala
         {
             AsymmetrySide.MoreColumns or AsymmetrySide.ManyRows => 4,
             AsymmetrySide.ManyColumns or AsymmetrySide.BigSquare => 7,
+            AsymmetrySide.HugeSquare => 15,
             _ => 3
         };
 
@@ -125,5 +136,6 @@ internal class Lalala
         ManyRows,
         ManyColumns,
         BigSquare,
+        HugeSquare,
     }
 }

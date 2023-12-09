@@ -123,20 +123,20 @@ public class IndexedCoordinates : Coordinates
         };
     }
 
-    protected override Direction GetDirectionOpposite(Coordinates dest)
+    protected override Direction GetDirectionOpposite(Coordinates awayFrom)
     {
-        return dest switch
+        return awayFrom switch
         {
-            _ when dest.X < X && dest.Y < Y => Direction.UL,
-            _ when dest.X < X && dest.Y > Y => Direction.DL,
-            _ when dest.X < X => Direction.L,
+            _ when awayFrom.X < X && awayFrom.Y < Y => Direction.DR,
+            _ when awayFrom.X < X && awayFrom.Y > Y => Direction.UR,
+            _ when awayFrom.X < X => Direction.R,
 
-            _ when dest.X > X && dest.Y < Y => Direction.UR,
-            _ when dest.X > X && dest.Y > Y => Direction.DR,
-            _ when dest.X > X => Direction.R,
+            _ when awayFrom.X > X && awayFrom.Y < Y => Direction.DL,
+            _ when awayFrom.X > X && awayFrom.Y > Y => Direction.UL,
+            _ when awayFrom.X > X => Direction.L,
 
-            _ when dest.Y < Y => Direction.D,
-            _ when dest.Y > Y => Direction.U,
+            _ when awayFrom.Y < Y => Direction.D,
+            _ when awayFrom.Y > Y => Direction.U,
 
             _ => throw new ArgumentException()
         };
