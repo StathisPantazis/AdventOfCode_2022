@@ -66,8 +66,8 @@ internal static class GridBuilder
 
         return gridType switch
         {
-            GridType.Indexed => new IndexedGrid<Point>(ListBuilder.ForI(0, rows).Select(x => ListBuilder.ForI(0, columns).Select(y => new Point(getCounter())).ToList())),
-            GridType.Cartesian => new CartesianGrid<Point>(ListBuilder.ForI(0, rows).Select(x => ListBuilder.ForI(0, columns).Select(y => new Point(getCounter())).ToList())),
+            GridType.Indexed => new IndexedGrid<Point>(ListBuilder.ForI(rows).Select(x => ListBuilder.ForI(columns).Select(y => new Point(getCounter())).ToList())),
+            GridType.Cartesian => new CartesianGrid<Point>(ListBuilder.ForI(rows).Select(x => ListBuilder.ForI(columns).Select(y => new Point(getCounter())).ToList())),
             _ => throw new NotImplementedException()
         };
     }

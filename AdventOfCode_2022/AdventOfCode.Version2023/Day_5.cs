@@ -51,7 +51,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
 
     protected override long Part2(List<long> seeds)
     {
-        var seedRanges = ListBuilder.ForI(0, seeds.Count, 2)
+        var seedRanges = ListBuilder.ForI(seeds.Count, 2)
             .Select(i => (seeds[i], seeds[i] + seeds[i + 1]))
             .ToList();
 

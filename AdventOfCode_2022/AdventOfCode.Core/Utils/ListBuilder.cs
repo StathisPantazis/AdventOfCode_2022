@@ -38,6 +38,8 @@ public static class ListBuilder
         return list;
     }
 
+    public static List<int> ForI(long times, long step = 1) => ForI(0, times, step).Select(x => (int)x).ToList();
+    public static List<int> ForI(int times, int step = 1) => ForI((long)0, times, step).Select(x => (int)x).ToList();
     public static List<int> ForI(int start, int times, int step = 1) => ForI((long)start, times, step).Select(x => (int)x).ToList();
 
     public static List<char> CharRange(char start, char stop, int step = 1)

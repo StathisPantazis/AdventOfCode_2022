@@ -1,10 +1,5 @@
-﻿//using AdventOfCode.Core.Models;
-//using AdventOfCode.Version2023;
-
-//var day = new Day_5();
-//day.Solve(AoCResourceType.Solution);
-
+﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Version2023;
 
-var la = new Lalala();
-la.Run();
+var day = new Day_9();
+day.Solve(AoCResourceType.Example);
