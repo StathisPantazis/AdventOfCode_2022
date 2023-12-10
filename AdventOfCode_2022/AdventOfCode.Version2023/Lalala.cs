@@ -5,9 +5,9 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
 
-internal class Lalala
+internal static class Lalala
 {
-    public void Run()
+    public static void Run()
     {
         var grid = GetGrid(GridType.Cartesian, AsymmetrySide.None);
 

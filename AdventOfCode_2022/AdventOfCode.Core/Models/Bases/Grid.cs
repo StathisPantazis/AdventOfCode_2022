@@ -40,6 +40,20 @@ public abstract class Grid<T> : IGrid
         _emptyValue = GetDefault();
         Rows = source.Select(line => line.Select(elem => (T)(object)elem).ToList()).ToList();
         RebuildColumns();
+
+        if (typeof(T).IsSubclassOf(typeof(CoordinatesNode)))
+        {
+            for (var y = 0; y < Rows.Count; y++)
+            {
+                for (var x = 0; x < Columns.Count; x++)
+                {
+                    if (this[x, y] is CoordinatesNode coordinatesNode)
+                    {
+                        coordinatesNode.Position = GetCoordinates(x, y);
+                    }
+                }
+            }
+        }
     }
 
     protected Grid(IEnumerable<IEnumerable<T>> source, T emptyValue) : this(source)

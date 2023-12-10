@@ -43,8 +43,8 @@ public abstract class Coordinates
     protected bool LeftestCol => X == 0;
     protected bool RightestCol => X == X_Border;
 
-    public Coordinates R => Copy(X + 1, Y);
-    public Coordinates L => Copy(X - 1, Y);
+    public Coordinates R => X + 1 <= X_Border ? Copy(X + 1, Y) : null;
+    public Coordinates L => X - 1 >= 0 ? Copy(X - 1, Y) : null;
     public abstract Coordinates U { get; }
     public abstract Coordinates D { get; }
     public abstract Coordinates UR { get; }
@@ -148,61 +148,60 @@ public abstract class Coordinates
         };
     }
 
-    public List<Coordinates> GetAllNeighbours(Func<Coordinates, bool> condition = null)
+    public List<Coordinates> GetFromDirections(List<Direction> directions)
+    {
+        var coords = new List<Coordinates>();
+
+        foreach (var dir in directions)
+        {
+            coords.Add(GetFromDirection(dir));
+        }
+
+        return coords;
+    }
+
+    public List<Coordinates> GetAllNeighbours(bool allowDiagonal = true, Func<Coordinates, bool> filterCondition = null)
     {
         var isOnBorder = IsOnBorder;
 
-        List<Coordinates> neighbours = isOnBorder ? new() : new()
-        {
-            R,
-            L,
-            U,
-            D,
-            UR,
-            DR,
-            UL,
-            DL,
-        };
+        var neighbours = new List<Coordinates>();
 
-        if (isOnBorder)
+        if (CanMove(Direction.R))
         {
-            if (CanMove(Direction.R))
-            {
-                neighbours.Add(R);
-            }
-            if (CanMove(Direction.L))
-            {
-                neighbours.Add(L);
-            }
-            if (CanMove(Direction.U))
-            {
-                neighbours.Add(U);
-            }
-            if (CanMove(Direction.D))
-            {
-                neighbours.Add(D);
-            }
-            if (CanMove(Direction.UR))
-            {
-                neighbours.Add(UR);
-            }
-            if (CanMove(Direction.DR))
-            {
-                neighbours.Add(DR);
-            }
-            if (CanMove(Direction.UL))
-            {
-                neighbours.Add(UL);
-            }
-            if (CanMove(Direction.DL))
-            {
-                neighbours.Add(DL);
-            }
+            neighbours.Add(R);
+        }
+        if (CanMove(Direction.L))
+        {
+            neighbours.Add(L);
+        }
+        if (CanMove(Direction.U))
+        {
+            neighbours.Add(U);
+        }
+        if (CanMove(Direction.D))
+        {
+            neighbours.Add(D);
+        }
+        if (CanMove(Direction.UR) && allowDiagonal)
+        {
+            neighbours.Add(UR);
+        }
+        if (CanMove(Direction.DR) && allowDiagonal)
+        {
+            neighbours.Add(DR);
+        }
+        if (CanMove(Direction.UL) && allowDiagonal)
+        {
+            neighbours.Add(UL);
+        }
+        if (CanMove(Direction.DL) && allowDiagonal)
+        {
+            neighbours.Add(DL);
         }
 
-        return condition == null
+        return filterCondition == null
             ? neighbours.ToList()
-            : neighbours.Where(x => condition(x)).ToList();
+            : neighbours.Where(x => filterCondition(x)).ToList();
     }
 
     protected static int GetXmove(Direction direction)

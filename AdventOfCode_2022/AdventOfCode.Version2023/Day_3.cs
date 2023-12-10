@@ -35,7 +35,7 @@ public class Day_3 : AoCBaseDay<int, int, IndexedGrid<Point>>
 
                 if (!number.IsPartNumber)
                 {
-                    var neighbours = coord.GetAllNeighbours(x => grid[x].IsSymbol);
+                    var neighbours = coord.GetAllNeighbours(filterCondition: x => grid[x].IsSymbol);
 
                     foreach (var neighbour in neighbours)
                     {
@@ -67,7 +67,7 @@ public class Day_3 : AoCBaseDay<int, int, IndexedGrid<Point>>
 
             if (point.Character == "*")
             {
-                var neighbours = coord.GetAllNeighbours(x => grid[x].IsNumber);
+                var neighbours = coord.GetAllNeighbours(filterCondition: x => grid[x].IsNumber);
                 var adjacentNumbers = new List<Number>();
 
                 foreach (var neighbour in neighbours)

@@ -1,10 +1,8 @@
-﻿//using AdventOfCode.Core.Models;
-//using AdventOfCode.Version2023;
-
-//var day = new Day_9();
-//day.Solve(AoCResourceType.Example);
-
+﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Version2023;
+using System.Text;
 
-var lala = new Lalala();
-lala.Run();
+Console.OutputEncoding = Encoding.GetEncoding("UTF-8");
+
+var day = new Day_10();
+day.Solve(AoCResourceType.Solution);

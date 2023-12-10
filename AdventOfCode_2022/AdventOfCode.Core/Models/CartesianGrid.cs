@@ -74,6 +74,7 @@ public class CartesianGrid<T> : Grid<T>
         }
     }
 
+
     public override List<T> RowSliceLeft(int x, int y, bool includePosition = false)
         => Rows[CartesianY(y)].Take(x + (includePosition ? 1 : 0)).ToList();
 

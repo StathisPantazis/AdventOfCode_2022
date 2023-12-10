@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core.Extensions;
+using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
 using System.Data;
@@ -30,18 +31,19 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
             {
                 var source = map.Sources[i];
                 var dest = map.Destinations[i];
-
-                map.Distances.Add(dest - source);
-                map.SourceGreaterThanDest.Add(dest > source);
             }
         }
 
         var seeds = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
             .First().Split(": ")[1].Split(' ').Select(long.Parse).ToList();
 
+        seeds.Clear();
+        seeds.Add(3969171812);
+
         Console.WriteLine(Part1(seeds));
 
-        return Solution(seeds);
+        return default;
+        //return Solution(seeds);
     }
 
     protected override long Part1(List<long> seeds)
@@ -62,7 +64,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         for (var i = 0; i < seedRanges.Count; i++)
         {
             var range = seedRanges[i];
-            var searchRange = ListBuilder.FromXtoN(range.Item1, range.Item2, StepConsideringExample(range.Item1, 1));
+            var searchRange = ListBuilder.FromXtoN(range.Item1, range.Item2, StepConsideringExample(range.Item1, 10000));
             var result = GetBestLocation(searchRange);
             result.SearchIndex = i;
             Console.WriteLine(result);
@@ -75,26 +77,26 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         Console.WriteLine("\nSelecting best result...");
         Console.WriteLine(bestResult);
 
-        //// Filter best range
-        //Console.WriteLine("\nFiltering best range...");
-        //var range1 = seedRanges[bestResult.SearchIndex];
-        //var searchRange1 = ListBuilder.RangeFromTo(range1.Item1, range1.Item2, StepConsideringExample(range1.Item1, 9999));
-        //var result1 = GetBestLocation(searchRange1);
-        //Console.WriteLine($"From: {result1}");
+        // Filter best range
+        Console.WriteLine("\nFiltering best range...");
+        var range1 = seedRanges[bestResult.SearchIndex];
+        var searchRange1 = ListBuilder.FromXtoN(range1.Item1, range1.Item2, StepConsideringExample(range1.Item1, 10000));
+        var result1 = GetBestLocation(searchRange1);
+        Console.WriteLine($"From: {result1}");
 
-        //if (result1.Location < bestResult.Location)
-        //{
-        //    bestResult = result1;
-        //}
-        //Console.WriteLine($"To: {bestResult}");
+        if (result1.Location < bestResult.Location)
+        {
+            bestResult = result1;
+        }
+        Console.WriteLine($"To: {bestResult}");
 
-        //// Pad best result
-        //Console.WriteLine("\nPadding result...");
-        //var searchRange2 = ListBuilder.RangeFromTo((bestResult.Seed - 10000).AtLeast(range1.Item1), (bestResult.Seed + 10000).LimitBy(range1.Item2), 1);
-        //var result2 = GetBestLocation(searchRange2);
+        // Pad best result
+        Console.WriteLine("\nPadding result...");
+        var searchRange2 = ListBuilder.FromXtoN((bestResult.Seed - 10000).AtLeast(range1.Item1), (bestResult.Seed + 10000).LimitBy(range1.Item2), 1);
+        var result2 = GetBestLocation(searchRange2);
 
-        //Console.WriteLine("\nBest Solution:");
-        //Console.WriteLine(result2);
+        Console.WriteLine("\nBest Solution:");
+        Console.WriteLine(result2);
 
         return default;
     }
@@ -115,13 +117,12 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
             {
                 for (var j = 0; j < map.Sources.Count; j++)
                 {
-                    var sourceGreaterThanDest = map.SourceGreaterThanDest[j];
                     var mapLength = map.Lengths[j];
                     var min = map.Sources[j];
 
                     if (location >= min && location <= min + mapLength)
                     {
-                        location += map.Distances[j];
+                        location += map.Destinations[j] - min;
                         break;
                     }
                 }
@@ -140,7 +141,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         return results.OrderBy(x => x.Location).First();
     }
 
-    private static int StepConsideringExample(long start, int step) => start < 100 ? 1 : step;
+    private static int StepConsideringExample(long start, int step) => start < 10000 ? 1 : step;
 
     public class Map
     {
@@ -149,8 +150,6 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         public List<long> Sources { get; set; }
         public List<long> Destinations { get; set; }
         public List<long> Lengths { get; set; }
-        public List<long> Distances { get; set; } = new();
-        public List<bool> SourceGreaterThanDest { get; set; } = new();
 
         public override string ToString() => $"{SourceName} to {DestinationName}";
     }

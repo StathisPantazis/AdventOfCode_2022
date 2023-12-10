@@ -36,8 +36,8 @@ public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
         }
 
         var bfs = GetBFS(grid);
-        bfs.SearchShortestPath(start);
-        return bfs.ShortestPath;
+        bfs.Search(start);
+        return bfs.PathLength;
     }
 
     protected override int Part2(IndexedGrid<int> grid)
@@ -60,10 +60,10 @@ public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
 
         foreach (var node in nodes)
         {
-            bfs.SearchShortestPath(node);
+            bfs.Search(node);
             if (bfs.PathFound)
             {
-                shortestPath = bfs.ShortestPath < shortestPath ? bfs.ShortestPath : shortestPath;
+                shortestPath = bfs.PathLength < shortestPath ? bfs.PathLength : shortestPath;
             }
         }
 
@@ -80,7 +80,7 @@ public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
             foreach (var dir in _allowedMoves)
             {
                 var next = node.Position.GetFromDirection(dir);
-                if (next.NotEquals(node.Position) && next.IsInsideOfBorder && grid[next] - grid[node.Position] <= 1)
+                if (next is not null && next.NotEquals(node.Position) && next.IsInsideOfBorder && grid[next] - grid[node.Position] <= 1)
                 {
                     neighbours.Add(new Node(next));
                 }

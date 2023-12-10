@@ -28,12 +28,12 @@ public class IndexedCoordinates : Coordinates
     protected override bool BottomestRow => Y == Y_Border;
     protected override bool TopestRow => Y == 0;
 
-    public override Coordinates U => Copy(X, Y - 1);
-    public override Coordinates D => Copy(X, Y + 1);
-    public override Coordinates UR => Copy(X + 1, Y - 1);
-    public override Coordinates DR => Copy(X + 1, Y + 1);
-    public override Coordinates UL => Copy(X - 1, Y - 1);
-    public override Coordinates DL => Copy(X - 1, Y + 1);
+    public override Coordinates U => Y - 1 >= 0 ? Copy(X, Y - 1) : null;
+    public override Coordinates D => Y + 1 <= Y_Border ? Copy(X, Y + 1) : null;
+    public override Coordinates UR => X + 1 <= X_Border && Y - 1 >= 0 ? Copy(X + 1, Y - 1) : null;
+    public override Coordinates DR => X + 1 <= X_Border && Y + 1 <= Y_Border ? Copy(X + 1, Y + 1) : null;
+    public override Coordinates UL => X - 1 >= 0 && Y - 1 >= 0 ? Copy(X - 1, Y - 1) : null;
+    public override Coordinates DL => X - 1 >= 0 && Y + 1 <= Y_Border ? Copy(X - 1, Y + 1) : null;
 
     public override Coordinates Copy() => Copy(X, Y);
     public override Coordinates Copy(int newX, int newY) => new IndexedCoordinates(X_Border + 1, Y_Border + 1, newX, newY);

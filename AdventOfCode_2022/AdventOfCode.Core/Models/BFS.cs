@@ -24,14 +24,14 @@ public class BFS<TNode> where TNode : NodeBase
     }
 
     public Queue<TNode> Queue { get; set; }
-    public HashSet<TNode> Visited { get; set; }
+    public Dictionary<NodeBase, bool> Visited { get; set; }
     public Dictionary<TNode, int> Memos { get; set; } = new();
     public int VisitedCountHit { get; set; }
     public int PruneCountHit { get; set; }
-    public int ShortestPath { get; set; }
+    public int PathLength { get; set; }
     public bool PathFound { get; set; }
 
-    public void SearchShortestPath(TNode start, bool debugMode = false)
+    public void Search(TNode start, bool debugMode = false)
     {
         Stopwatch sw = new();
         sw.Start();
@@ -57,11 +57,11 @@ public class BFS<TNode> where TNode : NodeBase
                 if (Queue.Contains(n))
                     continue;
 
-                if (Visited.Contains(n))
+                if (Visited.ContainsKey(n))
                 {
                     VisitedCountHit++;
                 }
-                else if (Prune is not null && Prune(node))
+                else if (debugMode && Prune is not null && Prune(node))
                 {
                     PruneCountHit++;
                 }
@@ -74,7 +74,7 @@ public class BFS<TNode> where TNode : NodeBase
             }
         }
 
-        ShortestPath = PathFound ? CountParents(node) + Memos[node] : int.MaxValue;
+        PathLength = PathFound ? BFS<TNode>.CountParents(node) + Memos[node] : int.MaxValue;
         sw.Stop();
 
         if (debugMode)
@@ -96,7 +96,7 @@ public class BFS<TNode> where TNode : NodeBase
         {
             VisitNode(node);
         }
-        Visited.Add(node);
+        Visited.Add(node, true);
     }
 
     private bool Close(TNode node)
@@ -120,7 +120,7 @@ public class BFS<TNode> where TNode : NodeBase
         return false;
     }
 
-    private int CountParents(TNode node)
+    private static int CountParents(TNode node)
     {
         var steps = 0;
         var parent = (TNode)node.Parent;
@@ -135,10 +135,10 @@ public class BFS<TNode> where TNode : NodeBase
     private void ResetNodes()
     {
         Queue = new Queue<TNode>();
-        Visited = new HashSet<TNode>();
+        Visited = new Dictionary<NodeBase, bool>();
         PathFound = false;
         VisitedCountHit = 0;
         PruneCountHit = 0;
-        ShortestPath = -1;
+        PathLength = -1;
     }
 }

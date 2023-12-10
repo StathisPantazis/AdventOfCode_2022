@@ -6,6 +6,12 @@ namespace AdventOfCode.Core.Extensions;
 
 public static class ListExtensions
 {
+    public static List<T> ReverseList<T>(this List<T> list)
+    {
+        list.Reverse();
+        return list;
+    }
+
     public static int NMax<T>(this IEnumerable<T> collection, int nth, Func<T, int> selector)
     {
         return collection.Select(selector).OrderByDescending(x => x).Skip(nth - 1).First();
