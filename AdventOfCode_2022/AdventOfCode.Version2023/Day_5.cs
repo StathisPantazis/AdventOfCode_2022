@@ -25,25 +25,10 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
             } : new())
             .ToList();
 
-        foreach (var map in _maps)
-        {
-            for (var i = 0; i < map.Sources.Count; i++)
-            {
-                var source = map.Sources[i];
-                var dest = map.Destinations[i];
-            }
-        }
-
         var seeds = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
             .First().Split(": ")[1].Split(' ').Select(long.Parse).ToList();
 
-        seeds.Clear();
-        seeds.Add(3969171812);
-
-        Console.WriteLine(Part1(seeds));
-
-        return default;
-        //return Solution(seeds);
+        return Solution(seeds);
     }
 
     protected override long Part1(List<long> seeds)
@@ -59,46 +44,22 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
 
         var bestResult = new SearchResult(long.MaxValue, long.MaxValue);
 
-        Console.WriteLine("Getting best range...");
         // Get best range
         for (var i = 0; i < seedRanges.Count; i++)
         {
             var range = seedRanges[i];
-            var searchRange = ListBuilder.FromXtoN(range.Item1, range.Item2, StepConsideringExample(range.Item1, 10000));
+            var searchRange = ListBuilder.FromXtoN(range.Item1, range.Item2, 10000);
             var result = GetBestLocation(searchRange);
+
             result.SearchIndex = i;
-            Console.WriteLine(result);
-
-            if (result.Location < bestResult.Location)
-            {
-                bestResult = result;
-            }
+            bestResult = result.Location < bestResult.Location ? result : bestResult;
         }
-        Console.WriteLine("\nSelecting best result...");
-        Console.WriteLine(bestResult);
-
-        // Filter best range
-        Console.WriteLine("\nFiltering best range...");
-        var range1 = seedRanges[bestResult.SearchIndex];
-        var searchRange1 = ListBuilder.FromXtoN(range1.Item1, range1.Item2, StepConsideringExample(range1.Item1, 10000));
-        var result1 = GetBestLocation(searchRange1);
-        Console.WriteLine($"From: {result1}");
-
-        if (result1.Location < bestResult.Location)
-        {
-            bestResult = result1;
-        }
-        Console.WriteLine($"To: {bestResult}");
 
         // Pad best result
-        Console.WriteLine("\nPadding result...");
-        var searchRange2 = ListBuilder.FromXtoN((bestResult.Seed - 10000).AtLeast(range1.Item1), (bestResult.Seed + 10000).LimitBy(range1.Item2), 1);
-        var result2 = GetBestLocation(searchRange2);
+        var bestRange = ListBuilder.FromXtoN((bestResult.Seed - 10000).AtLeast(seedRanges[bestResult.SearchIndex].Item1), (bestResult.Seed + 10000).LimitBy(seedRanges[bestResult.SearchIndex].Item2), 1);
+        var result2 = GetBestLocation(bestRange);
 
-        Console.WriteLine("\nBest Solution:");
-        Console.WriteLine(result2);
-
-        return default;
+        return result2.Location;
     }
 
     private SearchResult GetBestLocation(List<long> seeds)
@@ -120,7 +81,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
                     var mapLength = map.Lengths[j];
                     var min = map.Sources[j];
 
-                    if (location >= min && location <= min + mapLength)
+                    if (location >= min && location < min + mapLength)
                     {
                         location += map.Destinations[j] - min;
                         break;
@@ -140,8 +101,6 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
 
         return results.OrderBy(x => x.Location).First();
     }
-
-    private static int StepConsideringExample(long start, int step) => start < 10000 ? 1 : step;
 
     public class Map
     {
