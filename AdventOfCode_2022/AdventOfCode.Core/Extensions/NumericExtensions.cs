@@ -6,6 +6,7 @@ public static class NumericExtensions
 {
     public static bool IsEven(this int number) => number % 2 == 0;
     public static bool IsOdd(this int number) => !IsEven(number);
+    public static int MinBetween(int min, int max) => min < max ? min : max;
     public static int MaxBetween(int min, int max) => min > max ? min : max;
     public static long MaxBetween(long min, long max) => min > max ? min : max;
     public static int LimitBy(this int value, int max) => value <= max ? value : max;

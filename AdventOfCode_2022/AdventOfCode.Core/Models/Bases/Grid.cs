@@ -95,14 +95,17 @@ public abstract class Grid<T> : IGrid
 
     public void InsertColumn(int index, T emptyValue, int repeat = 1, bool rebuildColumns = true)
     {
-        ListExtensions.ForNTimesDo(repeat, () =>
+        for (var i = 0; i < repeat; i++)
         {
-            Rows.ForEach(row => row.Insert(index, emptyValue));
-            if (rebuildColumns)
+            var total = Rows.Count;
+
+            for (var r = 0; r < total; r++)
             {
-                RebuildColumns();
+                Rows[r].Insert(index, emptyValue);
             }
-        });
+        }
+
+        RebuildColumns();
     }
 
     public void AddColumn(T emptyValue, int repeat = 1, bool rebuildColumns = true)
