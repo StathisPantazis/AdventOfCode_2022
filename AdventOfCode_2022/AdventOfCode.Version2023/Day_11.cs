@@ -60,7 +60,7 @@ public class Day_11 : AoCBaseDay<long, long, IndexedGrid<string>>
         {
             for (var j = i + 1; j < galaxies.Count; j++)
             {
-                totalSteps += Math.Abs(galaxies[i].X - galaxies[j].X) + Math.Abs(galaxies[i].Y - galaxies[j].Y);
+                totalSteps += galaxies[i].GetDistance(galaxies[j], canGoDiagonally: false);
             }
         }
 

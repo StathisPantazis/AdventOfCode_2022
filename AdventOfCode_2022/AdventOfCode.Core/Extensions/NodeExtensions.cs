@@ -1,9 +1,9 @@
-﻿using AdventOfCode.Core.Models.Interfaces;
+﻿using AdventOfCode.Core.Models.Bases;
 
 namespace AdventOfCode.Core.Extensions;
 
 public static class NodeExtensions
 {
-    public static void AddChild(this INode node, INode child) => node.Children.Add(child);
-    public static void SetParent(this INode node, INode parent) => node.Parent = parent;
+    public static void AddChild(this NodeBase node, NodeBase child) => node.Children.Add(child);
+    public static void SetParent(this NodeBase node, NodeBase parent) => node.Parent = parent;
 }

@@ -204,6 +204,13 @@ public abstract class Coordinates
             : neighbours.Where(x => filterCondition(x)).ToList();
     }
 
+    public int GetDistance(Coordinates target, bool canGoDiagonally)
+    {
+        return canGoDiagonally
+            ? Math.Max(Math.Abs(X - target.X), Math.Abs(Y - target.Y))
+            : Math.Abs(X - target.X) + Math.Abs(Y - target.Y);
+    }
+
     protected static int GetXmove(Direction direction)
     {
         return direction switch
