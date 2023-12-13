@@ -56,7 +56,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
         }
 
         // Pad best result
-        var bestRange = ListBuilder.FromXtoN((bestResult.Seed - 10000).AtLeast(seedRanges[bestResult.SearchIndex].Item1), (bestResult.Seed + 10000).LimitBy(seedRanges[bestResult.SearchIndex].Item2), 1);
+        var bestRange = ListBuilder.FromXtoN((bestResult.Seed - 10000).AtLeast(seedRanges[bestResult.SearchIndex].Item1), (bestResult.Seed + 10000).AtMost(seedRanges[bestResult.SearchIndex].Item2), 1);
         var result2 = GetBestLocation(bestRange);
 
         return result2.Location;

@@ -173,6 +173,8 @@ public static class ListExtensions
         return stringBuilder.ToString();
     }
 
+    public static string AsString(this IEnumerable<char> letters) => string.Join(string.Empty, letters);
+
     public static int Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector) => Multiply(source, selector);
     public static long Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, long> selector) => Multiply(source, selector);
     public static float Multiply<TSource>(this IEnumerable<TSource> source, Func<TSource, float> selector) => Multiply(source, selector);
