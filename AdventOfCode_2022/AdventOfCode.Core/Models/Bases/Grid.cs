@@ -138,9 +138,41 @@ public abstract class Grid<T> : IGrid
 
     public List<T> GetAllPoints() => Rows.SelectMany(x => x.Select(y => y)).ToList();
 
+    public bool RowIndexIsOnBorder(int index) => index == 0 || index == Height - 1;
+
+    public bool AnyRowIndexesAreOnBorder(params int[] indexes) => indexes.Any(index => index == 0 || index == Height - 1);
+
+    public bool ColumnIndexIsOnBorder(int index) => index == 0 || index == Width - 1;
+
+    public bool AnyIndexesAreOnBorder(GridSide gridSide, params int[] indexes) => gridSide is GridSide.Row ? AnyRowIndexesAreOnBorder(indexes) : AnyColumnIndexesAreOnBorder(indexes);
+
+    public bool AnyColumnIndexesAreOnBorder(params int[] indexes) => indexes.Any(index => index == 0 || index == Width - 1);
+
+    public void ReplaceRow(int y, List<T> newRow)
+    {
+        var existingRow = Row(y);
+
+        for (var i = 0; i < existingRow.Count; i++)
+        {
+            existingRow[i] = newRow[i];
+        }
+    }
+
+    public void ReplaceColumn(int x, List<T> newColumn)
+    {
+        var existingColumn = Column(x);
+
+        for (var i = 0; i < existingColumn.Count; i++)
+        {
+            existingColumn[i] = newColumn[i];
+        }
+    }
+
+    public List<T> RowOrColumn(GridSide gridSide, int index) => gridSide is GridSide.Row ? Row(index) : Column(index);
+
     protected void RebuildColumns()
     {
-        Columns = Enumerable.Range(0, Width).Select(x => Enumerable.Range(0, Height).Select(y => x < Height ? Rows[y][x] : GenericBuilder.GetDefault(_emptyValue)).ToList()).ToList();
+        Columns = Enumerable.Range(0, Width).Select(x => Enumerable.Range(0, Height).Select(y => x < Width ? Rows[y][x] : GenericBuilder.GetDefault(_emptyValue)).ToList()).ToList();
     }
 
     private static List<List<TType>> GetEmptyGridLines<TType>(int rows, int columns, TType emptyValue = default)
