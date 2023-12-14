@@ -40,7 +40,7 @@ public static class Printer
         Console.WriteLine(grid.ToString(itemSeparator, rowSeparator));
     }
 
-    public static void Print(this IGrid grid, bool clearConsole, bool padTop = true) => grid.Print(clearConsole: clearConsole, padTop: padTop);
+    public static void Print(this IGrid grid, bool clearConsole, bool padTop = true) => grid.Print("", "\n", clearConsole: clearConsole, padTop: padTop);
 
     public static void Print(this Coordinates coord, bool clearConsole = true, bool padTop = true)
     {

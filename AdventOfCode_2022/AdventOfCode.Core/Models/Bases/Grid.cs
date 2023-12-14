@@ -40,20 +40,7 @@ public abstract class Grid<T> : IGrid
         _emptyValue = GetDefault();
         Rows = source.Select(line => line.Select(elem => (T)(object)elem).ToList()).ToList();
         RebuildColumns();
-
-        if (typeof(T).IsSubclassOf(typeof(CoordinatesNode)))
-        {
-            for (var y = 0; y < Rows.Count; y++)
-            {
-                for (var x = 0; x < Columns.Count; x++)
-                {
-                    if (this[x, y] is CoordinatesNode coordinatesNode)
-                    {
-                        coordinatesNode.Position = GetCoordinates(x, y);
-                    }
-                }
-            }
-        }
+        RebuildCoordinates();
     }
 
     protected Grid(IEnumerable<IEnumerable<T>> source, T emptyValue) : this(source)
@@ -136,7 +123,19 @@ public abstract class Grid<T> : IGrid
 
     public abstract List<T> ColumnSliceDown(int x, int y, bool includePosition = false);
 
-    public List<T> GetAllPoints() => Rows.SelectMany(x => x.Select(y => y)).ToList();
+    public List<T> GetAllPoints(Func<T, bool> whereClause = null)
+    {
+        return whereClause is null
+            ? Rows.SelectMany(x => x.Select(y => y)).ToList()
+            : Rows.SelectMany(x => x.Select(y => y)).Where(x => whereClause(x)).ToList();
+    }
+
+    public T GetPoint(Func<T, bool> whereClause = null)
+    {
+        return whereClause is null
+            ? Rows.SelectMany(x => x.Select(y => y)).FirstOrDefault()
+            : Rows.SelectMany(x => x.Select(y => y)).FirstOrDefault(x => whereClause(x));
+    }
 
     public bool RowIndexIsOnBorder(int index) => index == 0 || index == Height - 1;
 
@@ -169,6 +168,52 @@ public abstract class Grid<T> : IGrid
     }
 
     public List<T> RowOrColumn(GridSide gridSide, int index) => gridSide is GridSide.Row ? Row(index) : Column(index);
+
+    //public void RotateRightBecomesLeft????()
+    //{
+    //    var newRows = new List<List<T>>();
+
+    //    for (var x = Width - 1; x > -1; x--)
+    //    {
+    //        newRows.Add(Columns[x]);
+    //    }
+
+    //    Rows = newRows;
+
+    //    RebuildColumns();
+    //    RebuildCoordinates();
+    //}
+
+    public void Rotate()
+    {
+        var newRows = new List<List<T>>();
+
+        for (var x = 0; x < Width; x++)
+        {
+            newRows.Add(Columns[x].ReverseList());
+        }
+
+        Rows = newRows;
+
+        RebuildColumns();
+        RebuildCoordinates();
+    }
+    public void RebuildCoordinates()
+    {
+        if (typeof(T).IsSubclassOf(typeof(CoordinatesNode)))
+        {
+            for (var y = 0; y < Rows.Count; y++)
+            {
+                for (var x = 0; x < Columns.Count; x++)
+                {
+                    if (this[x, y] is CoordinatesNode coordinatesNode)
+                    {
+                        coordinatesNode.Position = GetCoordinates(x, y);
+                    }
+                }
+            }
+        }
+    }
 
     protected void RebuildColumns()
     {

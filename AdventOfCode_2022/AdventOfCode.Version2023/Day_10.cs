@@ -49,7 +49,7 @@ public class Day_10 : AoCBaseDay<int, int, IndexedGrid<Node>>
 
     protected override int Part1(IndexedGrid<Node> grid)
     {
-        var start = grid.GetAllPoints().Single(x => x.Text == "S").Position;
+        var start = grid.GetPoint(x => x.Text == "S").Position;
 
         var searchStart = new List<Direction> { Direction.U, Direction.D, Direction.L, Direction.R }
             .Where(dir => start.GetFromDirection(dir) is Coordinates nextPos && DirectionToIsAllowed(dir, grid[start], grid[nextPos]))
@@ -62,28 +62,22 @@ public class Day_10 : AoCBaseDay<int, int, IndexedGrid<Node>>
 
     protected override int Part2(IndexedGrid<Node> grid)
     {
-        grid.GetAllPoints().Where(x => !x.IsBorder).ForEachDo(x => x.Text = " ");
-        var inwardDirection = grid.GetAllPoints().FirstOrDefault(x => x.Text == "|").DirectionThatWasReached is Direction.U ? Direction.R : Direction.L;
+        grid.GetAllPoints(x => !x.IsBorder).ForEachDo(x => x.Text = " ");
+        var inwardDirection = grid.GetPoint(x => x.Text == "|").DirectionThatWasReached is Direction.U ? Direction.R : Direction.L;
 
-        return grid.GetAllPoints()
-            .Where(x => !x.IsBorder && !x.IsStart)
-            .Where(x => !x.Position.IsOnBorder)
-            .Where(x => grid.RowSliceRight(x.Position).FirstOrDefault(x => x.IsBorder) is Node node && node.LeftSideIsInsideOfBorder(inwardDirection))
-            .Count();
+        return grid.GetAllPoints(x =>
+                   !x.IsBorder
+                && !x.IsStart
+                && !x.Position.IsOnBorder
+                && grid.RowSliceRight(x.Position).FirstOrDefault(x => x.IsBorder) is Node node && node.LeftSideIsInsideOfBorder(inwardDirection))
+            .Count;
     }
 
-    public class Node : CoordinatesNode
+    public class Node(string text) : CoordinatesNode
     {
-        public Node(string text)
-        {
-            Text = text;
-            InitialTile = text;
-            IsStart = text == "S";
-        }
-
-        public string InitialTile { get; }
-        public bool IsStart { get; }
-        public string Text { get; set; }
+        public string InitialTile { get; } = text;
+        public bool IsStart { get; } = text == "S";
+        public string Text { get; set; } = text;
         public int Step { get; set; }
         public Direction DirectionThatWasReached { get; set; }
         public bool IsBorder { get; set; }
