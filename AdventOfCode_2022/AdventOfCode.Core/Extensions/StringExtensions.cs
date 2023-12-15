@@ -8,7 +8,20 @@ public static class StringExtensions
 
     public static int FromBinaryToInt(this string binary) => Convert.ToInt32(binary, 2);
 
+    public static int ToAscii(this char character) => Convert.ToInt32(character);
+
+    public static int ToAscii(this string str) => str.Length != 1 ? throw new InvalidDataException() : Convert.ToInt32(str[0]);
+
     public static string ReverseString(this string str) => string.Join(string.Empty, str.Reverse());
+
+    public static string[]? SplitMinLengthCheck(this string str, string separator, int minLength, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
+        => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length >= minLength ? arr : null;
+
+    public static string[]? SplitMaxLengthCheck(this string str, string separator, int maxLength, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
+        => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length <= maxLength ? arr : null;
+
+    public static string[]? SplitExactLengthCheck(this string str, string separator, int length, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
+        => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length == length ? arr : null;
 
     public static int Count(this string str, char character) => str.Count(x => x == character);
     public static int CountImmediate(this string str, params char[] characters) => str.TakeWhile((c, i) => i == 0 || characters.Contains(c)).Count(c => characters.Contains(c));
