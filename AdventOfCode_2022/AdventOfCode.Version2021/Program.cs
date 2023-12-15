@@ -4,5 +4,5 @@ using System.Text;
 
 Console.OutputEncoding = Encoding.GetEncoding("UTF-8");
 
-var day = new Day_5();
+var day = new Day_05();
 day.Solve(AoCResourceType.Example);

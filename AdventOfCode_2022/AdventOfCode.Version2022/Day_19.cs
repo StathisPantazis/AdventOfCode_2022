@@ -9,11 +9,11 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace("Blueprint ", "").Replace(": Each ore robot costs ", ",").Replace(" ore. Each clay robot costs ", ",").Replace(" ore. Each obsidian robot costs ", ",")
             .Replace(" ore and ", ",").Replace(" clay. Each geode robot costs ", ",").Replace(" obsidian.", "");
 
-        var blueprints = Helpers.Text_CleanReadLines(text)
+        var blueprints = Helpers.TextCleanReadLines(text)
             .Select(x => x.Split(','))
             .Select(x => new Blueprint(int.Parse(x[0].ToString()), int.Parse(x[1].ToString()), int.Parse(x[2].ToString()), int.Parse(x[3].ToString()), int.Parse(x[4].ToString()), int.Parse(x[5].ToString()), int.Parse(x[6].ToString())))
             .ToList();

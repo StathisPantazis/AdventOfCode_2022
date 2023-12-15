@@ -69,7 +69,7 @@ public class Day_14 : AoCBaseDay<int, int, AoCResourceType>
     }
 
     private CartesianGrid<Rock> GetGrid(AoCResourceType resourceType)
-        => new(Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        => new(Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Select(y => new Rock(y.ToString())).ToList())
             .ToList());
 

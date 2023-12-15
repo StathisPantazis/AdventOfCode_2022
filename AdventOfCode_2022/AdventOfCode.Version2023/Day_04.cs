@@ -1,20 +1,20 @@
 ﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2023.Day_4;
+using static AdventOfCode.Version2023.Day_04;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_4 : AoCBaseDay<int, int, List<Card>>
+public class Day_04 : AoCBaseDay<int, int, List<Card>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_ReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileReadText(FileDescription(this, resourceType))
             .Replace("Card ", "")
             .Replace(": ", "|")
             .Replace(" | ", "|");
 
-        var cards = Helpers.Text_CleanReadLines(text)
+        var cards = Helpers.TextCleanReadLines(text)
             .Select(x => x.Split('|') is string[] arr ? new Card()
             {
                 Id = int.Parse(arr[0]),

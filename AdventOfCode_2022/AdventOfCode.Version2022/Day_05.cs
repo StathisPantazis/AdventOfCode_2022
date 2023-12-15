@@ -4,15 +4,15 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_5 : AoCBaseDay<string, string, string[]>
+public class Day_05 : AoCBaseDay<string, string, string[]>
 {
     public override AoCSolution<string, string> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace("    [", " ").Replace("]    ", " ").Replace("    ", " ").Replace("[", "").Replace("]", "")
             .Replace("move ", "").Replace(" from ", " ").Replace(" to ", " ");
 
-        var lines = Helpers.Text_CleanReadLines(text);
+        var lines = Helpers.TextCleanReadLines(text);
 
         return Solution(lines);
     }

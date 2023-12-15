@@ -5,11 +5,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_6 : AoCBaseDay<int, int, string>
+public class Day_06 : AoCBaseDay<int, int, string>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var input = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var input = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace("Time: ", "")
             .Replace("Distance: ", "");
 

@@ -4,11 +4,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_6 : AoCBaseDay<double, double, string[]>
+public class Day_06 : AoCBaseDay<double, double, string[]>
 {
     public override AoCSolution<double, double> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadText(FileDescription(this, resourceType)).Split(',');
+        var lines = Helpers.FileCleanReadText(FileDescription(this, resourceType)).Split(',');
         return Solution(lines);
     }
 

@@ -6,11 +6,11 @@ using AdventOfCode.Version2022.Models;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_8 : AoCBaseDay<int, int, LegacyGrid<int>>
+public class Day_08 : AoCBaseDay<int, int, LegacyGrid<int>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
+        var lines = Helpers.FileCleanReadLines(FileDescription(this, resourceType));
         var trees = new LegacyGrid<int>(lines, singleCharacters: true);
 
         return Solution(trees);

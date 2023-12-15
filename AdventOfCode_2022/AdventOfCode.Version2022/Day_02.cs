@@ -4,7 +4,7 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_2 : AoCBaseDay<int, int, string[]>
+public class Day_02 : AoCBaseDay<int, int, string[]>
 {
     private static readonly Dictionary<int, Dictionary<string, int>> _dictPartPoints = new() {
         { 1, new Dictionary<string, int>() {
@@ -27,7 +27,7 @@ public class Day_2 : AoCBaseDay<int, int, string[]>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var games = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
+        var games = Helpers.FileCleanReadLines(FileDescription(this, resourceType));
         return new AoCSolution<int, int>(Part1(games), Part2(games));
     }
 

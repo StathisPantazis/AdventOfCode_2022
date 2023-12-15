@@ -2,15 +2,15 @@
 using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2021.Day_8;
+using static AdventOfCode.Version2021.Day_08;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_8 : AoCBaseDay<int, int, List<Display>>
+public class Day_08 : AoCBaseDay<int, int, List<Display>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var displays = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var displays = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace(" | ", "|")
             .Split("\n")
             .Select(x => x.Split('|') is string[] arr ? new Display(arr[0], arr[1]) : null)

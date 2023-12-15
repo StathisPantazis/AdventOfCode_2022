@@ -10,7 +10,7 @@ public class Day_11 : AoCBaseDay<int, ulong, List<Monkey>>
 {
     public override AoCSolution<int, ulong> Solve(AoCResourceType resourceType)
     {
-        var monkeys = Helpers.File_ReadText(FileDescription(this, resourceType))
+        var monkeys = Helpers.FileReadText(FileDescription(this, resourceType))
             .Replace("old * old", "^ 0")
             .Split("Monkey", StringSplitOptions.RemoveEmptyEntries)
             .Select(x => new Monkey(x))
@@ -58,7 +58,7 @@ public class Day_11 : AoCBaseDay<int, ulong, List<Monkey>>
     {
         public Monkey(string text)
         {
-            var instructions = Helpers.Text_CleanReadLines(text);
+            var instructions = Helpers.TextCleanReadLines(text);
 
             Index = int.Parse(instructions[0].Replace(":", ""));
             Items = instructions[1].Replace("Starting items: ", "").Split(", ").Select(x => ulong.Parse(x)).ToList();

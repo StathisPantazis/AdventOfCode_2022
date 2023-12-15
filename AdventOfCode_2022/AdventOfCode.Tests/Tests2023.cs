@@ -7,9 +7,9 @@ namespace AdventOfCode.Tests;
 public class Tests2023
 {
     [Fact]
-    public void Day1()
+    public void Day01()
     {
-        var day = new Day_1();
+        var day = new Day_01();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(53386);
@@ -17,9 +17,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day2()
+    public void Day02()
     {
-        var day = new Day_2();
+        var day = new Day_02();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(2265);
@@ -27,9 +27,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day3()
+    public void Day03()
     {
-        var day = new Day_3();
+        var day = new Day_03();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(539433);
@@ -37,9 +37,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day4()
+    public void Day04()
     {
-        var day = new Day_4();
+        var day = new Day_04();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(26443);
@@ -47,9 +47,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day5()
+    public void Day05()
     {
-        var day = new Day_5();
+        var day = new Day_05();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(323142486);
@@ -57,9 +57,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day6()
+    public void Day06()
     {
-        var day = new Day_6();
+        var day = new Day_06();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(303600);
@@ -67,9 +67,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day7()
+    public void Day07()
     {
-        var day = new Day_7();
+        var day = new Day_07();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(250254244);
@@ -77,9 +77,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day8()
+    public void Day08()
     {
-        var day = new Day_8();
+        var day = new Day_08();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(19631);
@@ -87,9 +87,9 @@ public class Tests2023
     }
 
     [Fact]
-    public void Day9()
+    public void Day09()
     {
-        var day = new Day_9();
+        var day = new Day_09();
         var solution = day.Solve(AoCResourceType.Solution);
 
         solution.Part1.Should().Be(2101499000);

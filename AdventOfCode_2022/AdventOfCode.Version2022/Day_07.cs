@@ -1,19 +1,19 @@
 ﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2022.Day_7;
+using static AdventOfCode.Version2022.Day_07;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_7 : AoCBaseDay<int, int, Dir>
+public class Day_07 : AoCBaseDay<int, int, Dir>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace("$ ls", "")
             .Replace("$ cd /", "");
 
-        var inputs = Helpers.Text_CleanReadLines(text)
+        var inputs = Helpers.TextCleanReadLines(text)
             .Where(x => !string.IsNullOrEmpty(x))
             .ToArray();
 

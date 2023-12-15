@@ -4,27 +4,18 @@ namespace AdventOfCode.Core.Utils;
 
 public static class Helpers
 {
-    public static string[] File_CleanReadLines(FileDescription fileDescription)
+    public static string[] FileCleanReadLines(FileDescription fileDescription)
     {
         var lines = File.ReadLines(GetPath(fileDescription));
         lines = lines.Select(x => x.Replace("\r", string.Empty));
         return lines.ToArray();
     }
 
-    public static string[] Text_CleanReadLines(string text)
-    {
-        return text.Replace("\r", string.Empty).Split("\n").ToArray();
-    }
+    public static string[] TextCleanReadLines(string text) => text.Replace("\r", string.Empty).Split("\n").ToArray();
 
-    public static string File_CleanReadText(FileDescription fileDescription)
-    {
-        return File_ReadText(fileDescription).Replace("\r", string.Empty);
-    }
+    public static string FileCleanReadText(FileDescription fileDescription) => FileReadText(fileDescription).Replace("\r", string.Empty);
 
-    public static string File_ReadText(FileDescription fileDescription)
-    {
-        return File.ReadAllText(GetPath(fileDescription));
-    }
+    public static string FileReadText(FileDescription fileDescription) => File.ReadAllText(GetPath(fileDescription));
 
     public static Direction GetDirection(string str)
     {

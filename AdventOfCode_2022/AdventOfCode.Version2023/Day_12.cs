@@ -11,7 +11,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
     {
         Console.Clear();
 
-        var rows = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var rows = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Split(' ') is string[] arr ? new Row(arr[0], arr[1].Split(',').Select(y => int.Parse(y)).ToList()) : new())
             .ToList();
 

@@ -12,7 +12,7 @@ public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var input = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var input = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Replace("S", "0").Replace("E", "_"))
             .ToArray();
 

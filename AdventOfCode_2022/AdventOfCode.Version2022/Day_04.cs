@@ -4,14 +4,14 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_4 : AoCBaseDay<int, int, List<int[]>>
+public class Day_04 : AoCBaseDay<int, int, List<int[]>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace(",", "-");
 
-        var pairs = Helpers.Text_CleanReadLines(text)
+        var pairs = Helpers.TextCleanReadLines(text)
             .Select(x => x.Split('-').Select(y => int.Parse(y.ToString())).ToArray())
             .ToList();
 

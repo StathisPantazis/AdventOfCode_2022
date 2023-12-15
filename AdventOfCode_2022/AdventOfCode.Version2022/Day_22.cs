@@ -10,7 +10,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var inputParts = Helpers.File_CleanReadText(FileDescription(this, resourceType)).Split("\n\n");
+        var inputParts = Helpers.FileCleanReadText(FileDescription(this, resourceType)).Split("\n\n");
 
         _password = inputParts[1];
 

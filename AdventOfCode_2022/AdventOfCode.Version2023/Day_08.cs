@@ -5,14 +5,14 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_8 : AoCBaseDay<long, long, (Dictionary<string, string[]> maps, List<int> moves)>
+public class Day_08 : AoCBaseDay<long, long, (Dictionary<string, string[]> maps, List<int> moves)>
 {
     public override AoCSolution<long, long> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace(" = (", ",").Replace(", ", ",").Replace(")", "");
 
-        var lines = Helpers.Text_CleanReadLines(text);
+        var lines = Helpers.TextCleanReadLines(text);
 
         var moves = lines[0].Replace("L", "0").Replace("R", "1").Select(x => int.Parse(x.ToString())).ToList();
         var maps = lines

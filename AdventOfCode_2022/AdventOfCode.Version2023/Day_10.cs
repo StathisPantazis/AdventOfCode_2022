@@ -12,7 +12,7 @@ public class Day_10 : AoCBaseDay<int, int, IndexedGrid<Node>>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var grid = new IndexedGrid<Node>(Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var grid = new IndexedGrid<Node>(Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Select(y => new Node(y.ToString())).ToList())
             .ToList());
 

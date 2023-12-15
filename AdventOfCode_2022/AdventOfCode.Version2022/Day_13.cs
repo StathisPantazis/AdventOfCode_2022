@@ -8,7 +8,7 @@ public class Day_13 : AoCBaseDay<int, int, string[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType)).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+        var lines = Helpers.FileCleanReadLines(FileDescription(this, resourceType)).Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
         var part1 = Part1(lines);
         var part2 = Part2(lines);

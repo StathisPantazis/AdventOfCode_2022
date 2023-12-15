@@ -5,11 +5,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_5 : AoCBaseDay<int, int, string>
+public class Day_05 : AoCBaseDay<int, int, string>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType));
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType));
         text = text.Replace(" -> ", ",");
 
         return Solution(text);
@@ -27,7 +27,7 @@ public class Day_5 : AoCBaseDay<int, int, string>
 
     protected static int SharedSolution(string text, bool isPart1)
     {
-        var coordinates = Helpers.Text_CleanReadLines(text)
+        var coordinates = Helpers.TextCleanReadLines(text)
             .Select(x => x.Split(",") is string[] nums ? (int.Parse(nums[0]), int.Parse(nums[1]), int.Parse(nums[2]), int.Parse(nums[3])) : default)
             .ToArray();
 

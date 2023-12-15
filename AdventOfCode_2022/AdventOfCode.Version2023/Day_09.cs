@@ -4,11 +4,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_9 : AoCBaseDay<long, long, List<List<List<long>>>>
+public class Day_09 : AoCBaseDay<long, long, List<List<List<long>>>>
 {
     public override AoCSolution<long, long> Solve(AoCResourceType resourceType)
     {
-        var difs = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var difs = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(x => long.Parse(x.ToString())).ToList())
             .Select(x => new List<List<long>> { x, GetDifferences(x) })
             .ToList();

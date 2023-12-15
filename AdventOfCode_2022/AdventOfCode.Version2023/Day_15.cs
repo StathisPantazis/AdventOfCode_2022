@@ -9,7 +9,7 @@ public class Day_15 : AoCBaseDay<int, int, string[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var hashes = Helpers.File_CleanReadText(FileDescription(this, resourceType)).Split(',').ToArray();
+        var hashes = Helpers.FileCleanReadText(FileDescription(this, resourceType)).Split(',').ToArray();
         return Solution(hashes);
     }
 

@@ -4,17 +4,17 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_1 : AoCBaseDay<int, int, string>
+public class Day_01 : AoCBaseDay<int, int, string>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType));
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType));
         return Solution(text);
     }
 
     protected override int Part1(string text)
     {
-        return SumDigits(Helpers.Text_CleanReadLines(text));
+        return SumDigits(Helpers.TextCleanReadLines(text));
     }
 
     protected override int Part2(string text)
@@ -42,7 +42,7 @@ public class Day_1 : AoCBaseDay<int, int, string>
             .Replace("nine", "9")
             .Replace("ten", "10");
 
-        return SumDigits(Helpers.Text_CleanReadLines(textReplaced));
+        return SumDigits(Helpers.TextCleanReadLines(textReplaced));
     }
 
     private static int SumDigits(string[] lines)

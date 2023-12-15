@@ -6,18 +6,18 @@ using AdventOfCode.Version2022.Models;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_9 : AoCBaseDay<int, int, List<(Direction dir, int steps)>>
+public class Day_09 : AoCBaseDay<int, int, List<(Direction dir, int steps)>>
 {
     private static readonly int _borders = 1000;
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var instructionsFlipped = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var instructionsFlipped = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace("U", "_")
             .Replace("D", "U")
             .Replace("_", "D");
 
-        var instructions = Helpers.Text_CleanReadLines(instructionsFlipped)
+        var instructions = Helpers.TextCleanReadLines(instructionsFlipped)
             .Select(x => (Helpers.GetDirection(x.Split(" ")[0].ToString()), int.Parse(x.Split(" ")[1].ToString())))
             .ToList();
 

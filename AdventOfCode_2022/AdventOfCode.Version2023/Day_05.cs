@@ -6,13 +6,13 @@ using System.Data;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_5 : AoCBaseDay<long, long, List<long>>
+public class Day_05 : AoCBaseDay<long, long, List<long>>
 {
     private List<Map> _maps = new();
 
     public override AoCSolution<long, long> Solve(AoCResourceType resourceType)
     {
-        _maps = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        _maps = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Split("\n\n", StringSplitOptions.RemoveEmptyEntries)
             .Skip(1)
             .Select(x => x.Split('\n').ToList() is List<string> descriptions ? new Map()
@@ -25,7 +25,7 @@ public class Day_5 : AoCBaseDay<long, long, List<long>>
             } : new())
             .ToList();
 
-        var seeds = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var seeds = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .First().Split(": ")[1].Split(' ').Select(long.Parse).ToList();
 
         return Solution(seeds);

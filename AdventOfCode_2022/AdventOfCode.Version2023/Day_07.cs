@@ -1,15 +1,15 @@
 ﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2023.Day_7;
+using static AdventOfCode.Version2023.Day_07;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_7 : AoCBaseDay<int, int, List<Hand>>
+public class Day_07 : AoCBaseDay<int, int, List<Hand>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var hands = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var hands = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Split(' ') is string[] arr ? new Hand(arr[0], arr[1]) : new())
             .ToList();
 

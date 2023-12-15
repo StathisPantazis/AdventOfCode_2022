@@ -4,11 +4,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_1 : AoCBaseDay<int, int, int[]>
+public class Day_01 : AoCBaseDay<int, int, int[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var measurements = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var measurements = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(int.Parse)
             .ToArray();
 

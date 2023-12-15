@@ -8,11 +8,11 @@ public class Day_21 : AoCBaseDay<long, long, string[]>
 {
     public override AoCSolution<long, long> Solve(AoCResourceType resourceType)
     {
-        var text = Helpers.File_ReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileReadText(FileDescription(this, resourceType))
             .Replace(": ", ",")
             .Replace(" ", ",");
 
-        var input = Helpers.Text_CleanReadLines(text);
+        var input = Helpers.TextCleanReadLines(text);
 
         return Solution(input);
     }

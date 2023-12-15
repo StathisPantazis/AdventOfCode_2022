@@ -9,9 +9,9 @@ public class Day_13 : AoCBaseDay<int, int, List<IndexedGrid<string>>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var patterns = Helpers.File_ReadText(FileDescription(this, resourceType))
+        var patterns = Helpers.FileReadText(FileDescription(this, resourceType))
             .Split("\r\n\r\n")
-            .Select(x => new IndexedGrid<string>(Helpers.Text_CleanReadLines(x).Select(y => y.Select(y => y.ToString()))))
+            .Select(x => new IndexedGrid<string>(Helpers.TextCleanReadLines(x).Select(y => y.Select(y => y.ToString()))))
             .ToList();
 
         return Solution(patterns);

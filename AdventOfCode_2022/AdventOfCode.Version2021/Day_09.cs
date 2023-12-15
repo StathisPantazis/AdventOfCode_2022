@@ -1,15 +1,15 @@
 ﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2021.Day_9;
+using static AdventOfCode.Version2021.Day_09;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_9 : AoCBaseDay<int, int, IndexedGrid<Point>>
+public class Day_09 : AoCBaseDay<int, int, IndexedGrid<Point>>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var lines = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var lines = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Select(y => new Point(int.Parse(y.ToString()))))
             .ToList();
 

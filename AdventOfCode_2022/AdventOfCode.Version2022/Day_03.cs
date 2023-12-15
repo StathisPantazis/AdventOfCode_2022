@@ -4,11 +4,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_3 : AoCBaseDay<int, int, (string[] comps, List<char> types)>
+public class Day_03 : AoCBaseDay<int, int, (string[] comps, List<char> types)>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var comps = Helpers.File_CleanReadLines(FileDescription(this, resourceType));
+        var comps = Helpers.FileCleanReadLines(FileDescription(this, resourceType));
         var types = Enumerable.Range('a', 26).ToList().Union(Enumerable.Range('A', 26)).Select(x => (char)x).ToList();
 
         return Solution((comps, types));

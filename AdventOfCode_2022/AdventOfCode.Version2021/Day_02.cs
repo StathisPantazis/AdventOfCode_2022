@@ -1,15 +1,15 @@
 ﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2021.Day_2;
+using static AdventOfCode.Version2021.Day_02;
 
 namespace AdventOfCode.Version2021;
 
-public class Day_2 : AoCBaseDay<int, int, Tuple<Dir, int>[]>
+public class Day_02 : AoCBaseDay<int, int, Tuple<Dir, int>[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var movements = Helpers.File_CleanReadLines(FileDescription(this, resourceType))
+        var movements = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
             .Select(x => x.Split(' ').ToArray() is string[] arr ? Tuple.Create(Enum.Parse<Dir>(arr[0]), int.Parse(arr[1])) : null)
             .ToArray();
 

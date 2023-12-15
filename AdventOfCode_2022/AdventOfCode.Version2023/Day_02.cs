@@ -1,11 +1,11 @@
 ﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
 using AdventOfCode.Core.Utils;
-using static AdventOfCode.Version2023.Day_2;
+using static AdventOfCode.Version2023.Day_02;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_2 : AoCBaseDay<int, int, Game[]>
+public class Day_02 : AoCBaseDay<int, int, Game[]>
 {
     private const string _red = "red";
     private const string _blue = "blue";
@@ -13,15 +13,15 @@ public class Day_2 : AoCBaseDay<int, int, Game[]>
 
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var texta = Helpers.File_CleanReadText(FileDescription(this, resourceType));
+        var texta = Helpers.FileCleanReadText(FileDescription(this, resourceType));
 
-        var text = Helpers.File_CleanReadText(FileDescription(this, resourceType))
+        var text = Helpers.FileCleanReadText(FileDescription(this, resourceType))
             .Replace("Game ", string.Empty)
             .Replace(": ", ":")
             .Replace(", ", ",")
             .Replace("; ", ";");
 
-        var games = Helpers.Text_CleanReadLines(text)
+        var games = Helpers.TextCleanReadLines(text)
             .Select(x => x.Split(':') is string[] arr ? new Game(int.Parse(arr[0]), arr[1]) : new Game(0, string.Empty))
             .ToArray();
 

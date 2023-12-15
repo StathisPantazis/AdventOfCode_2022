@@ -4,11 +4,11 @@ using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2022;
 
-public class Day_1 : AoCBaseDay<string, string, int[]>
+public class Day_01 : AoCBaseDay<int, int, int[]>
 {
-    public override AoCSolution<string, string> Solve(AoCResourceType resourceType)
+    public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
-        var cals = Helpers.File_ReadText(FileDescription(this, resourceType))
+        var cals = Helpers.FileReadText(FileDescription(this, resourceType))
             .Split("\n\r\n")
             .Select(x => x.Replace("\r", ""))
             .Select(x => x.Split('\n')
@@ -19,14 +19,14 @@ public class Day_1 : AoCBaseDay<string, string, int[]>
         return Solution(cals);
     }
 
-    protected override string Part1(int[] args)
+    protected override int Part1(int[] args)
     {
-        return args.OrderByDescending(x => x).First().ToString();
+        return args.OrderByDescending(x => x).First();
     }
 
-    protected override string Part2(int[] args)
+    protected override int Part2(int[] args)
     {
         var calcTotals = args.OrderByDescending(x => x).ToArray();
-        return (calcTotals[0] + calcTotals[1] + calcTotals[2]).ToString();
+        return (calcTotals[0] + calcTotals[1] + calcTotals[2]);
     }
 }
