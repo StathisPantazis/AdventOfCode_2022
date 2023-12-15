@@ -69,8 +69,8 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
 
         List<Node> getNeighbours(Node node)
         {
-            List<Decision> decisions = new();
-            List<Node> nodes = new();
+            var decisions = new List<Decision>();
+            var nodes = new List<Node>();
             if (factory.CanProduce(Mineral.Geode, node.Money))
             {
                 nodes.Add(node.GetNextNode(Decision.BuyGeode, factory));
@@ -101,7 +101,7 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
             else
             {
                 var noBuyAfterNoBuy = noBuyNode.GetNextNode(Decision.NoBuy, factory);
-                List<Decision> newDecisions = new();
+                var newDecisions = new List<Decision>();
 
                 if (factory.CanProduce(Mineral.Obsidian, noBuyAfterNoBuy.Money))
                 {
@@ -146,18 +146,11 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
         return dfs.Visited.Max(x => x.MaxGeodes);
     }
 
-    private class Node : NodeBase
+    private class Node(int minute, Dictionary<Mineral, int> robots, Dictionary<Mineral, int> money) : NodeBase
     {
-        public Node(int minute, Dictionary<Mineral, int> robots, Dictionary<Mineral, int> money)
-        {
-            Minute = minute;
-            Robots = robots;
-            Money = money;
-        }
-
-        public int Minute { get; set; }
-        public Dictionary<Mineral, int> Robots { get; set; }
-        public Dictionary<Mineral, int> Money { get; set; }
+        public int Minute { get; set; } = minute;
+        public Dictionary<Mineral, int> Robots { get; set; } = robots;
+        public Dictionary<Mineral, int> Money { get; set; } = money;
         public int MaxGeodes { get; set; }
         public int ConsecutiveNoBuys { get; set; }
 
@@ -214,14 +207,9 @@ public class Day_19 : AoCBaseDay<int, int, List<Blueprint>>
         public override string ToString() => $"{Minute}";
     }
 
-    private class RobotFactory
+    private class RobotFactory(Blueprint blueprint)
     {
-        public RobotFactory(Blueprint blueprint)
-        {
-            Blueprint = blueprint;
-        }
-
-        public Blueprint Blueprint { get; set; }
+        public Blueprint Blueprint { get; set; } = blueprint;
 
         public bool CanProduce(Mineral robotType, Dictionary<Mineral, int> money)
         {

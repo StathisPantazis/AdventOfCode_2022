@@ -152,7 +152,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
                     map.LastDirection = walkTo;
                 }
 
-                grid[pos] = map.Step(walkTo);
+                grid[pos] = InstructionReader.Step(walkTo);
 
                 Console.Clear();
                 Console.WriteLine(grid);
@@ -174,7 +174,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
             Direction.U => 3,
         };
 
-        var value = 1000 * (pos.Y + 1) + 4 * (pos.X + 1) + dirValue;
+        var value = (1000 * (pos.Y + 1)) + (4 * (pos.X + 1)) + dirValue;
         return value;
     }
 
@@ -186,8 +186,8 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
             plane2.Bridge(plane1.Type).SetSides(plane2To1Strategy, plane2Side, plane1Side);
         }
 
-        Func<string, bool> predicateBool = (x) => x != "O";
-        Predicate<string> predicateStr = (x) => x != "O";
+        bool predicateBool(string x) => x != "O";
+        bool predicateStr(string x) => x != "O";
         var fullMove = size - 1;
 
         var topPoints = grid.Row(0).Count(predicateBool);
@@ -198,17 +198,17 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
         var topLastIndex = topFirstIndex + size - 1;
 
         Plane up = new(size, PlaneType.Up, topFirstIndex, topLastIndex, 0, size - 1);
-        Plane bottom = new(size, PlaneType.Bottom, topFirstIndex, topLastIndex, size, 2 * size - 1);
+        Plane bottom = new(size, PlaneType.Bottom, topFirstIndex, topLastIndex, size, (2 * size) - 1);
         setBridges(bottom, up, new Strategy(Direction.U, TransposeAction.SameAsX), new Strategy(Direction.D, TransposeAction.SameAsX), Direction.U, Direction.D);
 
-        Plane down = new(size, PlaneType.Down, topFirstIndex, topLastIndex, size * 2, 3 * size - 1);
+        Plane down = new(size, PlaneType.Down, topFirstIndex, topLastIndex, (size * 2), (3 * size) - 1);
         setBridges(bottom, down, new Strategy(Direction.D, TransposeAction.SameAsX), new Strategy(Direction.U, TransposeAction.SameAsX), Direction.D, Direction.U);
 
         Plane left = null;
         Plane right = null;
         Plane top = null;
 
-        if (topPoints == size * 2)
+        if (topPoints == (size * 2))
         {
             var sliceRight = grid.RowSliceRight(topLastIndex, 0);
 
@@ -218,7 +218,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
             }
         }
 
-        if (midPoints == size * 3)
+        if (midPoints == (size * 3))
         {
             var sliceLeft = grid.RowSliceLeft(topFirstIndex, size);
             if (sliceLeft.Any(predicateBool))
@@ -230,7 +230,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
 
                 if (sliceLeft.Count(predicateBool) > size)
                 {
-                    top = new Plane(size, PlaneType.Top, topFirstIndex - 2 * size, topFirstIndex - size - 1, bottom.UpBorder, bottom.DownBorder);
+                    top = new Plane(size, PlaneType.Top, topFirstIndex - (2 * size), topFirstIndex - size - 1, bottom.UpBorder, bottom.DownBorder);
                     setBridges(top, left, new Strategy(Direction.R, TransposeAction.SameAsY), new Strategy(Direction.L, TransposeAction.SameAsY), Direction.R, Direction.L);
                     setBridges(top, up, new Strategy(Direction.D, TransposeAction.SameAsX), new Strategy(Direction.D, TransposeAction.SameAsX), Direction.U, Direction.D);
                     setBridges(top, down, new Strategy(Direction.U, TransposeAction.SameAsX), new Strategy(Direction.U, TransposeAction.SameAsX), Direction.D, Direction.U);
@@ -238,7 +238,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
             }
         }
 
-        if (botPoints == size * 2)
+        if (botPoints == (size * 2))
         {
             var sliceRight = grid.RowSliceRight(topLastIndex, size * 2);
 
@@ -252,7 +252,7 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
             }
         }
 
-        List<Plane> planes = new() { up, bottom, down, left, right, top };
+        var planes = new List<Plane> { up, bottom, down, left, right, top };
 
         foreach (var plane in planes)
         {
@@ -269,23 +269,17 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
         return planes;
     }
 
-    private class InstructionReader
+    private class InstructionReader(string pwd)
     {
-        public InstructionReader(string pwd)
-        {
-            Initial = pwd;
-            Ongoing = pwd;
-        }
+        public string Initial { get; set; } = pwd;
 
-        public string Initial { get; set; }
-
-        public string Ongoing { get; set; }
+        public string Ongoing { get; set; } = pwd;
 
         public bool HasMoreInstructions => Ongoing.Length > 0;
 
         public Direction LastDirection { get; set; } = Direction.R;
 
-        public string Step(Direction dir) => dir is Direction.U ? "^" : dir is Direction.R ? ">" : dir is Direction.D ? "v" : "<";
+        public static string Step(Direction dir) => dir is Direction.U ? "^" : dir is Direction.R ? ">" : dir is Direction.D ? "v" : "<";
 
         public (int steps, Direction dir) NextMove()
         {
@@ -365,20 +359,13 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
             $"{Type} --> L: {LeftBorder}  - R: {RightBorder}  - U: {UpBorder}  - D: {DownBorder}";
     }
 
-    private class Bridge
+    private class Bridge(PlaneType from, PlaneType to, int size)
     {
-        public Bridge(PlaneType from, PlaneType to, int size)
-        {
-            From = from;
-            To = to;
-            Size = size;
-        }
-
         public bool IsSet { get; set; }
-        public int Size { get; set; }
+        public int Size { get; set; } = size;
         public int MaxBorder => Size - 1;
-        public PlaneType From { get; set; }
-        public PlaneType To { get; set; }
+        public PlaneType From { get; set; } = from;
+        public PlaneType To { get; set; } = to;
         public Direction FromSide { get; set; }
         public Direction ToSide { get; set; }
         public Strategy Strategy { get; set; }
@@ -401,16 +388,10 @@ public class Day_22 : AoCBaseDay<int, int, List<List<string>>>
         public override string ToString() => $"{From} <--> {To}  :||: {Strategy}";
     }
 
-    private class Strategy
+    private class Strategy(Direction enterDirection, TransposeAction transposeAction)
     {
-        public Strategy(Direction enterDirection, TransposeAction transposeAction)
-        {
-            EnterDirection = enterDirection;
-            TransposeAction = transposeAction;
-        }
-
-        public TransposeAction TransposeAction { get; set; }
-        public Direction EnterDirection { get; set; }
+        public TransposeAction TransposeAction { get; set; } = transposeAction;
+        public Direction EnterDirection { get; set; } = enterDirection;
 
         public void Transpose(Coordinates pos, Coordinates from, int maxBorder)
         {

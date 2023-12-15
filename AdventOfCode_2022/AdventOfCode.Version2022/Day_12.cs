@@ -42,7 +42,7 @@ public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
 
     protected override int Part2(IndexedGrid<int> grid)
     {
-        List<Node> nodes = new();
+        var nodes = new List<Node>();
         var pos = grid.GetCoordinates(true);
 
         while (pos.TraverseGrid())
@@ -111,14 +111,9 @@ public class Day_12 : AoCBaseDay<int, int, IndexedGrid<int>>
         return new IndexedGrid<int>(numbers);
     }
 
-    public class Node : NodeBase
+    public class Node(Coordinates pos) : NodeBase
     {
-        public Node(Coordinates pos)
-        {
-            Position = pos;
-        }
-
-        public Coordinates Position { get; set; }
+        public Coordinates Position { get; set; } = pos;
 
         public override bool Equals(object? obj) => ((Node)obj).Position.Equals(Position);
         public override int GetHashCode() => Position.GetHashCode();

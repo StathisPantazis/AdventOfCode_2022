@@ -48,14 +48,9 @@ public class Day_09 : AoCBaseDay<int, int, IndexedGrid<Point>>
         return 0;
     }
 
-    public class Point
+    public class Point(int value)
     {
-        public Point(int value)
-        {
-            Value = value;
-        }
-
-        public int Value { get; init; }
+        public int Value { get; init; } = value;
         public CartesianCoordinates Coords { get; set; }
         public bool IsLowPoint { get; set; }
         public bool BelongsToBasin { get; set; }

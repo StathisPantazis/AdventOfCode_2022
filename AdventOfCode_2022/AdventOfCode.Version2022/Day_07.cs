@@ -82,19 +82,13 @@ public class Day_07 : AoCBaseDay<int, int, Dir>
         return dir;
     }
 
-    public class Dir
+    public class Dir(string name, Dir parent)
     {
-        public Dir(string name, Dir parent)
-        {
-            Name = name;
-            Parent = parent;
-        }
-
-        public string Name { get; set; }
+        public string Name { get; set; } = name;
         public int Sum { get; set; }
-        public Dir Parent { get; set; }
-        public List<Dir> Dirs { get; set; } = new();
-        public List<MyFile> Files { get; set; } = new();
+        public Dir Parent { get; set; } = parent;
+        public List<Dir> Dirs { get; set; } = [];
+        public List<MyFile> Files { get; set; } = [];
 
         public void AddFile(MyFile file)
         {
@@ -113,18 +107,11 @@ public class Day_07 : AoCBaseDay<int, int, Dir>
             => $"{Name} - Dirs:{Dirs.Count}[{string.Join(' ', Dirs.Select(x => x.Name))}] - Files:{Files.Count}";
     }
 
-    public class MyFile
+    public class MyFile(string name, string myType, int size)
     {
-        public MyFile(string name, string myType, int size)
-        {
-            MyType = myType;
-            Size = size;
-            Name = name;
-        }
-
-        public string Name { get; set; }
-        public string MyType { get; set; }
-        public int Size { get; set; }
+        public string Name { get; set; } = name;
+        public string MyType { get; set; } = myType;
+        public int Size { get; set; } = size;
         public override string ToString()
             => $"{Name}.{MyType} - Size:{Size}";
     }

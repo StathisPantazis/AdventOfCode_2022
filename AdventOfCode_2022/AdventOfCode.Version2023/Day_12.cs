@@ -15,7 +15,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
             .Select(x => x.Split(' ') is string[] arr ? new Row(arr[0], arr[1].Split(',').Select(y => int.Parse(y)).ToList()) : new())
             .ToList();
 
-        rows = new List<Row>() { rows[0] };
+        rows = new List<Row>() { rows[1] };
         //rows = new List<Row>() { rows.First(x => x.Arrangement.StartsWith("?#?#")) };
         //rows = new List<Row>() { rows.First(x => x.Arrangement == ".???..??...?##.") };
 
@@ -39,34 +39,28 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
 
                 Console.WriteLine(row);
 
-                // Turn ? to #
-                while (true)
+                var nextMixed = row.Text.CropUntil('.');
+                var nextMixedLength = nextMixed.Length;
+
+                var nextGroups = new List<int>();
+
+                foreach (var group in row.Groups)
                 {
-                    var nextMixed = row.Text.CropUntil('.');
-                    var nextMixedLength = nextMixed.Length;
-
-                    var nextGroups = new List<int>();
-
-                    foreach (var group in row.Groups)
+                    if (group <= nextMixedLength)
                     {
-                        if (group <= nextMixedLength)
-                        {
-                            nextMixedLength -= group;
-                            nextGroups.Add(group);
-                        }
+                        nextMixedLength -= group;
+                        nextGroups.Add(group);
                     }
-
-                    var hashtagIndexes = nextMixed.IndexesOf('#');
-
-                    var combinations = nextMixed
-                        .GetAllCombinations('#', nextGroups.Sum(), includeBrokenPairs: true);
-
-                    combinations = combinations.Where(x => x.Split('?', StringSplitOptions.RemoveEmptyEntries).Length == nextGroups.Count).ToList();
-
-                    row.Result += combinations.Count;
-                    row.Text = row.Text.RemoveOnce(nextMixed);
-                    nextGroups.ForEachDo(x => row.Groups.Remove(x));
                 }
+
+                var combinations = nextMixed
+                    .GetAllCombinations('#', nextGroups.Sum(), includeBrokenPairs: true)
+                    .Where(x => x.Split('?', StringSplitOptions.RemoveEmptyEntries).Length == nextGroups.Count)
+                    .ToList();
+
+                row.Result += combinations.Count;
+                row.Text = row.Text.RemoveOnce(nextMixed);
+                nextGroups.ForEachDo(x => row.Groups.Remove(x));
             }
 
             Console.WriteLine("\n-----RESULT------");
@@ -130,17 +124,8 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         return 0;
     }
 
-    private class Possibility
+    private record Possibility(string Text, List<int> Ways)
     {
-        public Possibility(string text, List<int> ways)
-        {
-            Text = text;
-            Ways = ways;
-        }
-
-        public string Text { get; set; }
-        public List<int> Ways { get; set; }
-
         public override string ToString() => $"{Text} - {string.Join(",", Ways)}";
     }
 
@@ -152,7 +137,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         {
             InitText = arrangement;
             Text = arrangement;
-            InitGroups = groups.ToList();
+            InitGroups = [.. groups];
             Groups = groups;
         }
 
@@ -163,6 +148,6 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         public bool Done { get; set; }
         public int Result { get; set; }
 
-        public override string ToString() => $"{InitText} {string.Join(",", InitGroups)}{(Result > 0 ? $"  [{Result}]" : "")}  - ({Text} - {Text.Length} - [{string.Join(",", Groups)}])";
+        public override string ToString() => $"{InitText} {string.Join(",", InitGroups)} [{Result}]  - ({Text} - {Text.Length} - [{string.Join(",", Groups)}])";
     }
 }

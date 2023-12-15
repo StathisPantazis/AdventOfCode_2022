@@ -66,14 +66,9 @@ public class Day_06 : AoCBaseDay<double, double, string[]>
         return dict.Sum(x => (double)1 * x.Value);
     }
 
-    private class Lanternfish
+    private class Lanternfish(int daysLeft)
     {
-        public Lanternfish(int daysLeft)
-        {
-            DaysLeft = daysLeft;
-        }
-
-        public int DaysLeft { get; private set; }
+        public int DaysLeft { get; private set; } = daysLeft;
 
         public Lanternfish DayPassed()
         {

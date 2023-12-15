@@ -20,15 +20,15 @@ public class Day_08 : AoCBaseDay<int, int, List<Display>>
         {
             return x switch
             {
-                0 => new List<Segment>() { Segment.Top, Segment.TopRight, Segment.TopLeft, Segment.BottomRight, Segment.BottomLeft, Segment.Bottom },
-                1 => new List<Segment>() { Segment.TopRight, Segment.BottomRight },
-                2 => new List<Segment>() { Segment.Top, Segment.TopRight, Segment.Middle, Segment.BottomLeft, Segment.Bottom },
-                3 => new List<Segment>() { Segment.Top, Segment.TopRight, Segment.Middle, Segment.BottomRight, Segment.Bottom },
-                4 => new List<Segment>() { Segment.TopRight, Segment.TopLeft, Segment.Middle, Segment.BottomRight },
-                5 => new List<Segment>() { Segment.Top, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.Bottom },
-                6 => new List<Segment>() { Segment.Top, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.BottomLeft, Segment.Bottom },
-                7 => new List<Segment>() { Segment.Top, Segment.TopRight, Segment.BottomRight },
-                8 => new List<Segment>() { Segment.Top, Segment.TopRight, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.BottomLeft, Segment.Bottom },
+                0 => [Segment.Top, Segment.TopRight, Segment.TopLeft, Segment.BottomRight, Segment.BottomLeft, Segment.Bottom],
+                1 => [Segment.TopRight, Segment.BottomRight],
+                2 => [Segment.Top, Segment.TopRight, Segment.Middle, Segment.BottomLeft, Segment.Bottom],
+                3 => [Segment.Top, Segment.TopRight, Segment.Middle, Segment.BottomRight, Segment.Bottom],
+                4 => [Segment.TopRight, Segment.TopLeft, Segment.Middle, Segment.BottomRight],
+                5 => [Segment.Top, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.Bottom],
+                6 => [Segment.Top, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.BottomLeft, Segment.Bottom],
+                7 => [Segment.Top, Segment.TopRight, Segment.BottomRight],
+                8 => [Segment.Top, Segment.TopRight, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.BottomLeft, Segment.Bottom],
                 9 => new List<Segment>() { Segment.Top, Segment.TopRight, Segment.TopLeft, Segment.Middle, Segment.BottomRight, Segment.Bottom },
             };
         });
@@ -84,7 +84,7 @@ public class Day_08 : AoCBaseDay<int, int, List<Display>>
                     digitSegments.Add((Segment)segments[c]);
                 }
 
-                digitSegments = digitSegments.OrderBy(x => x).ToList();
+                digitSegments = [.. digitSegments.OrderBy(x => x)];
                 digit.Number = numbers.Single(x => Enumerable.SequenceEqual(digitSegments, x.Value)).Key;
             }
         }
@@ -102,16 +102,10 @@ public class Day_08 : AoCBaseDay<int, int, List<Display>>
         return displays.Sum(x => int.Parse(string.Join("", x.Output.Select(y => y.Number))));
     }
 
-    public class Display
+    public class Display(string signalText, string outputText)
     {
-        public Display(string signalText, string outputText)
-        {
-            Signals = signalText.Split(' ').Select(x => new Digit(x)).ToList();
-            Output = outputText.Split(' ').Select(x => new Digit(x)).ToList();
-        }
-
-        public List<Digit> Signals { get; set; } = new();
-        public List<Digit> Output { get; set; } = new();
+        public List<Digit> Signals { get; init; } = signalText.Split(' ').Select(x => new Digit(x)).ToList();
+        public List<Digit> Output { get; init; } = outputText.Split(' ').Select(x => new Digit(x)).ToList();
 
         public List<char> GetAllLetters(int segmentCount)
         {
@@ -135,14 +129,9 @@ public class Day_08 : AoCBaseDay<int, int, List<Display>>
         public override string ToString() => $"{Signals.ListToString(" ")} | {Output.ListToString(" ")}";
     }
 
-    public class Digit
+    public class Digit(string code)
     {
-        public Digit(string code)
-        {
-            Code = code;
-        }
-
-        public string Code { get; init; }
+        public string Code { get; init; } = code;
         public int Number { get; set; } = -1;
 
         public void Print(Dictionary<char, Segment?> segments)
@@ -158,13 +147,13 @@ public class Day_08 : AoCBaseDay<int, int, List<Display>>
             }
 
             Console.WriteLine(
-                $" {(segment_char.TryGetValue(Segment.Top, out var top) ? new string(top, 4) : "....")} \n" +
-                $"{(segment_char.TryGetValue(Segment.TopLeft, out var topLeft1) ? new string(topLeft1, 1) : ".")}    {(segment_char.TryGetValue(Segment.TopRight, out var topRight1) ? new string(topRight1, 1) : ".")}\n" +
-                $"{(segment_char.TryGetValue(Segment.TopLeft, out var topLeft2) ? new string(topLeft2, 1) : ".")}    {(segment_char.TryGetValue(Segment.TopRight, out var topRight2) ? new string(topRight2, 1) : ".")}\n" +
-                $" {(segment_char.TryGetValue(Segment.Middle, out var middle) ? new string(middle, 4) : "....")} \n" +
-                $"{(segment_char.TryGetValue(Segment.BottomLeft, out var bottomLeft1) ? new string(bottomLeft1, 1) : ".")}    {(segment_char.TryGetValue(Segment.BottomRight, out var bottomRight1) ? new string(bottomRight1, 1) : ".")}\n" +
-                $"{(segment_char.TryGetValue(Segment.BottomLeft, out var bottomLeft2) ? new string(bottomLeft2, 1) : ".")}    {(segment_char.TryGetValue(Segment.BottomRight, out var bottomRight2) ? new string(bottomRight2, 1) : ".")}\n" +
-                $" {(segment_char.TryGetValue(Segment.Bottom, out var bottom) ? new string(bottom, 4) : "....")} \n");
+                $" {(segment_char.TryGetValue(Segment.Top, out var top) ? top.Repeat(4) : "....")} \n" +
+                $"{(segment_char.TryGetValue(Segment.TopLeft, out var topLeft1) ? topLeft1.Repeat(1) : ".")}    {(segment_char.TryGetValue(Segment.TopRight, out var topRight1) ? topRight1.Repeat(1) : ".")}\n" +
+                $"{(segment_char.TryGetValue(Segment.TopLeft, out var topLeft2) ? topLeft2.Repeat(1) : ".")}    {(segment_char.TryGetValue(Segment.TopRight, out var topRight2) ? topRight2.Repeat(1) : ".")}\n" +
+                $" {(segment_char.TryGetValue(Segment.Middle, out var middle) ? middle.Repeat(4) : "....")} \n" +
+                $"{(segment_char.TryGetValue(Segment.BottomLeft, out var bottomLeft1) ? bottomLeft1.Repeat(1) : ".")}    {(segment_char.TryGetValue(Segment.BottomRight, out var bottomRight1) ? bottomRight1.Repeat(1) : ".")}\n" +
+                $"{(segment_char.TryGetValue(Segment.BottomLeft, out var bottomLeft2) ? bottomLeft2.Repeat(1) : ".")}    {(segment_char.TryGetValue(Segment.BottomRight, out var bottomRight2) ? bottomRight2.Repeat(1) : ".")}\n" +
+                $" {(segment_char.TryGetValue(Segment.Bottom, out var bottom) ? bottom.Repeat(4) : "....")} \n");
         }
 
         public override string ToString() => $"{Code}{(Number > -1 ? $"({Number})" : string.Empty)}";

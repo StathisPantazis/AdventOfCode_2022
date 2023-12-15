@@ -95,16 +95,10 @@ public class Day_02 : AoCBaseDay<int, int, Game[]>
         return games.Sum(x => x.Power);
     }
 
-    public class Game
+    public class Game(int id, string draws)
     {
-        public Game(int id, string draws)
-        {
-            Id = id;
-            Draws = draws;
-        }
-
-        public int Id { get; set; }
-        public string Draws { get; set; }
+        public int Id { get; set; } = id;
+        public string Draws { get; set; } = draws;
         public Dictionary<string, int> ColorCount { get; set; } = new()
         {
             { _blue, 0 },

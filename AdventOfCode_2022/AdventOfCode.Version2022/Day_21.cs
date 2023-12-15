@@ -115,7 +115,7 @@ public class Day_21 : AoCBaseDay<long, long, string[]>
             Name = name;
             FunctionSymbol = function;
             Function = function is "+" ? Function.Add : function is "-" ? Function.Sub : function is "*" ? Function.Mul : Function.Div;
-            Names = new List<string>() { name1, name2 };
+            Names = [name1, name2];
         }
 
         public string Name { get; set; }

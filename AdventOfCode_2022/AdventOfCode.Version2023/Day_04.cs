@@ -15,12 +15,11 @@ public class Day_04 : AoCBaseDay<int, int, List<Card>>
             .Replace(" | ", "|");
 
         var cards = Helpers.TextCleanReadLines(text)
-            .Select(x => x.Split('|') is string[] arr ? new Card()
+            .Select(x => x.Split('|') is string[] arr ? new Card(int.Parse(arr[0]))
             {
-                Id = int.Parse(arr[0]),
                 Winning = arr[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(y => int.Parse(y.ToString())).ToList(),
                 Own = arr[2].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(y => int.Parse(y.ToString())).ToList(),
-            } : new())
+            } : new(-1))
             .ToList();
 
         return Solution(cards);
@@ -66,13 +65,12 @@ public class Day_04 : AoCBaseDay<int, int, List<Card>>
         return id_count.Sum(x => x.Value);
     }
 
-    public class Card
+    public record Card(int Id)
     {
         private int? _wins;
 
-        public int Id { get; set; }
-        public List<int> Winning { get; set; } = new();
-        public List<int> Own { get; set; } = new();
+        public List<int> Winning { get; set; } = [];
+        public List<int> Own { get; set; } = [];
         public int Wins
         {
             get

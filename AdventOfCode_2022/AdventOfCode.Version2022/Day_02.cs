@@ -79,10 +79,7 @@ public class Day_02 : AoCBaseDay<int, int, string[]>
         return points;
     }
 
-    private static RPS ParseRps(string letter)
-    {
-        return letter is "A" or "X" ? RPS.Rock : letter is "B" or "Y" ? RPS.Paper : RPS.Scizzor;
-    }
+    private static RPS ParseRps(string letter) => letter is "A" or "X" ? RPS.Rock : letter is "B" or "Y" ? RPS.Paper : RPS.Scizzor;
 
     public enum RPS
     {

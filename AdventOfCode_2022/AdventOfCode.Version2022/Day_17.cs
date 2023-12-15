@@ -77,10 +77,10 @@ public class Day_17 : AoCBaseDay<long, long, long>
         NextTracker tracker = new(directions);
         var cave = new IndexedGrid<string>();
 
-        dirIndexes = new Dictionary<int, List<DirectionMarker>>();
+        dirIndexes = [];
         for (var i = 0; i < directions.Count; i++)
         {
-            dirIndexes.Add(i, new List<DirectionMarker>());
+            dirIndexes.Add(i, []);
         }
 
         long rocksAfterRepetitionMark = 0;
@@ -178,7 +178,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         }
 
         // Fall
-        List<string> newBottom = new();
+        var newBottom = new List<string>();
 
         for (var i = 0; i < width; i++)
         {
@@ -258,14 +258,9 @@ public class Day_17 : AoCBaseDay<long, long, long>
         return lastRockIndex;
     }
 
-    private class NextTracker
+    private class NextTracker(List<Direction> directions)
     {
-        private readonly List<Direction> _directions;
-
-        public NextTracker(List<Direction> directions)
-        {
-            _directions = directions;
-        }
+        private readonly List<Direction> _directions = directions;
 
         public int Order { get; set; } = 1;
         public int DirectionIndex { get; set; } = 0;
@@ -288,45 +283,38 @@ public class Day_17 : AoCBaseDay<long, long, long>
         {
             return order switch
             {
-                1 => new Rock(new List<List<string>>() {
-                    new List<string>() { ".", ".", "@", "@", "@", "@", "." },
-                }),
-                2 => new Rock(new List<List<string>>() {
-                    new List<string>() { ".", ".", ".", "@", ".", ".", "." },
-                    new List<string>() { ".", ".", "@", "@", "@", ".", "." },
-                    new List<string>() { ".", ".", ".", "@", ".", ".", "." },
-                }),
-                3 => new Rock(new List<List<string>>() {
-                    new List<string>() { ".", ".", ".", ".", "@", ".", "." },
-                    new List<string>() { ".", ".", ".", ".", "@", ".", "." },
-                    new List<string>() { ".", ".", "@", "@", "@", ".", "." },
-                }),
-                4 => new Rock(new List<List<string>>() {
-                    new List<string>() { ".", ".", "@", ".", ".", ".", "." },
-                    new List<string>() { ".", ".", "@", ".", ".", ".", "." },
-                    new List<string>() { ".", ".", "@", ".", ".", ".", "." },
-                    new List<string>() { ".", ".", "@", ".", ".", ".", "." },
-                }),
-                5 => new Rock(new List<List<string>>() {
-                    new List<string>() { ".", ".", "@", "@", ".", ".", "." },
-                    new List<string>() { ".", ".", "@", "@", ".", ".", "." },
-                }),
+                1 => new Rock([
+                    [".", ".", "@", "@", "@", "@", "."],
+                ]),
+                2 => new Rock([
+                    [".", ".", ".", "@", ".", ".", "."],
+                    [".", ".", "@", "@", "@", ".", "."],
+                    [".", ".", ".", "@", ".", ".", "."],
+                ]),
+                3 => new Rock([
+                    [".", ".", ".", ".", "@", ".", "."],
+                    [".", ".", ".", ".", "@", ".", "."],
+                    [".", ".", "@", "@", "@", ".", "."],
+                ]),
+                4 => new Rock([
+                    [".", ".", "@", ".", ".", ".", "."],
+                    [".", ".", "@", ".", ".", ".", "."],
+                    [".", ".", "@", ".", ".", ".", "."],
+                    [".", ".", "@", ".", ".", ".", "."],
+                ]),
+                5 => new Rock([
+                    [".", ".", "@", "@", ".", ".", "."],
+                    [".", ".", "@", "@", ".", ".", "."],
+                ]),
             };
         }
     }
 
-    private class Rock
+    private class Rock(List<List<string>> shape)
     {
-        public Rock(List<List<string>> shape)
-        {
-            Shape = shape;
-            Height = shape.Count;
-            Width = shape[0].Count;
-        }
-
-        public List<List<string>> Shape { get; init; }
-        public int Height { get; init; }
-        public int Width { get; init; }
+        public List<List<string>> Shape { get; init; } = shape;
+        public int Height { get; init; } = shape.Count;
+        public int Width { get; init; } = shape[0].Count;
         public List<string> Bottom => Shape.Last();
 
         public bool Blow(Direction dir, IndexedGrid<string> cave)
@@ -391,15 +379,11 @@ public class Day_17 : AoCBaseDay<long, long, long>
         }
     }
 
-    private class DirectionMarker
+    private class DirectionMarker(string caveString, int iterationIndex)
     {
-        public DirectionMarker(string caveString, int iterationIndex)
-        {
-            CaveString = caveString;
-            IterationIndex = iterationIndex;
-        }
+        public string CaveString { get; init; } = caveString;
 
-        public string CaveString { get; init; }
+        public int IterationIndex { get; init; } = iterationIndex;
 
         public int CaveHeightBeforeMarker { get; set; }
 
@@ -408,8 +392,6 @@ public class Day_17 : AoCBaseDay<long, long, long>
         public int SecondCaveHeight { get; set; }
 
         public int CaveHeightForRepetition => SecondCaveHeight - FirstCaveHeight;
-
-        public int IterationIndex { get; init; }
 
         public override string ToString() => IterationIndex.ToString();
     }
