@@ -12,6 +12,50 @@ public static class ListExtensions
         return list;
     }
 
+    public static List<T> RemoveFirst<T>(this List<T> list, bool condition) => condition ? RemoveFirst(list) : list;
+    public static List<T> RemoveFirst<T>(this List<T> list, Func<T, bool> condition = null)
+    {
+        if (list.Count > 0 && (condition == null || condition(list[0])))
+        {
+            list.RemoveAt(0);
+        }
+
+        return list;
+    }
+
+    public static List<T> RemoveLast<T>(this List<T> list, bool condition) => condition ? RemoveLast(list) : list;
+    public static List<T> RemoveLast<T>(this List<T> list, Func<T, bool> condition = null)
+    {
+        if (list.Count > 0 && (condition == null || condition(list[^1])))
+        {
+            list.RemoveAt(list.Count - 1);
+        }
+
+        return list;
+    }
+
+    public static List<T> AddIf<T>(this List<T> list, T newElement, bool condition)
+    {
+        if (condition)
+        {
+            list.Add(newElement);
+        }
+
+        return list;
+    }
+
+    public static HashSet<T> AddIf<T>(this HashSet<T> list, T newElement, bool condition)
+    {
+        if (condition)
+        {
+            list.Add(newElement);
+        }
+
+        return list;
+    }
+
+    public static int CountMany<T>(this List<T> list, Func<T, IEnumerable<T>> selector) => list.SelectMany(x => selector(x)).Count();
+
     public static int NMax<T>(this IEnumerable<T> collection, int nth, Func<T, int> selector)
     {
         return collection.Select(selector).OrderByDescending(x => x).Skip(nth - 1).First();

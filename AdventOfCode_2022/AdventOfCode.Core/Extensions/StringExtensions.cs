@@ -1,6 +1,4 @@
-﻿using AdventOfCode.Core.Models;
-
-namespace AdventOfCode.Core.Extensions;
+﻿namespace AdventOfCode.Core.Extensions;
 
 public static class StringExtensions
 {
@@ -16,48 +14,63 @@ public static class StringExtensions
 
     public static string[]? SplitMinLengthCheck(this string str, string separator, int minLength, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
         => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length >= minLength ? arr : null;
-
     public static string[]? SplitMaxLengthCheck(this string str, string separator, int maxLength, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
         => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length <= maxLength ? arr : null;
-
     public static string[]? SplitExactLengthCheck(this string str, string separator, int length, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
         => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length == length ? arr : null;
 
     public static int Count(this string str, char character) => str.Count(x => x == character);
-    public static int CountImmediate(this string str, params char[] characters) => str.TakeWhile((c, i) => i == 0 || characters.Contains(c)).Count(c => characters.Contains(c));
+    public static int CountImmediate(this string str, params char[] characters)
+    {
+        var count = 0;
+
+        foreach (var c in str)
+        {
+            if (characters.Contains(c))
+            {
+                count++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return count;
+    }
+    public static int CountFirstOccurence(this string str, params char[] characters)
+    {
+        var count = 0;
+
+        foreach (var c in str)
+        {
+            if (characters.Contains(c))
+            {
+                count++;
+            }
+            else if (count != 0)
+            {
+                break;
+            }
+        }
+
+        return count;
+    }
 
     public static bool HasAt(this string str, char character, int index) => str[index] == character;
 
-    /// <summary>
-    /// abcd, '2' --> bcd 
-    /// </summary>
     public static string CropFrom(this string str, char character) => str.CropFrom(character, out var _, out var _);
-    /// <summary>
-    /// 1234, "2" --> 34
-    /// </summary>
     public static string CropFrom(this string str, string stringToMatch) => str.CropFrom(stringToMatch, out var _, out var _);
-    /// <summary>
-    /// 1234, 1 --> 34
-    /// </summary>
     public static string CropFrom(this string str, int index) => str.CropFrom(index, out var _, out var _);
-    /// <summary>
-    /// abcd, '2' --> bcd 
-    /// </summary>
-    public static string CropFrom(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropFrom(character.ToString(), out stringChanged, out charsCropped);
-    /// <summary>
-    /// 1234, "2" --> 34
-    /// </summary>
-    public static string CropFrom(this string str, string stringToMatch, out bool stringChanged, out int charsCropped) => str.CropFrom(str.IndexOf(stringToMatch), out stringChanged, out charsCropped);
-    /// <summary>
-    /// 1234, 1 --> 34
-    /// </summary>
+    public static string CropFrom(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropFrom(str.IndexOf(character), out stringChanged, out charsCropped);
+    public static string CropFrom(this string str, string stringToMatch, out bool stringChanged, out int charsCropped)
+        => str.CropFrom(str.IndexOf(stringToMatch) is int index && str.IndexIsIn(index) ? index : -10, out stringChanged, out charsCropped);
     public static string CropFrom(this string str, int index, out bool stringChanged, out int charsCropped)
     {
         stringChanged = false;
         charsCropped = 0;
 
-        str = str.StringAfterBorderCheck(index, out var isOutsideOfBorders);
-        if (isOutsideOfBorders)
+        if (str.IndexIsOut(index))
         {
             return str;
         }
@@ -68,59 +81,26 @@ public static class StringExtensions
         return result;
     }
 
-    public static string CropAfter(this string str, char character) => str.CropAfter(character, out _, out _);
-    public static string CropAfter(this string str, string stringToMatch) => str.CropAfter(stringToMatch, out _, out _);
-    public static string CropAfter(this string str, int index) => str.CropAfter(index, out _, out _);
-    public static string CropAfter(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropAfter(character.ToString(), out stringChanged, out charsCropped);
-    // TODO :: CROP AFTER DOESNT WORK FOR string
-    public static string CropAfter(this string str, string stringToMatch, out bool stringChanged, out int charsCropped) => str.CropAfter(str.IndexOf(stringToMatch), out stringChanged, out charsCropped);
-    public static string CropAfter(this string str, int index, out bool stringChanged, out int charsCropped)
-    {
-        stringChanged = false;
-        charsCropped = 0;
+    public static string CropFromWithout(this string str, char character) => str.CropFromWithout(character, out var _, out var _);
+    public static string CropFromWithout(this string str, string stringToMatch) => str.CropFromWithout(stringToMatch, out var _, out var _);
+    public static string CropFromWithout(this string str, int index) => str.CropFromWithout(index, out var _, out var _);
+    public static string CropFromWithout(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropFromWithout(str.IndexOf(character), out stringChanged, out charsCropped);
+    public static string CropFromWithout(this string str, string stringToMatch, out bool stringChanged, out int charsCropped)
+        => str.CropFromWithout(str.IndexOf(stringToMatch) is int index && str.IndexIsIn(index) ? index + stringToMatch.Length - 1 : -10, out stringChanged, out charsCropped);
+    public static string CropFromWithout(this string str, int index, out bool stringChanged, out int charsCropped) => str.CropFrom(index + 1, out stringChanged, out charsCropped);
 
-        str = str.StringAfterBorderCheck(index + 1, out var isOutsideOfBorders);
-        if (isOutsideOfBorders)
-        {
-            return str;
-        }
-
-        var result = str.CropFrom(index + 1);
-        charsCropped = str.Length - result.Length;
-        stringChanged = charsCropped > 0;
-        return result;
-    }
-
-    /// <summary>
-    /// Does not include character.
-    /// </summary>
     public static string CropUntil(this string str, char character) => str.CropUntil(character, out _, out _);
-    /// <summary>
-    /// Does not include string.
-    /// </summary>
     public static string CropUntil(this string str, string stringToMatch) => str.CropUntil(stringToMatch, out _, out _);
-    /// <summary>
-    /// Does not include index.
-    /// </summary>
     public static string CropUntil(this string str, int index) => str.CropUntil(index, out _, out _);
-    /// <summary>
-    /// Does not include character.
-    /// </summary>
-    public static string CropUntil(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropUntil(character.ToString(), out stringChanged, out charsCropped);
-    /// <summary>
-    /// Does not include string.
-    /// </summary>
-    public static string CropUntil(this string str, string stringToMatch, out bool stringChanged, out int charsCropped) => str.CropUntil(str.IndexOf(stringToMatch), out stringChanged, out charsCropped);
-    /// <summary>
-    /// Does not include index.
-    /// </summary>
+    public static string CropUntil(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropUntil(str.IndexOf(character), out stringChanged, out charsCropped);
+    public static string CropUntil(this string str, string stringToMatch, out bool stringChanged, out int charsCropped)
+        => str.CropUntil(str.IndexOf(stringToMatch) is int index && str.IndexIsIn(index) ? index : -10, out stringChanged, out charsCropped);
     public static string CropUntil(this string str, int index, out bool stringChanged, out int charsCropped)
     {
         stringChanged = false;
         charsCropped = 0;
 
-        str = str.StringAfterBorderCheck(index, out var isOutsideOfBorders);
-        if (isOutsideOfBorders)
+        if (str.IndexIsOut(index))
         {
             return str;
         }
@@ -133,17 +113,18 @@ public static class StringExtensions
 
     public static string CropUntilWith(this string str, char character) => str.CropUntilWith(character, out _, out _);
     public static string CropUntilWith(this string str, string stringToMatch) => str.CropUntilWith(stringToMatch, out _, out _);
-    public static string CropUntilWith(this string str, int index) => str.CropUntil(index, out _, out _);
-    public static string CropUntilWith(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropUntilWith(character.ToString(), out stringChanged, out charsCropped);
-    public static string CropUntilWith(this string str, string stringToMatch, out bool stringChanged, out int charsCropped) => str.CropUntilWith(str.IndexOf(stringToMatch), out stringChanged, out charsCropped);
+    public static string CropUntilWith(this string str, int index) => str.CropUntilWith(index, out _, out _);
+    public static string CropUntilWith(this string str, char character, out bool stringChanged, out int charsCropped) => str.CropUntilWith(str.IndexOf(character), out stringChanged, out charsCropped);
+    public static string CropUntilWith(this string str, string stringToMatch, out bool stringChanged, out int charsCropped)
+        => str.CropUntilWith(str.IndexOf(stringToMatch) is int index && str.IndexIsIn(index) ? index + stringToMatch.Length - 1 : -10, out stringChanged, out charsCropped);
     public static string CropUntilWith(this string str, int index, out bool stringChanged, out int charsCropped) => str.CropUntil(index + 1, out stringChanged, out charsCropped);
 
-    public static string RemoveOnce(this string str, string stringToRemove) => str.CropUntil(stringToRemove) + str.CropAfter(stringToRemove);
+    public static string RemoveOnce(this string str, string stringToRemove) => str.CropUntil(stringToRemove) + str.CropFrom(stringToRemove);
     public static string RemoveOnceFromEnd(this string str, string stringToRemove)
     {
         str = str.ReverseString();
         stringToRemove = stringToRemove.ReverseString();
-        str = str.CropUntil(stringToRemove) + str.CropAfter(stringToRemove);
+        str = str.CropUntil(stringToRemove) + str.CropFrom(stringToRemove);
         return str.ReverseString();
     }
 
@@ -184,83 +165,125 @@ public static class StringExtensions
     /// <returns></returns>
     public static List<string> GetAllCombinations(this string baseString, char combinationCharacter, int? fromCount = null, int? toCount = null, bool includeBrokenPairs = true)
     {
+        void addBrokenPairCombinations(HashSet<string> combinations, int repeats)
+        {
+            var previousCombinations = combinations.Where(x => x.Count(combinationCharacter) == repeats).ToList();
+            var newCombinations = new List<string>();
+            var total = previousCombinations.Count;
+
+            foreach (var previousCombination in previousCombinations)
+            {
+                for (var j = 0; j < baseString.Length; j++)
+                {
+                    if (baseString[j] == combinationCharacter)
+                    {
+                        continue;
+                    }
+
+                    var newCombination = previousCombination.ReplaceAt(combinationCharacter, j);
+                    combinations.Add(newCombination);
+                }
+            }
+        }
+
         var combinations = new HashSet<string>();
         var start = fromCount is null ? 1 : fromCount.Value.AtLeast(1);
         var end = toCount is null ? baseString.Length + 1 : toCount.Value.AtMost(baseString.Length + 1);
         end = start == end ? end + 1 : end;
+        var entered = false;
 
         for (var repeats = start; repeats < end; repeats++)
         {
-            if (includeBrokenPairs && start != 0 && !combinations.Any())
+            if (includeBrokenPairs && start != 0 && !entered)
             {
-                repeats--;
+                entered = true;
             }
 
             if (includeBrokenPairs && combinations.Any())
             {
-                var previousCombinations = combinations.Where(x => x.Count(combinationCharacter) == repeats - 1).ToList();
-                var newCombinations = new List<string>();
-                var total = previousCombinations.Count;
-
-                foreach (var previousCombination in previousCombinations)
-                {
-                    for (var j = 0; j < baseString.Length; j++)
-                    {
-                        if (baseString[j] == combinationCharacter)
-                        {
-                            continue;
-                        }
-
-                        var newCombination = previousCombination.ReplaceAt(combinationCharacter, j);
-                        combinations.Add(newCombination);
-                    }
-                }
+                addBrokenPairCombinations(combinations, repeats);
             }
             else
             {
                 for (var j = 0; j < baseString.Length; j++)
                 {
-                    if (j + repeats > baseString.Length)
+                    if (j + repeats > baseString.Length || baseString[j] == combinationCharacter)
                     {
                         continue;
                     }
 
-                    var combination = baseString
-                        .AsFluent()
-                        .CropUntil(j)
-                        .AddRepeat(combinationCharacter, repeats)
-                        .AddCropFrom(j + repeats);
+                    var combination = baseString.CropUntil(j).Add(combinationCharacter.Repeat(repeats));
+                    combination += baseString.CropFrom(j + repeats);
 
                     combinations.Add(combination);
+                }
+
+                if (includeBrokenPairs)
+                {
+                    addBrokenPairCombinations(combinations, repeats);
                 }
             }
         }
 
-        return includeBrokenPairs && start > 0
-            ? combinations.Where(x => x.Count(combinationCharacter) > start - 1).ToList()
-            : combinations.ToList();
+        return combinations.ToList();
     }
 
-    public static string ReplaceAt(this string str, char newCharacter, int index) => $"{str.CropUntil(index)}{newCharacter}{str.CropAfter(index)}";
-
-    public static FluentString AsFluent(this string str) => new(str);
+    public static string ReplaceAt(this string str, char newCharacter, int index) => $"{str.CropUntil(index)}{newCharacter}{str.CropFrom(index)}";
 
     public static string Repeat(this char character, int times) => new(character, times);
 
-    private static string StringAfterBorderCheck(this string str, int index, out bool isOutsideOfBorders)
+    public static string TrimStartUpToNTimes(this string str, char character, int times) => str.TrimStartUpToNTimes(character, times, out _);
+    public static string TrimStartUpToNTimes(this string str, char character, int times, out bool trimmed)
     {
-        isOutsideOfBorders = true;
-
-        if (index < 0)
+        if (str.CountImmediate(character) is int count && count >= times)
         {
-            return str;
-        }
-        else if (index >= str.Length)
-        {
-            return string.Empty;
+            trimmed = true;
+            return $"{character.Repeat(count - times)}{str.TrimStart(character)}";
         }
 
-        isOutsideOfBorders = false;
+        trimmed = false;
         return str;
     }
+
+    public static string TrimStartExactlyNTimes(this string str, char character, int times) => str.TrimStartExactlyNTimes(character, times, out _);
+    public static string TrimStartExactlyNTimes(this string str, char character, int times, out bool trimmed)
+    {
+        if (str.CountImmediate(character) is int count && count == times && times > 0)
+        {
+            trimmed = true;
+            return str.TrimStart(character);
+        }
+
+        trimmed = false;
+        return str;
+    }
+
+    public static string TrimEndUpToNTimes(this string str, char character, int times) => str.TrimEndUpToNTimes(character, times, out _);
+    public static string TrimEndUpToNTimes(this string str, char character, int times, out bool trimmed)
+    {
+        if (str.ReverseString().CountImmediate(character) is int count && count >= times && times > 0)
+        {
+            trimmed = true;
+            return $"{str.TrimEnd(character)}{character.Repeat(count - times)}";
+        }
+
+        trimmed = false;
+        return str;
+    }
+
+    public static string TrimEndExactlyNTimes(this string str, char character, int times) => str.TrimEndExactlyNTimes(character, times, out _);
+    public static string TrimEndExactlyNTimes(this string str, char character, int times, out bool trimmed)
+    {
+        if (str.ReverseString().CountImmediate(character) is int count && count == times && times > 0)
+        {
+            trimmed = true;
+            return str.TrimEnd(character);
+        }
+
+        trimmed = false;
+        return str;
+    }
+
+    private static bool IndexIsOut(this string str, int index) => index < 0 || index >= str.Length;
+    private static bool IndexIsIn(this string str, int index) => !str.IndexIsOut(index);
 }

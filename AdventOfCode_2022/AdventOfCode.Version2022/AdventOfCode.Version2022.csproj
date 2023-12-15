@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;8600;8602;8625;8618;8619;8629;8604;8603;8509;8846;8524</NoWarn>
+    <NoWarn>1701;1702;8600;8602;8625;8618;8619;8629;8604;8603;8509;8846;8524;IDE0305</NoWarn>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702;8600;8602;8625;8618;8619;8629;8604;8603;8509;8846;8524</NoWarn>
+    <NoWarn>1701;1702;8600;8602;8625;8618;8619;8629;8604;8603;8509;8846;8524;IDE0305</NoWarn>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
 

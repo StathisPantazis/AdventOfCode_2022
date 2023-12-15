@@ -16,7 +16,7 @@ public class Day_08 : AoCBaseDay<int, int, List<Display>>
             .Select(x => x.Split('|') is string[] arr ? new Display(arr[0], arr[1]) : null)
             .ToList();
 
-        var numbers = ListBuilder.ForI(10).ToDictionary(x => x, x =>
+        var numbers = ListBuilder.ForI(10).ToDictionary(i => i, x =>
         {
             return x switch
             {

@@ -11,11 +11,13 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
     {
         Console.Clear();
 
-        var rows = Helpers.FileCleanReadLines(FileDescription(this, resourceType))
-            .Select(x => x.Split(' ') is string[] arr ? new Row(arr[0], arr[1].Split(',').Select(y => int.Parse(y)).ToList()) : new())
+        var rows = Helpers.FileCleanReadText(FileDescription(this, resourceType))
+            .Replace("......", ".").Replace(".....", ".").Replace("....", ".").Replace("...", ".").Replace("..", ".")
+            .Split('\n')
+            .Select(x => x.Split(' ') is string[] arr ? new Row(arr[0].Trim('.'), arr[1].Split(',').Select(y => int.Parse(y)).ToList()) : new())
             .ToList();
 
-        rows = new List<Row>() { rows[1] };
+        rows = [rows[2]];
         //rows = new List<Row>() { rows.First(x => x.Arrangement.StartsWith("?#?#")) };
         //rows = new List<Row>() { rows.First(x => x.Arrangement == ".???..??...?##.") };
 
@@ -36,7 +38,6 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
 
                 Console.WriteLine("Cleaning...");
                 row.Text = CompleteClean(row.Text, row.Groups);
-
                 Console.WriteLine(row);
 
                 var nextMixed = row.Text.CropUntil('.');
@@ -53,9 +54,11 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
                     }
                 }
 
-                var combinations = nextMixed
-                    .GetAllCombinations('#', nextGroups.Sum(), includeBrokenPairs: true)
-                    .Where(x => x.Split('?', StringSplitOptions.RemoveEmptyEntries).Length == nextGroups.Count)
+                var lala = '?'.Repeat(nextMixed.Length)
+                    .GetAllCombinations('#', nextGroups.Sum(), includeBrokenPairs: true);
+
+                var combinations = lala
+                    .Where(x => x.Split('?').Length == nextGroups.Count)
                     .ToList();
 
                 row.Result += combinations.Count;
@@ -81,35 +84,51 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         return default;
     }
 
-    private string CompleteClean(string text, List<int> groups)
+    private static string CompleteClean(string text, List<int> groups)
     {
-        // Clean back first
-        text = text.ReverseString();
-        groups.Reverse();
+        while (true)
+        {
+            var initLength = text.Length;
 
-        text = text.TrimStart('.');
-        text = CleanNextHashtag(text, groups);
-        text = text.TrimStart('.');
+            text = text.TrimStartExactlyNTimes('#', groups.FirstOrDefault(), out var trimmed);
+            groups.RemoveFirst(trimmed);
 
-        // Then clean front
-        text = text.ReverseString();
-        groups.Reverse();
+            text = text.TrimEndExactlyNTimes('#', groups.LastOrDefault(), out trimmed);
+            groups.RemoveLast(trimmed);
 
-        text = text.TrimStart('.');
-        text = CleanNextHashtag(text, groups);
-        text = text.TrimStart('.');
+            for (var i = 0; i < 2; i++)
+            {
+                if (groups.Count == 0)
+                {
+                    break;
+                }
+
+                text = text.ReverseString();
+                groups = groups.ReverseList();
+
+                var nextMixed = text.CropUntil('.');
+                var nextHashtags = nextMixed.CountFirstOccurence('#');
+
+                if (nextHashtags == groups[0])
+                {
+                    text = text.CropFrom('#'.Repeat(nextHashtags)).Trim('.');
+                    groups.RemoveFirst();
+                }
+            }
+
+            if (initLength == text.Length || groups.Count == 0)
+            {
+                break;
+            }
+        }
 
         return text;
     }
 
-    private string CleanNextHashtag(string text, List<int> groups)
+    private static string CleanNextHashtag(string text, List<int> groups)
     {
         text = text.CropFrom(text.CountImmediate('#'), out var stringChanged, out var charsCropped);
-
-        if (stringChanged && charsCropped == groups[0])
-        {
-            groups.RemoveAt(0);
-        }
+        groups.RemoveFirst(first => stringChanged && charsCropped == first);
 
         return text;
     }
@@ -148,6 +167,6 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         public bool Done { get; set; }
         public int Result { get; set; }
 
-        public override string ToString() => $"{InitText} {string.Join(",", InitGroups)} [{Result}]  - ({Text} - {Text.Length} - [{string.Join(",", Groups)}])";
+        public override string ToString() => $"{InitText} ({InitText.Length}) {string.Join(",", InitGroups)} [{Result}]  - ({Text} ({Text.Length}) - [{string.Join(",", Groups)}])";
     }
 }
