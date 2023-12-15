@@ -76,7 +76,7 @@ public static class ListBuilder
 
     public static List<T> Repeat<T>(int count, T emptyValue = default)
     {
-        var list = new List<T>();
+        var list = new List<T>(count);
 
         for (var i = 0; i < count; i++)
         {

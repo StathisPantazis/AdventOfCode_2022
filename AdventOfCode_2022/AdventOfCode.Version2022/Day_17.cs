@@ -127,13 +127,10 @@ public class Day_17 : AoCBaseDay<long, long, long>
 
             for (var j = rock.Height; j > 0; j--)
             {
-                cave.Rows.Insert(0, new List<string>(rock.Shape[j - 1]));
+                cave.InsertRow(0, new List<string>(rock.Shape[j - 1]), false);
             }
 
-            ListExtensions.ForNTimesDo(4, () =>
-            {
-                rock.Blow(tracker.GetNextDirection(), cave);
-            });
+            ListExtensions.ForNTimesDo(4, () => rock.Blow(tracker.GetNextDirection(), cave));
 
             while (Fall(cave, rock, caveHeight))
             {
@@ -178,7 +175,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
         }
 
         // Fall
-        var newBottom = new List<string>();
+        var newBottom = new List<string>(width);
 
         for (var i = 0; i < width; i++)
         {

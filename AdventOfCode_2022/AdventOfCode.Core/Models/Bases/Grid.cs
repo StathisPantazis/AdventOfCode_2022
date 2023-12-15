@@ -13,6 +13,7 @@ public interface IGrid
 
 public abstract class Grid<T> : IGrid
 {
+    private readonly bool _isCoordinatedGrid;
     protected readonly T _emptyValue;
 
     public string Id { get; } = Guid.NewGuid().ToString();
@@ -37,10 +38,11 @@ public abstract class Grid<T> : IGrid
 
     protected Grid(IEnumerable<IEnumerable<T>> source)
     {
+        _isCoordinatedGrid = typeof(T).IsSubclassOf(typeof(CoordinatesNode));
         _emptyValue = GetDefault();
         Rows = source.Select(line => line.Select(elem => (T)(object)elem).ToList()).ToList();
-        RebuildColumns();
-        RebuildCoordinates();
+
+        Rebuild();
     }
 
     protected Grid(IEnumerable<IEnumerable<T>> source, T emptyValue) : this(source)
@@ -66,21 +68,23 @@ public abstract class Grid<T> : IGrid
 
     public abstract Coordinates GetCoordinates(GridCorner gridCorner);
 
-    public int Height => Rows.Count;
+    public int Height { get; protected set; }
 
-    public int Width => Rows.Max(x => x.Count);
+    public int Width { get; protected set; }
 
     public string ToString(string itemSeparator = "", string rowSeparator = "\n") => string.Join(rowSeparator, Rows.Select(x => x.ListToString(itemSeparator)));
 
     public override string ToString() => ToString();
 
-    public abstract void InsertRows(int y, int repeat = 1);
+    public abstract void InsertRows(int y, int repeat = 1, bool rebuild = true);
 
-    public abstract void AddRows(int repeat);
+    public abstract void InsertRow(int y, List<T> newRow, bool rebuild = true);
 
-    public abstract void RemoveRows(int y, int repeat = 1);
+    public abstract void AddRows(int repeat, bool rebuild = true);
 
-    public void InsertColumn(int index, T emptyValue, int repeat = 1, bool rebuildColumns = true)
+    public abstract void RemoveRows(int y, int repeat = 1, bool rebuild = true);
+
+    public void InsertColumn(int index, T emptyValue, int repeat = 1, bool rebuild = true)
     {
         for (var i = 0; i < repeat; i++)
         {
@@ -92,19 +96,23 @@ public abstract class Grid<T> : IGrid
             }
         }
 
-        RebuildColumns();
+        Width += repeat;
+
+        if (rebuild)
+        {
+            Rebuild();
+        }
     }
 
-    public void AddColumn(T emptyValue, int repeat = 1, bool rebuildColumns = true)
+    public void AddColumn(T emptyValue, int repeat = 1, bool rebuild = true)
     {
-        ListExtensions.ForNTimesDo(repeat, () =>
+        ListExtensions.ForNTimesDo(repeat, () => Rows.ForEach(row => row.Add(emptyValue)));
+        Width += repeat;
+
+        if (rebuild)
         {
-            Rows.ForEach(row => row.Add(emptyValue));
-            if (rebuildColumns)
-            {
-                RebuildColumns();
-            }
-        });
+            Rebuild();
+        }
     }
 
     public List<T> RowSliceLeft(Coordinates pos, bool includePosition = false) => RowSliceLeft(pos.X, pos.Y, includePosition);
@@ -186,7 +194,7 @@ public abstract class Grid<T> : IGrid
 
     public void Rotate()
     {
-        var newRows = new List<List<T>>();
+        var newRows = new List<List<T>>(Width);
 
         for (var x = 0; x < Width; x++)
         {
@@ -194,13 +202,12 @@ public abstract class Grid<T> : IGrid
         }
 
         Rows = newRows;
-
-        RebuildColumns();
-        RebuildCoordinates();
+        Rebuild();
     }
+
     public void RebuildCoordinates()
     {
-        if (typeof(T).IsSubclassOf(typeof(CoordinatesNode)))
+        if (_isCoordinatedGrid)
         {
             for (var y = 0; y < Rows.Count; y++)
             {
@@ -215,9 +222,12 @@ public abstract class Grid<T> : IGrid
         }
     }
 
-    protected void RebuildColumns()
+    protected void Rebuild()
     {
+        Height = Rows.Count;
+        Width = Rows.Max(x => x.Count);
         Columns = Enumerable.Range(0, Width).Select(x => Enumerable.Range(0, Height).Select(y => x < Width ? Rows[y][x] : GenericBuilder.GetDefault(_emptyValue)).ToList()).ToList();
+        RebuildCoordinates();
     }
 
     private static List<List<TType>> GetEmptyGridLines<TType>(int rows, int columns, TType emptyValue = default)

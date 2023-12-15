@@ -44,33 +44,58 @@ public class IndexedGrid<T> : Grid<T>
         };
     }
 
-    public override void InsertRows(int y, int repeat = 1)
+    public override void InsertRows(int y, int repeat = 1, bool rebuild = true)
     {
         for (var i = 0; i < repeat; i++)
         {
             var newRows = ListBuilder.Repeat(Width, _emptyValue);
             Rows.Insert(y, newRows);
+            Height++;
         }
 
-        RebuildColumns();
+        if (rebuild)
+        {
+            Rebuild();
+        }
     }
 
-    public override void AddRows(int repeat)
+    public override void InsertRow(int y, List<T> newRow, bool rebuild = true)
+    {
+        Rows.Insert(y, newRow);
+        Height++;
+
+        if (rebuild)
+        {
+            Rebuild();
+        }
+    }
+
+    public override void AddRows(int repeat, bool rebuild = true)
     {
         for (var i = 0; i < repeat; i++)
         {
             var newRows = ListBuilder.Repeat(Width, _emptyValue);
             Rows.Add(newRows);
+            Height++;
         }
 
-        RebuildColumns();
+        if (rebuild)
+        {
+            Rebuild();
+        }
     }
 
-    public override void RemoveRows(int y, int repeat = 1)
+    public override void RemoveRows(int y, int repeat = 1, bool rebuild = true)
     {
         for (var i = 0; i < repeat; i++)
         {
             Rows.RemoveAt(y);
+            Height--;
+        }
+
+        if (rebuild)
+        {
+            Rebuild();
         }
     }
 
