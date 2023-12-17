@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using AdventOfCode.Core.Models.Bases;
+using System.Numerics;
 
 namespace AdventOfCode.Core.Extensions;
 
@@ -13,6 +14,8 @@ public static class NumericExtensions
     public static long AtMost(this long value, long max) => value <= max ? value : max;
     public static int AtLeast(this int value, int min) => value < min ? min : value;
     public static long AtLeast(this long value, long min) => value < min ? min : value;
+    public static int ManhattanDistance(int x1, int y1, int x2, int y2) => Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
+    public static int ManhattanDistance(Coordinates a, Coordinates b) => Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
     public static T GreatestCommonDivisor<T>(T a, T b) where T : INumber<T>
     {
         while (b != T.Zero)

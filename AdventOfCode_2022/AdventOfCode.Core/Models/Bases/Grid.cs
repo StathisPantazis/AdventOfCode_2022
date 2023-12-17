@@ -29,7 +29,7 @@ public abstract class Grid<T> : IGrid
     protected Grid()
     {
         _emptyValue = GetDefault();
-        Rows = new();
+        Rows = [];
     }
 
     protected Grid(int rows, int columns, T emptyValue) : this(GetEmptyGridLines(rows, columns, emptyValue), emptyValue)

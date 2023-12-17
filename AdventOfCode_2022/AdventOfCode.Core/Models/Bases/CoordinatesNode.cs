@@ -10,6 +10,13 @@ public abstract class CoordinatedBase
 
 public abstract class CoordinatesNode : NodeBase
 {
+    public CoordinatesNode() { }
+
+    public CoordinatesNode(Coordinates position)
+    {
+        Position = position;
+    }
+
     public Coordinates Position { get; set; }
 
     public override bool Equals(object? obj) => ((CoordinatesNode)obj).Position.Equals(Position);

@@ -12,6 +12,18 @@ public static class StringExtensions
 
     public static string ReverseString(this string str) => string.Join(string.Empty, str.Reverse());
 
+    public static string AddLastLimitLength(this string str, string addition, int length)
+    {
+        var newString = $"{str}{addition}";
+        return newString.Length > length ? newString.CropFrom(addition.Length) : newString;
+    }
+
+    public static string AddFirstLimitLength(this string str, string addition, int length)
+    {
+        var newString = $"{str}{addition}";
+        return newString.Length > length ? newString.CropUntil(str.Length - str.Length) : newString;
+    }
+
     public static string[]? SplitMinLengthCheck(this string str, string separator, int minLength, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
         => str.Split(separator, stringSplitOptions) is string[] arr && arr.Length >= minLength ? arr : null;
     public static string[]? SplitMaxLengthCheck(this string str, string separator, int maxLength, StringSplitOptions stringSplitOptions = StringSplitOptions.None)

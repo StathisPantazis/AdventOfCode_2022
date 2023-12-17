@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Core.Models.Bases;
+﻿using AdventOfCode.Core.Extensions;
+
+namespace AdventOfCode.Core.Models.Bases;
 
 public abstract class Coordinates
 {
@@ -208,8 +210,10 @@ public abstract class Coordinates
     {
         return canGoDiagonally
             ? Math.Max(Math.Abs(X - target.X), Math.Abs(Y - target.Y))
-            : Math.Abs(X - target.X) + Math.Abs(Y - target.Y);
+            : NumericExtensions.ManhattanDistance(this, target);
     }
+
+    public bool CanMove(Direction direction) => !CantMove(direction);
 
     protected static int GetXmove(Direction direction)
     {
@@ -222,8 +226,6 @@ public abstract class Coordinates
     }
 
     protected abstract int GetYmove(Direction direction);
-
-    private bool CanMove(Direction direction) => !CantMove(direction);
 
     private bool CantMove(Direction direction)
     {
