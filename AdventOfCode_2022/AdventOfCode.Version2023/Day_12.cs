@@ -91,10 +91,10 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
             var initLength = text.Length;
 
             text = text.TrimStartExactlyNTimes('#', groups.FirstOrDefault(), out var trimmed);
-            groups.RemoveFirst(trimmed);
+            groups.RemoveFirstIf(trimmed);
 
             text = text.TrimEndExactlyNTimes('#', groups.LastOrDefault(), out trimmed);
-            groups.RemoveLast(trimmed);
+            groups.RemoveLastIf(trimmed);
 
             for (var i = 0; i < 2; i++)
             {
@@ -112,7 +112,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
                 if (nextHashtags == groups[0])
                 {
                     text = text.CropFrom('#'.Repeat(nextHashtags)).Trim('.');
-                    groups.RemoveFirst();
+                    groups.RemoveFirstIf(true);
                 }
             }
 
@@ -128,7 +128,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
     private static string CleanNextHashtag(string text, List<int> groups)
     {
         text = text.CropFrom(text.CountImmediate('#'), out var stringChanged, out var charsCropped);
-        groups.RemoveFirst(first => stringChanged && charsCropped == first);
+        groups.RemoveFirstIf(first => stringChanged && charsCropped == first);
 
         return text;
     }

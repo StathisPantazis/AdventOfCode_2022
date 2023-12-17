@@ -12,8 +12,8 @@ public static class ListExtensions
         return list;
     }
 
-    public static List<T> RemoveFirst<T>(this List<T> list, bool condition) => condition ? RemoveFirst(list) : list;
-    public static List<T> RemoveFirst<T>(this List<T> list, Func<T, bool> condition = null)
+    public static List<T> RemoveFirstIf<T>(this List<T> list, bool condition) => condition ? RemoveFirstIf(list) : list;
+    public static List<T> RemoveFirstIf<T>(this List<T> list, Func<T, bool> condition = null)
     {
         if (list.Count > 0 && (condition == null || condition(list[0])))
         {
@@ -22,9 +22,18 @@ public static class ListExtensions
 
         return list;
     }
+    public static List<T> RemoveFirstWhere<T>(this List<T> list, Func<T, bool> condition = null)
+    {
+        if (list.FirstOrDefault(condition) is T elem)
+        {
+            list.Remove(elem);
+        }
 
-    public static List<T> RemoveLast<T>(this List<T> list, bool condition) => condition ? RemoveLast(list) : list;
-    public static List<T> RemoveLast<T>(this List<T> list, Func<T, bool> condition = null)
+        return list;
+    }
+
+    public static List<T> RemoveLastIf<T>(this List<T> list, bool condition) => condition ? RemoveLastIf(list) : list;
+    public static List<T> RemoveLastIf<T>(this List<T> list, Func<T, bool> condition = null)
     {
         if (list.Count > 0 && (condition == null || condition(list[^1])))
         {

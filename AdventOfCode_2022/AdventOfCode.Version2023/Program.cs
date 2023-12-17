@@ -8,6 +8,6 @@ Console.ForegroundColor = ConsoleColor.Cyan;
 
 Stopwatch sw = new();
 sw.Start();
-var day = new Day_17();
-day.Solve(AoCResourceType.Example);
+var day = new Day_16();
+day.Solve(AoCResourceType.Solution);
 Console.WriteLine($"{sw.ElapsedMilliseconds}ms");

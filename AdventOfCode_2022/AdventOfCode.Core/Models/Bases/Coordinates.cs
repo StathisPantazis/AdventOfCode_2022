@@ -150,13 +150,16 @@ public abstract class Coordinates
         };
     }
 
-    public List<Coordinates> GetFromDirections(List<Direction> directions)
+    public List<Coordinates> GetFromDirections(params Direction[] directions)
     {
         var coords = new List<Coordinates>();
 
         foreach (var dir in directions)
         {
-            coords.Add(GetFromDirection(dir));
+            if (GetFromDirection(dir) is Coordinates coord)
+            {
+                coords.Add(coord);
+            }
         }
 
         return coords;

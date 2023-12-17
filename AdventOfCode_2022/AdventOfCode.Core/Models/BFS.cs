@@ -4,24 +4,18 @@ using System.Diagnostics;
 
 namespace AdventOfCode.Core.Models;
 
-public class BFS<TNode> where TNode : NodeBase
+public class BFS<TNode>(
+    Func<TNode, List<TNode>> getNeighboursFunc,
+    Func<TNode, bool> shouldCloseNode = null,
+    Action<TNode> visitNode = null,
+    Func<TNode, bool> prune = null,
+    Action<BFS<TNode>, TNode> startNodeFinished = null) where TNode : NodeBase
 {
-    private Func<TNode, List<TNode>> GetNeighbours { get; set; }
-    private Func<TNode, bool> Prune { get; set; }
-    private Action<TNode> VisitNode { get; set; }
-    private Func<TNode, bool> ShouldCloseNode { get; set; }
-
-    public BFS(
-        Func<TNode, List<TNode>> getNeighboursFunc,
-        Func<TNode, bool> shouldCloseNode,
-        Action<TNode> visitNode = null,
-        Func<TNode, bool> prune = null)
-    {
-        GetNeighbours = getNeighboursFunc;
-        ShouldCloseNode = shouldCloseNode;
-        VisitNode = visitNode;
-        Prune = prune;
-    }
+    private Func<TNode, List<TNode>> GetNeighbours { get; set; } = getNeighboursFunc;
+    private Func<TNode, bool> Prune { get; set; } = prune;
+    private Action<TNode> VisitNode { get; set; } = visitNode;
+    private Func<TNode, bool> ShouldCloseNode { get; set; } = shouldCloseNode;
+    private Action<BFS<TNode>, TNode> StartNodeFinished { get; set; } = startNodeFinished;
 
     public Queue<TNode> Queue { get; set; }
     public Dictionary<NodeBase, bool> Visited { get; set; }
@@ -31,50 +25,61 @@ public class BFS<TNode> where TNode : NodeBase
     public int PathLength { get; set; }
     public bool PathFound { get; set; }
 
-    public void Search(TNode start, bool debugMode = false)
+    public void Search(TNode start, bool debugMode = false) => Search([start], debugMode);
+
+    public void Search(List<TNode> startingNodes, bool debugMode = false)
     {
         Stopwatch sw = new();
         sw.Start();
 
-        ResetNodes();
-        var node = start;
-        Queue.Enqueue(start);
-
-        while (Queue.Count > 0)
+        foreach (var start in startingNodes)
         {
-            node = Queue.Dequeue();
+            ResetNodes();
+            var node = start;
+            Queue.Enqueue(start);
 
-            Visit(node);
-
-            if (Memos.ContainsKey(node) || Close(node))
+            while (Queue.Count > 0)
             {
-                PathFound = true;
-                break;
+                node = Queue.Dequeue();
+
+                Visit(node);
+
+                if (Memos.ContainsKey(node) || Close(node))
+                {
+                    PathFound = true;
+                    break;
+                }
+
+                foreach (NodeBase n in GetNeighbours(node))
+                {
+                    if (Queue.Contains(n))
+                        continue;
+
+                    if (Visited.ContainsKey(n))
+                    {
+                        VisitedCountHit++;
+                    }
+                    else if (debugMode && Prune is not null && Prune(node))
+                    {
+                        PruneCountHit++;
+                    }
+                    else
+                    {
+                        node.AddChild(n);
+                        n.SetParent(node);
+                        Queue.Enqueue((TNode)n);
+                    }
+                }
             }
 
-            foreach (NodeBase n in GetNeighbours(node))
-            {
-                if (Queue.Contains(n))
-                    continue;
+            PathLength = PathFound ? BFS<TNode>.CountParents(node) + Memos[node] : int.MaxValue;
 
-                if (Visited.ContainsKey(n))
-                {
-                    VisitedCountHit++;
-                }
-                else if (debugMode && Prune is not null && Prune(node))
-                {
-                    PruneCountHit++;
-                }
-                else
-                {
-                    node.AddChild(n);
-                    n.SetParent(node);
-                    Queue.Enqueue((TNode)n);
-                }
+            if (StartNodeFinished is not null)
+            {
+                StartNodeFinished(this, start);
             }
         }
 
-        PathLength = PathFound ? BFS<TNode>.CountParents(node) + Memos[node] : int.MaxValue;
         sw.Stop();
 
         if (debugMode)
@@ -101,7 +106,7 @@ public class BFS<TNode> where TNode : NodeBase
 
     private bool Close(TNode node)
     {
-        if (ShouldCloseNode(node))
+        if (ShouldCloseNode is not null && ShouldCloseNode(node))
         {
             var steps = 0;
             Memos.Add(node, steps);
@@ -135,7 +140,7 @@ public class BFS<TNode> where TNode : NodeBase
     private void ResetNodes()
     {
         Queue = new Queue<TNode>();
-        Visited = new Dictionary<NodeBase, bool>();
+        Visited = [];
         PathFound = false;
         VisitedCountHit = 0;
         PruneCountHit = 0;

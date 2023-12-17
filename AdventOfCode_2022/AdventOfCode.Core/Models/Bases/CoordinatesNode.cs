@@ -21,4 +21,5 @@ public abstract class CoordinatesNode : NodeBase
 
     public override bool Equals(object? obj) => ((CoordinatesNode)obj).Position.Equals(Position);
     public override int GetHashCode() => Position.GetHashCode();
+    public override string ToString() => Position.ToString();
 }
