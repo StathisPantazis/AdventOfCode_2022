@@ -1,10 +1,12 @@
-﻿using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core;
+using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
+using AdventOfCode.Core.Models.Enums;
 using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
 
-public class Day_18 : AoCBaseDay<int, int, string[]>
+public partial class Day_18 : AoCBaseDay<int, int, string[]>
 {
     public override AoCSolution<int, int> Solve(AoCResourceType resourceType)
     {
@@ -12,42 +14,73 @@ public class Day_18 : AoCBaseDay<int, int, string[]>
             .Select(x => x.Replace("(#", "").Replace(")", "").Split(' ') is string[] arr ? new Instruction(Enum.Parse<Direction>(arr[0]), int.Parse(arr[1]), arr[2]) : default)
             .ToList();
 
-        var grid = new IndexedGrid<Point>(ListBuilder.ForI(800).Select(row => ListBuilder.ForI(800).Select(col => new Point(".")).ToList()).ToList());
+        //foreach (var instr in instructions)
+        //{
+        //    instr.Direction = GetDirection(int.Parse(instr.RGB.Last().ToString()));
+        //    instr.Steps = Convert.ToInt32(instr.RGB.CropUntil(instr.RGB.Length - 1), 16);
+        //}
 
-        // Grid borders
-        var traversal = grid.GetCoordinates(500, 500);
-
-        foreach (var instr in instructions)
+        var box = new AbstractBox()
         {
-            var steps = 0;
+            Edges =
+            [
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 0, 0),
+                    End = new IndexedCoordinates(1000, 1000, 6, 0),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 6, 0),
+                    End = new IndexedCoordinates(1000, 1000, 6, 3),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 6, 3),
+                    End = new IndexedCoordinates(1000, 1000, 8, 3),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 8, 3),
+                    End = new IndexedCoordinates(1000, 1000, 8, 0),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 8, 0),
+                    End = new IndexedCoordinates(1000, 1000, 10, 0),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 10, 0),
+                    End = new IndexedCoordinates(1000, 1000, 10, 10),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 10, 10),
+                    End = new IndexedCoordinates(1000, 1000, 0, 10),
+                },
+                new AbstractBoxEdge()
+                {
+                    Start = new IndexedCoordinates(1000, 1000, 0, 10),
+                    End = new IndexedCoordinates(1000, 1000, 0, 0),
+                },
+            ]
+        };
 
-            while (traversal.Move(instr.Direction, (x) => steps == instr.Steps))
-            {
-                steps++;
-                grid[traversal].Text = "#";
-            }
-        }
-
-        // Remove padding
-        grid.RemoveRows(0, grid.FirstIndexOfRow(x => x.Text == "#"));
-        grid.RemoveColumns(0, grid.FirstIndexOfColumn(x => x.Text == "#"));
-
-        var lastRow = grid.LastIndexOfRow(x => x.Text == "#");
-        grid.RemoveRows(lastRow, grid.Height - lastRow);
-
-        var lastColumn = grid.LastIndexOfColumn(x => x.Text == "#");
-        grid.RemoveColumns(lastColumn, grid.Width - lastColumn);
-
-        // Fill
-        var firstInsidePosition = grid.GetPoint(x => x.Position.Y == 1 && x.Text == "#").Position.R;
-
-        grid.FloodFill(firstInsidePosition,
-            fill: (x) => x.Text = "#",
-            shouldStopFill: (x) => x.Text != ".");
-
-        Console.WriteLine(grid.GetAllPoints(x => x.Text == "#").Count);
+        Console.WriteLine(box.Visualize(AbstractBoxVisualization.Padding, AbstractBoxVisualization.TrueVoid));
 
         return default;
+    }
+
+    private Direction GetDirection(int num)
+    {
+        return num switch
+        {
+            0 => Direction.R,
+            1 => Direction.D,
+            2 => Direction.L,
+            3 => Direction.U,
+        };
     }
 
     protected override int Part1(string[] args)

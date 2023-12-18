@@ -16,12 +16,12 @@ public class IndexedCoordinates : Coordinates
     {
     }
 
-    protected IndexedCoordinates(int gridWidth, int gridHeight, bool startFromNegative = false) : base(gridWidth, gridHeight, startFromNegative)
+    public IndexedCoordinates(int gridWidth, int gridHeight, bool startFromNegative = false) : base(gridWidth, gridHeight, startFromNegative)
     {
         Y = 0;
     }
 
-    protected IndexedCoordinates(int gridWidth, int gridHeight, int startX, int startY) : base(gridWidth, gridHeight, startX, startY)
+    public IndexedCoordinates(int gridWidth, int gridHeight, int startX, int startY) : base(gridWidth, gridHeight, startX, startY)
     {
     }
 
@@ -92,6 +92,45 @@ public class IndexedCoordinates : Coordinates
         };
 
         return newCoord.IsInsideOfBorder ? newCoord : null;
+    }
+
+    public override bool TryGetMoveAscii(Coordinates to, out string moveStr)
+    {
+        moveStr = string.Empty;
+
+        var xDif = Math.Abs(X - to.X);
+        var yDif = Math.Abs(Y - to.Y);
+
+        if (Equals(to) || xDif == yDif || (xDif != 1 && yDif != 1))
+        {
+            return false;
+        }
+
+        moveStr = Y == to.Y ? "─" : "│";
+        return true;
+    }
+
+    public override bool TryGetEdgeAscii(Coordinates linkA, Coordinates linkB, out string edgeStr)
+    {
+        edgeStr = string.Empty;
+
+        if (Equals(linkA) || Equals(linkB) || linkA.Equals(linkB))
+        {
+            return false;
+        }
+
+        var xDif = X == linkA.X ? X - linkB.X : X - linkA.X;
+        var yDif = Y == linkA.Y ? Y - linkB.Y : Y - linkA.Y;
+
+        edgeStr = true switch
+        {
+            _ when xDif == 1 && yDif == 1 => "┘",
+            _ when xDif == 1 && yDif == -1 => "┐",
+            _ when xDif == -1 && yDif == 1 => "└",
+            _ when xDif == -1 && yDif == -1 => "┌",
+        };
+
+        return true;
     }
 
     protected override int GetYmove(Direction direction)

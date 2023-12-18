@@ -150,4 +150,29 @@ public class CartesianCoordinates : Coordinates
             _ => throw new ArgumentException()
         };
     }
+
+    public override bool TryGetMoveAscii(Coordinates moveTo, out string moveStr) => throw new NotImplementedException();
+
+    public override bool TryGetEdgeAscii(Coordinates linkA, Coordinates linkB, out string edgeStr)
+    {
+        edgeStr = string.Empty;
+
+        if (Equals(linkA) || Equals(linkB) || linkA.Equals(linkB))
+        {
+            return false;
+        }
+
+        var xDif = X == linkA.X ? X - linkB.X : X - linkA.X;
+        var yDif = Y == linkA.Y ? Y - linkB.Y : Y - linkA.Y;
+
+        edgeStr = true switch
+        {
+            _ when xDif == 1 && yDif == 1 => "┐",
+            _ when xDif == 1 && yDif == -1 => "┘",
+            _ when xDif == -1 && yDif == 1 => "┌",
+            _ when xDif == -1 && yDif == -1 => "└",
+        };
+
+        return true;
+    }
 }

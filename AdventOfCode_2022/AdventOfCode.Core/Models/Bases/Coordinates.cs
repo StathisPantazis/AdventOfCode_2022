@@ -59,6 +59,8 @@ public abstract class Coordinates
     public abstract Coordinates Copy();
     public abstract Coordinates Copy(int newX, int newY);
     public abstract Coordinates GetFromDirectionWithDistance(Direction direction, int distance);
+    public abstract bool TryGetMoveAscii(Coordinates moveTo, out string moveStr);
+    public abstract bool TryGetEdgeAscii(Coordinates edgeLinkA, Coordinates edgeLinkB, out string edgeStr);
     protected abstract Direction GetDirectionTowards(Coordinates dest);
     protected abstract Direction GetDirectionOpposite(Coordinates awayFrom);
 
