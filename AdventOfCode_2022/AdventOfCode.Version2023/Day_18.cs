@@ -1,7 +1,5 @@
-﻿using AdventOfCode.Core;
-using AdventOfCode.Core.Models;
+﻿using AdventOfCode.Core.Models;
 using AdventOfCode.Core.Models.Bases;
-using AdventOfCode.Core.Models.Enums;
 using AdventOfCode.Core.Utils;
 
 namespace AdventOfCode.Version2023;
@@ -19,55 +17,6 @@ public partial class Day_18 : AoCBaseDay<int, int, string[]>
         //    instr.Direction = GetDirection(int.Parse(instr.RGB.Last().ToString()));
         //    instr.Steps = Convert.ToInt32(instr.RGB.CropUntil(instr.RGB.Length - 1), 16);
         //}
-
-        var box = new AbstractBox()
-        {
-            Edges =
-            [
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 0, 0),
-                    End = new IndexedCoordinates(1000, 1000, 6, 0),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 6, 0),
-                    End = new IndexedCoordinates(1000, 1000, 6, 3),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 6, 3),
-                    End = new IndexedCoordinates(1000, 1000, 8, 3),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 8, 3),
-                    End = new IndexedCoordinates(1000, 1000, 8, 0),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 8, 0),
-                    End = new IndexedCoordinates(1000, 1000, 10, 0),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 10, 0),
-                    End = new IndexedCoordinates(1000, 1000, 10, 10),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 10, 10),
-                    End = new IndexedCoordinates(1000, 1000, 0, 10),
-                },
-                new AbstractBoxEdge()
-                {
-                    Start = new IndexedCoordinates(1000, 1000, 0, 10),
-                    End = new IndexedCoordinates(1000, 1000, 0, 0),
-                },
-            ]
-        };
-
-        Console.WriteLine(box.Visualize(AbstractBoxVisualization.Padding, AbstractBoxVisualization.TrueVoid));
 
         return default;
     }
