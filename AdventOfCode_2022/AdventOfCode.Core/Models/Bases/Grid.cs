@@ -38,7 +38,7 @@ public abstract class Grid<T> : IGrid
 
     protected Grid(IEnumerable<IEnumerable<T>> source)
     {
-        _isCoordinatedGrid = typeof(T).IsSubclassOf(typeof(CoordinatesNode));
+        _isCoordinatedGrid = typeof(ICoordinated).IsAssignableFrom(typeof(T));
         _emptyValue = GetDefault();
         Rows = source.Select(line => line.Select(elem => (T)(object)elem).ToList()).ToList();
 
@@ -115,19 +115,36 @@ public abstract class Grid<T> : IGrid
         }
     }
 
-    public List<T> RowSliceLeft(Coordinates pos, bool includePosition = false) => RowSliceLeft(pos.X, pos.Y, includePosition);
+    public void RemoveColumns(int x, int repeat = 1, bool rebuild = true)
+    {
+        for (var i = 0; i < repeat; i++)
+        {
+            for (var j = 0; j < Height; j++)
+            {
+                Rows[j].RemoveAt(x);
+            }
+            Width--;
+        }
+
+        if (rebuild)
+        {
+            Rebuild();
+        }
+    }
+
+    public List<T> RowSliceLeft(Coordinates pos, bool includePosition = false) => pos != null ? RowSliceLeft(pos.X, pos.Y, includePosition) : [];
 
     public abstract List<T> RowSliceLeft(int x, int y, bool includePosition = false);
 
-    public List<T> RowSliceRight(Coordinates pos, bool includePosition = false) => RowSliceRight(pos.X, pos.Y, includePosition);
+    public List<T> RowSliceRight(Coordinates pos, bool includePosition = false) => pos != null ? RowSliceRight(pos.X, pos.Y, includePosition) : [];
 
     public abstract List<T> RowSliceRight(int x, int y, bool includePosition = false);
 
-    public List<T> ColumnSliceUp(Coordinates pos, bool includePosition = false) => ColumnSliceUp(pos.X, pos.Y, includePosition);
+    public List<T> ColumnSliceUp(Coordinates pos, bool includePosition = false) => pos != null ? ColumnSliceUp(pos.X, pos.Y, includePosition) : [];
 
     public abstract List<T> ColumnSliceUp(int x, int y, bool includePosition = false);
 
-    public List<T> ColumnSliceDown(Coordinates pos, bool includePosition = false) => ColumnSliceDown(pos.X, pos.Y, includePosition);
+    public List<T> ColumnSliceDown(Coordinates pos, bool includePosition = false) => pos != null ? ColumnSliceDown(pos.X, pos.Y, includePosition) : [];
 
     public abstract List<T> ColumnSliceDown(int x, int y, bool includePosition = false);
 
@@ -143,6 +160,63 @@ public abstract class Grid<T> : IGrid
         return whereClause is null
             ? Rows.SelectMany(x => x.Select(y => y)).FirstOrDefault()
             : Rows.SelectMany(x => x.Select(y => y)).FirstOrDefault(x => whereClause(x));
+    }
+
+    public int FirstIndexOfColumn(Func<T, bool> locatorCondition)
+    {
+        for (var i = 0; i < Columns.Count; i++)
+        {
+            if (i > 100)
+            {
+                var la = Column(i);
+            }
+
+            if (Column(i).Any(x => locatorCondition(x)))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public int LastIndexOfColumn(Func<T, bool> locatorCondition)
+    {
+        for (var i = Columns.Count - 1; i > -1; i--)
+        {
+            if (Column(i).Any(x => locatorCondition(x)))
+            {
+                return i + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    public int FirstIndexOfRow(Func<T, bool> locatorCondition)
+    {
+        for (var i = 0; i < Rows.Count; i++)
+        {
+            if (Row(i).Any(x => locatorCondition(x)))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public int LastIndexOfRow(Func<T, bool> locatorCondition)
+    {
+        for (var i = Rows.Count - 1; i > -1; i--)
+        {
+            if (Row(i).Any(x => locatorCondition(x)))
+            {
+                return i + 1;
+            }
+        }
+
+        return -1;
     }
 
     public bool RowIndexIsOnBorder(int index) => index == 0 || index == Height - 1;
@@ -213,12 +287,45 @@ public abstract class Grid<T> : IGrid
             {
                 for (var x = 0; x < Columns.Count; x++)
                 {
-                    if (this[x, y] is CoordinatesNode coordinatesNode)
+                    if (this[x, y] is ICoordinated element)
                     {
-                        coordinatesNode.Position = GetCoordinates(x, y);
+                        element.Position = GetCoordinates(x, y);
                     }
                 }
             }
+        }
+    }
+
+    public void FloodFill(Coordinates position, Action<T> fill, Func<T, bool> shouldStopFill)
+    {
+        if (position is null || shouldStopFill(this[position]))
+        {
+            return;
+        }
+
+        var stack = new Stack<Coordinates>();
+        stack.Push(position);
+
+        while (stack.Count > 0)
+        {
+            var pos = stack.Pop();
+
+            if (pos is null || shouldStopFill(this[pos]))
+            {
+                continue;
+            }
+
+            fill(this[pos]);
+
+            stack.Push(pos.R);
+            stack.Push(pos.L);
+            stack.Push(pos.D);
+            stack.Push(pos.U);
+        }
+
+        if (position is null || position.IsOutsideOfBorder || shouldStopFill(this[position]))
+        {
+            return;
         }
     }
 
