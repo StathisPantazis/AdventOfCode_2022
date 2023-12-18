@@ -1,10 +1,11 @@
 using AdventOfCode.Core.Models;
+using AdventOfCode.Tests.Shared;
 using AdventOfCode.Version2023;
 using FluentAssertions;
 
 namespace AdventOfCode.Tests;
 
-public class Tests2023
+public class Tests2023 : AoCTestBase
 {
     [Fact]
     public void Day01()
@@ -14,6 +15,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(53386);
         solution.Part2.Should().Be(53312);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -24,6 +27,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(2265);
         solution.Part2.Should().Be(64097);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -34,6 +39,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(539433);
         solution.Part2.Should().Be(75847567);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -44,6 +51,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(26443);
         solution.Part2.Should().Be(6284877);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -54,6 +63,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(323142486);
         solution.Part2.Should().Be(79874951);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -64,6 +75,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(303600);
         solution.Part2.Should().Be(23654842);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -74,6 +87,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(250254244);
         solution.Part2.Should().Be(250087440);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -84,6 +99,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(19631);
         solution.Part2.Should().Be(21003205388413);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -94,6 +111,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(2101499000);
         solution.Part2.Should().Be(1089);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -104,6 +123,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(6864);
         solution.Part2.Should().Be(349);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -114,6 +135,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(9312968);
         solution.Part2.Should().Be(597714117556);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -124,6 +147,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(31956);
         solution.Part2.Should().Be(37617);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -134,6 +159,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(109098);
         solution.Part2.Should().Be(100064);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -144,6 +171,8 @@ public class Tests2023
 
         solution.Part1.Should().Be(516469);
         solution.Part2.Should().Be(221627);
+
+        PrintRuntime(solution, day.Description);
     }
 
     [Fact]
@@ -154,5 +183,7 @@ public class Tests2023
 
         solution.Part1.Should().Be(963);
         solution.Part2.Should().Be(1178);
+
+        PrintRuntime(solution, day.Description);
     }
 }

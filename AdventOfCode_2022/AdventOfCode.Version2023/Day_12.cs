@@ -74,12 +74,27 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         Console.WriteLine();
         Console.WriteLine();
 
-        //Console.WriteLine(rows[0].Result == 1);
-        //Console.WriteLine(rows[1].Result == 4);
-        //Console.WriteLine(rows[2].Result == 1);
-        //Console.WriteLine(rows[3].Result == 1);
-        //Console.WriteLine(rows[4].Result == 4);
-        //Console.WriteLine(rows[5].Result == 10);
+        var results = new Dictionary<string, int>()
+        {
+            {"???.### 1,1,3", 1 },
+            {".??..??...?##. 1,1,3", 4 },
+            {"?#?#?#?#?#?#?#? 1,3,1,6", 1 },
+            {"????.#...#... 4,1,1", 1 },
+            {"????.######..#####. 1,6,5", 4 },
+            { "?###???????? 3,2,1", 10 },
+        };
+
+        foreach (var row in rows)
+        {
+            if (!results.ContainsKey(row.Key))
+            {
+                Console.WriteLine($"Don't know about [{row}]");
+            }
+            else
+            {
+                Console.WriteLine($"{row.Key}  :  {(row.Result == results[row.Key] ? "Correct" : $"Wrong ({row.Result} instead of {results[row.Key]})")}");
+            }
+        }
 
         return default;
     }
@@ -158,6 +173,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
             Text = arrangement;
             InitGroups = [.. groups];
             Groups = groups;
+            Key = $"{InitText} {string.Join(",", InitGroups)}";
         }
 
         public string InitText { get; set; }
@@ -166,6 +182,7 @@ public class Day_12 : AoCBaseDay<int, int, string[]>
         public List<int> Groups { get; }
         public bool Done { get; set; }
         public int Result { get; set; }
+        public string Key { get; set; }
 
         public override string ToString() => $"{InitText} ({InitText.Length}) {string.Join(",", InitGroups)} [{Result}]  - ({Text} ({Text.Length}) - [{string.Join(",", Groups)}])";
     }

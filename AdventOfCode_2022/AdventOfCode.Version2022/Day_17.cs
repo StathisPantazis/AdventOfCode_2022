@@ -44,7 +44,7 @@ public class Day_17 : AoCBaseDay<long, long, long>
             }
         }
 
-        return ReturnResult(2022, 1000000000000);
+        return Solution(2022, 1000000000000);
     }
 
     protected override long Part1(long args)
