@@ -176,6 +176,18 @@ public class Tests2023 : AoCTestBase
     }
 
     [Fact]
+    public void Day16()
+    {
+        var day = new Day_16();
+        var solution = day.Solve(AoCResourceType.Solution);
+
+        solution.Part1.Should().Be(8901);
+        solution.Part2.Should().Be(9064);
+
+        PrintRuntime(solution, day.Description);
+    }
+
+    [Fact]
     public void Day17()
     {
         var day = new Day_17();
